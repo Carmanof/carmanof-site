@@ -1,0 +1,14 @@
+git remote add origin https://github.com/lm-elektrik/carmanof-site.git
+
+git pull
+git add .
+git commit -m "feat: ..."
+git push
+
+sessionStorage.removeItem('intro-played')  - сброс флага
+
+document.cookie = "intro-played=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+location.reload();   - сброс куки и обновление страницы
+
+
+

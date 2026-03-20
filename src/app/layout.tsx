@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import "./globals.scss";
 import Header from "@/components/Header/Header";
+import Intro from "@/components/Intro/Intro";
 
 const manrope = localFont({
   src: [
@@ -45,14 +47,20 @@ export const metadata: Metadata = {
   description: "CDU website",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  // Читаем cookie на сервере.
+  // Если cookie есть, интро не рендерим вообще — без вспышек и без гидрационных конфликтов.
+  const cookieStore = await cookies();
+  const introPlayed = cookieStore.get("intro-played")?.value === "1";
+
   return (
     <html lang="ru">
       <body className={manrope.variable}>
+        <Intro enabled={!introPlayed} />
         <Header />
         {children}
       </body>

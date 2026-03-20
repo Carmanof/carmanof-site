@@ -1,0 +1,66 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+
+  /* ===== НАСТРОЙКА: фон интро ===== */
+  background: #1e3a8a;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  /* ===== НАСТРОЙКА: скорость исчезновения overlay ===== */
+  transition:
+    opacity 0.38s ease,
+    visibility 0.38s ease;
+}
+
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.overlayFading {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.logoWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ===== НАСТРОЙКА: длительность и плавность полёта ===== */
+.logoMoving {
+  transition: transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.logo {
+  display: block;
+
+  /* ===== НАСТРОЙКА: стартовый размер логотипа ===== */
+  width: 1200px;
+  height: auto;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+:global(body.intro-lock) {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    /* ===== НАСТРОЙКА: размер логотипа на мобильных ===== */
+    width: 240px;
+  }
+}

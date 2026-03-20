@@ -16,7 +16,12 @@ export default function Header() {
     <header className={styles.header}>
       <Container>
         <div className={styles.inner}>
-          <Link href="/" className={styles.logo} aria-label="CDU">
+          <Link
+            href="/"
+            className={styles.logo}
+            aria-label="CDU"
+            id="header-logo"
+          >
             <Image
               src="/images/logo.svg"
               alt="CDU"
