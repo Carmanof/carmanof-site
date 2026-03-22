@@ -1,192 +1,157 @@
 .section {
-  /*
-    Внешний вертикальный ритм блока.
-  */
+  // Блок остаётся в общем ритме страницы,
+  // но по характеру он тише и легче соседних секций.
   margin: 96px 0;
 }
 
-/* === ОСНОВНОЙ КОНТЕЙНЕР === */
-.wrapper {
-  width: 100%;
-  max-width: 1200px;
-  min-height: 494px;
+.container {
+  width: min(1200px, calc(100vw - 32px));
   margin: 0 auto;
+}
 
-  /*
-    Внутренние отступы по твоему описанию:
-    сверху 24, по бокам 8, снизу 24
-  */
-  padding: 24px 8px;
-
-  background: #efeae1;
-  border-radius: 28px;
-
+.grid {
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-/* === ЗАГОЛОВОК === */
-.title {
-  margin: 0 0 24px;
-
-  text-align: center;
-  font-family: var(--font-manrope), sans-serif;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: #1d1f23;
-}
-
-/* === КАРТОЧКИ === */
-.cards {
-  display: flex;
-  justify-content: center;
   gap: 16px;
-  flex-wrap: nowrap; /* на desktop строго 3 в ряд */
-
-  margin-bottom: 26px;
 }
 
-/* === КАРТОЧКА === */
+.rowTop {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.rowBottom {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .card {
-  flex: 0 0 384px;
-  height: 310px;
-
-  padding: 16px;
-
-  background: #fbfaf7;
-  border: 1px solid #e4ded3;
-  border-radius: 24px;
-
-  display: flex;
-  flex-direction: column;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-}
-
-/* === ИЗОБРАЖЕНИЕ === */
-.imageWrap {
+  position: relative;
   width: 100%;
-  height: 198px;
-
-  margin-bottom: 16px;
-
+  border: 0;
+  padding: 0;
   border-radius: 18px;
   overflow: hidden;
+  background: #f7f4ee;
+  cursor: pointer;
+}
 
-  /*
-    fallback, если картинка не загрузилась
-  */
-  background: linear-gradient(135deg, #dfe6ee, #cfd8e3);
+.cardTop {
+  aspect-ratio: 16 / 10;
+}
+
+.cardBottom {
+  aspect-ratio: 1 / 1;
 }
 
 .image {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
+  transition: transform 180ms ease;
 }
 
-/* === ЗАГОЛОВОК КАРТОЧКИ === */
-.cardTitle {
-  margin: 0;
-
-  font-family: var(--font-manrope), sans-serif;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  color: #1d1f23;
+.card:hover .image {
+  transform: scale(1.02);
 }
 
-/* === КНОПКА === */
-.actions {
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
   display: flex;
+  align-items: center;
   justify-content: center;
+  padding: 24px;
+  background: rgba(29, 31, 35, 0.84);
 }
 
-/*
-  Локально усиливаем secondary-кнопку,
-  чтобы она не сливалась с фоном секции.
-*/
-.button {
-  min-width: 240px;
-
-  background: #fbfaf7;
-  border: 1px solid #d8d0c4;
-  box-shadow:
-    0 4px 12px rgba(17, 24, 39, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+.modalContent {
+  position: relative;
+  width: min(1200px, calc(100vw - 48px));
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #111;
 }
 
-.button:hover {
-  background: #ffffff;
-  border-color: #cfc5b7;
-  box-shadow:
-    0 8px 18px rgba(17, 24, 39, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  transform: translateY(-1px);
+.modalImage {
+  object-fit: contain;
+  background: #111;
 }
 
-/* =========================
-   TABLET
-   ========================= */
-@media (max-width: 1200px) {
-  .cards {
-    flex-wrap: wrap;
-    justify-content: center;
+.closeButton {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 121;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fcfbf8;
+  font-family: Manrope, sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 1279px) {
+  .container {
+    width: calc(100vw - 32px);
   }
 
-  .card {
-    flex: 0 0 calc(50% - 8px);
+  .rowTop,
+  .rowBottom {
+    gap: 14px;
+  }
+
+  .rowBottom {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-/* =========================
-   MOBILE
-   ========================= */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .section {
-    margin: 64px 0;
+    margin: 96px 0;
   }
 
-  .wrapper {
-    padding: 20px;
-    border-radius: 24px;
+  .container {
+    width: calc(100vw - 24px);
   }
 
-  .title {
-    font-size: 24px;
-  }
-
-  .cards {
+  .grid {
     gap: 12px;
   }
 
-  .card {
-    flex: 1 1 100%;
-    height: auto;
+  .rowTop,
+  .rowBottom {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
-  .cardTitle {
+  .cardTop,
+  .cardBottom {
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+  }
+
+  .modal {
+    padding: 16px;
+  }
+
+  .modalContent {
+    width: calc(100vw - 32px);
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+  }
+
+  .closeButton {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
     font-size: 22px;
-  }
-
-  .button {
-    min-width: 220px;
   }
 }

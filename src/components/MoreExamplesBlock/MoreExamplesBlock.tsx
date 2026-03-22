@@ -1,69 +1,123 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import styles from "./MoreExamplesBlock.module.scss";
-import Container from "@/components/ui/Container/Container";
-import Button from "@/components/ui/Button/Button";
 
-type ExampleItem = {
-  id: string;
-  title: string;
-  image: string;
-};
-
-const examples: ExampleItem[] = [
+const images = [
   {
-    id: "bmw-e70",
-    title: "BMW E70",
-    image: "/images/more-examples/bmw-e70.webp",
+    src: "/images/more-examples/example-01.webp",
+    alt: "Пример работы 1",
   },
   {
-    id: "audi-a5",
-    title: "Audi A5",
-    image: "/images/more-examples/audi-a5.webp",
+    src: "/images/more-examples/example-02.webp",
+    alt: "Пример работы 2",
   },
   {
-    id: "mercedes-w168",
-    title: "Mercedes W168",
-    image: "/images/more-examples/mercedes-w168.webp",
+    src: "/images/more-examples/example-03.webp",
+    alt: "Пример работы 3",
+  },
+  {
+    src: "/images/more-examples/example-04.webp",
+    alt: "Пример работы 4",
+  },
+  {
+    src: "/images/more-examples/example-05.webp",
+    alt: "Пример работы 5",
   },
 ];
 
 export default function MoreExamplesBlock() {
-  return (
-    <section className={styles.section}>
-      <Container>
-        <div className={styles.wrapper}>
-          <h2 className={styles.title}>Еще примеры работ</h2>
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
-          <div className={styles.cards}>
-            {examples.map((item) => (
-              <article key={item.id} className={styles.card}>
-                <div className={styles.imageWrap}>
+  const topImages = images.slice(0, 2);
+  const bottomImages = images.slice(2, 5);
+
+  const closeModal = () => setActiveImage(null);
+
+  return (
+    <>
+      <section
+        className={styles.section}
+        aria-label="Дополнительные примеры работ"
+      >
+        <div className={styles.container}>
+          <div className={styles.grid}>
+            <div className={styles.rowTop}>
+              {topImages.map((image) => (
+                <button
+                  key={image.src}
+                  type="button"
+                  className={`${styles.card} ${styles.cardTop}`}
+                  onClick={() => setActiveImage(image.src)}
+                  aria-label={`Открыть ${image.alt}`}
+                >
                   <Image
-                    src={item.image}
-                    alt={item.title}
-                    width={352}
-                    height={198}
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 50vw"
                     className={styles.image}
                   />
-                </div>
+                </button>
+              ))}
+            </div>
 
-                <h3 className={styles.cardTitle}>{item.title}</h3>
-              </article>
-            ))}
-          </div>
-
-          <div className={styles.actions}>
-            <Button
-              href="#works"
-              variant="secondary"
-              size="sm"
-              className={styles.button}
-            >
-              Смотреть все фото
-            </Button>
+            <div className={styles.rowBottom}>
+              {bottomImages.map((image) => (
+                <button
+                  key={image.src}
+                  type="button"
+                  className={`${styles.card} ${styles.cardBottom}`}
+                  onClick={() => setActiveImage(image.src)}
+                  aria-label={`Открыть ${image.alt}`}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 767px) 100vw, (max-width: 1279px) 33vw, 33vw"
+                    className={styles.image}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </Container>
-    </section>
+      </section>
+
+      {activeImage && (
+        <div
+          className={styles.modal}
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Просмотр изображения"
+        >
+          <button
+            type="button"
+            className={styles.closeButton}
+            onClick={closeModal}
+            aria-label="Закрыть изображение"
+          >
+            ×
+          </button>
+
+          <div
+            className={styles.modalContent}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Image
+              src={activeImage}
+              alt="Увеличенное изображение"
+              fill
+              sizes="100vw"
+              className={styles.modalImage}
+              priority
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

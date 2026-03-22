@@ -15,12 +15,12 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <VideoCaseBlock />
       <MainOffer />
       <OtherWorks />
       <AdditionalElements />
-      <VideoCaseBlock />
-      <MoreExamplesBlock />
-      <ProcessBlock />
+      <ProcessBlock />     
+      <MoreExamplesBlock />      
       <TrustBlock />
       <Prices />
       <FAQ />
