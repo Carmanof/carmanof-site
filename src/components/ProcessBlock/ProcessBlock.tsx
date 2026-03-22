@@ -33,7 +33,11 @@ const processSteps: ProcessStep[] = [
 
 export default function ProcessBlock() {
   return (
-    <section className={styles.section} aria-labelledby="process-block-title">
+    <section
+      id="process"
+      className={styles.section}
+      aria-labelledby="process-block-title"
+    >
       <Container>
         <div className={styles.wrapper}>
           <h2 id="process-block-title" className={styles.title}>

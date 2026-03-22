@@ -16,7 +16,11 @@ const messengerItems = [
 
 export default function Contact() {
   return (
-    <section className={styles.section} aria-labelledby="contact-title">
+    <section
+      id="contact"
+      className={styles.section}
+      aria-labelledby="contact-title"
+    >
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.top}>

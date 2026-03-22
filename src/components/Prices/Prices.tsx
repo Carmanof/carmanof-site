@@ -17,7 +17,11 @@ const priceItems = [
 
 export default function Prices() {
   return (
-    <section className={styles.section} aria-labelledby="prices-title">
+    <section
+      id="prices"
+      className={styles.section}
+      aria-labelledby="prices-title"
+    >
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.badge}>Ориентир по цене</div>

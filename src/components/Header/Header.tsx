@@ -4,12 +4,10 @@ import Image from "next/image";
 import Container from "@/components/ui/Container/Container";
 
 const navItems = [
-  { label: "Услуги", href: "#services" },
-  { label: "Работы", href: "#works" },
-  { label: "Доставка", href: "#delivery" },
+  { label: "Работы", href: "#cases" },
+  { label: "Процесс", href: "#process" },
   { label: "Цены", href: "#prices" },
-  { label: "Блог", href: "#blog" },
-  { label: "О нас", href: "#about" },
+  { label: "Контакты", href: "#contact" },
 ];
 
 export default function Header() {
@@ -18,15 +16,10 @@ export default function Header() {
       <Container>
         <div className={styles.wrapper}>
           <div className={styles.inner}>
-            <Link
-              href="/"
-              className={styles.logo}
-              aria-label="CDU"
-              id="header-logo"
-            >
+            <Link href="/" className={styles.logo} aria-label="На главную">
               <Image
                 src="/images/logo.svg"
-                alt="CDU"
+                alt="Карманов"
                 width={64}
                 height={64}
                 priority

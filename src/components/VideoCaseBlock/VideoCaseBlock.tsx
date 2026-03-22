@@ -40,7 +40,7 @@ export default function VideoCaseBlock() {
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
   return (
-    <section className={styles.section}>
+    <section id="cases" className={styles.section}>
       <Container>
         <div className={styles.wrapper}>
           <h2 className={styles.title}>Видео примеры работ</h2>
