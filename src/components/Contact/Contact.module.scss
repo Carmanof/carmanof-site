@@ -231,10 +231,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-
   justify-content: center;
   align-items: center;
-
   height: 160px;
 }
 
@@ -258,9 +256,9 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  align-items: start;
+  align-items: flex-start;
   justify-content: center;
-  text-align: center;
+  text-align: left;
   height: 160px;
 }
 
@@ -340,6 +338,9 @@
   clip-path: inset(50%);
 }
 
+/* =========================
+   TABLET
+   ========================= */
 @media (max-width: 1279px) {
   .container {
     width: calc(100vw - 32px);
@@ -360,20 +361,79 @@
     padding-bottom: 0;
   }
 
-  .rightArea {
-    justify-self: start;
-  }
-
   .form {
     grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
 
   .button {
     grid-column: 1 / -1;
-    width: 220px;
+    width: 100%;
+  }
+
+  /*
+    Планшет: правая часть собирается в одну строку
+    режим | мессенджеры | QR
+  */
+  .rightArea {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 24px;
+    align-items: center;
+    width: 100%;
+    justify-self: start;
+  }
+
+  .workInfo {
+    height: auto;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    gap: 4px;
+  }
+
+  .messengers {
+    height: auto;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .messengerLink,
+  .messengerIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .qrArea {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .qrMain {
+    width: 144px;
+    height: 144px;
+  }
+
+  .qrBox,
+  .qrImage {
+    width: 144px;
+    height: 144px;
+    border-radius: 20px;
+  }
+
+  .qrText {
+    max-width: 144px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
   }
 }
 
+/* =========================
+   MOBILE
+   ========================= */
 @media (max-width: 767px) {
   .section {
     margin: 96px 0;
@@ -429,22 +489,24 @@
     line-height: 18px;
   }
 
+  /*
+    Mobile: правая часть в 3 строки и по левому краю
+  */
   .rightArea {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    width: 100%;
     justify-self: start;
   }
 
-  .messengers {
-    flex-direction: row;
-    gap: 12px;
+  .workInfo {
+    height: auto;
+    align-items: flex-start;
     justify-content: flex-start;
-  }
-
-  .messengerLink,
-  .messengerIcon {
-    width: 60px;
-    height: 60px;
+    text-align: left;
+    gap: 4px;
   }
 
   .workLabel {
@@ -457,14 +519,28 @@
     line-height: 21px;
   }
 
-  .workInfo {
-    align-items: flex-start;
-    text-align: left;
-    justify-self: end;
+  .messengers {
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .messengerLink,
+  .messengerIcon {
+    width: 60px;
+    height: 60px;
   }
 
   .qrArea {
     align-items: flex-start;
+    gap: 8px;
+  }
+
+  .qrMain {
+    width: auto;
+    height: auto;
   }
 
   .qrBox,

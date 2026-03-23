@@ -58,16 +58,13 @@ export default function Hero() {
           <div className={styles.content}>
             <div className={styles.textBlock}>
               <h1 className={styles.title}>
-                ПРОФЕССИОНАЛЬНЫЙ
-                <br />
-                ТЮНИНГ ПРИБОРНЫХ
-                <br />
+                ПРОФЕССИОНАЛЬНЫЙ <br />
+                ТЮНИНГ ПРИБОРНЫХ <br />
                 ПАНЕЛЕЙ АВТО
               </h1>
 
               <p className={styles.description}>
-                Кастомные шкалы, идеальная точность,
-                <br />
+                Кастомные шкалы, идеальная точность, <br />
                 эксклюзивный дизайн
               </p>
 
