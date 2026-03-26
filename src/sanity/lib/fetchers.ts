@@ -1,4 +1,4 @@
-import { client } from "./client";
+import { client, clientNoCdn } from "./client";
 import {
   siteSettingsQuery,
   videoCasesQuery,
@@ -82,17 +82,65 @@ export type BlogArticle = {
 };
 
 /* =========================
+   CACHE CONFIG
+========================= */
+
+/**
+ * Базовый интервал revalidation для Sanity-запросов.
+ * Это безопасная замена cache: "no-store":
+ * данные не будут запрашиваться на каждый рендер,
+ * но и не будут "залипать" бесконечно.
+ */
+const DEFAULT_REVALIDATE = 120;
+
+/**
+ * Теги держим рядом, чтобы не плодить магические строки по файлу.
+ * Позже, если захотим, можно вынести их в отдельный tags.ts.
+ */
+const SANITY_TAGS = {
+  settings: "settings",
+  videoCases: "videoCases",
+  photoCases: "photoCases",
+  blogPosts: "blogPosts",
+  blogPost: "blogPost",
+  blogSlugs: "blogSlugs",
+} as const;
+
+/* =========================
    SAFE FETCH
 ========================= */
+
+type SafeFetchOptions = {
+  /**
+   * Если передаем tags, дальше можно будет подключить
+   * точечную revalidation по webhook через revalidateTag().
+   */
+  tags?: string[];
+
+  /**
+   * Если tags нет, используем time-based revalidation.
+   * Можно переопределять точечно под конкретный запрос.
+   */
+  revalidate?: number;
+};
 
 async function safeFetch<T>(
   query: string,
   params: Record<string, unknown> = {},
   fallback: T,
+  options: SafeFetchOptions = {},
 ): Promise<T> {
+  const { tags, revalidate = DEFAULT_REVALIDATE } = options;
+
   try {
     return await client.fetch<T>(query, params, {
-      cache: "no-store",
+      /**
+       * Важно:
+       * - убрали cache: "no-store", потому что он отключает преимущества кэша;
+       * - если есть tags, Next сможет инвалидировать кэш точечно;
+       * - если tags нет, работает обычный revalidation по времени.
+       */
+      next: tags?.length ? { tags } : { revalidate },
     });
   } catch (error) {
     console.error("Sanity fetch failed:", error);
@@ -105,7 +153,9 @@ async function safeFetch<T>(
 ========================= */
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  return safeFetch<SiteSettings>(siteSettingsQuery, {}, null);
+  return safeFetch<SiteSettings>(siteSettingsQuery, {}, null, {
+    tags: [SANITY_TAGS.settings],
+  });
 }
 
 /* =========================
@@ -113,7 +163,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 ========================= */
 
 export async function getVideoCases(): Promise<VideoCase[]> {
-  return safeFetch<VideoCase[]>(videoCasesQuery, {}, []);
+  return safeFetch<VideoCase[]>(videoCasesQuery, {}, [], {
+    tags: [SANITY_TAGS.videoCases],
+  });
 }
 
 export async function getHomeVideoCases(): Promise<VideoCase[]> {
@@ -142,7 +194,9 @@ export async function getHomeVideoCases(): Promise<VideoCase[]> {
 ========================= */
 
 export async function getPhotoCases(): Promise<PhotoCase[]> {
-  return safeFetch<PhotoCase[]>(photoCasesQuery, {}, []);
+  return safeFetch<PhotoCase[]>(photoCasesQuery, {}, [], {
+    tags: [SANITY_TAGS.photoCases],
+  });
 }
 
 /* =========================
@@ -150,15 +204,34 @@ export async function getPhotoCases(): Promise<PhotoCase[]> {
 ========================= */
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  return safeFetch<BlogPost[]>(blogPostsQuery, {}, []);
+  return safeFetch<BlogPost[]>(blogPostsQuery, {}, [], {
+    tags: [SANITY_TAGS.blogPosts],
+  });
 }
 
 export async function getBlogPostBySlug(
   slug: string,
 ): Promise<BlogArticle | null> {
-  return safeFetch<BlogArticle | null>(blogPostBySlugQuery, { slug }, null);
+  return safeFetch<BlogArticle | null>(blogPostBySlugQuery, { slug }, null, {
+    /**
+     * Общий тег списка/раздела блога.
+     * Отдельный тег для конкретного типа сущности.
+     * Позже можно будет усилить схему и добавлять тег вида blogPost:${slug},
+     * но пока не делаем этого, чтобы не ломать существующую структуру.
+     */
+    tags: [SANITY_TAGS.blogPosts, SANITY_TAGS.blogPost],
+  });
 }
 
 export async function getBlogPostSlugs(): Promise<BlogPostSlug[]> {
-  return safeFetch<BlogPostSlug[]>(blogPostSlugsQuery, {}, []);
+  try {
+    /**
+     * Для slug-списка используем клиент без CDN.
+     * Это снижает риск, что generateStaticParams() получит устаревший список маршрутов.
+     */
+    return await clientNoCdn.fetch<BlogPostSlug[]>(blogPostSlugsQuery, {});
+  } catch (error) {
+    console.error("Sanity slug fetch failed:", error);
+    return [];
+  }
 }

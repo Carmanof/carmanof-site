@@ -7,19 +7,53 @@ import styles from "./Intro.module.scss";
 type IntroStage = "visible" | "moving" | "fading" | "hidden";
 
 type IntroProps = {
-  // enabled приходит с сервера из layout.tsx.
-  // Это главный анти-баг: сервер и клиент сразу согласованы,
-  // поэтому нет hydration mismatch на первом рендере.
-  enabled: boolean;
+  /**
+   * Текущий основной режим:
+   * enabled приходит с сервера из layout.tsx.
+   *
+   * Дополнительно делаем проп опциональным,
+   * чтобы в следующем шаге можно было безопасно перевести интро
+   * на полностью клиентскую проверку cookie без резкой ломки API компонента.
+   */
+  enabled?: boolean;
 };
 
-export default function Intro({ enabled }: IntroProps) {
-  // Если интро не нужно показывать — компонент вообще не рендерим.
-  const [shouldRender, setShouldRender] = useState(enabled);
+/**
+ * Читает флаг проигранного интро на клиенте.
+ * Если cookie нет, значит интро можно показывать.
+ */
+function getClientIntroEnabled() {
+  if (typeof document === "undefined") {
+    return false;
+  }
 
-  // Начальная стадия зависит только от пропса, пришедшего с сервера.
+  return !document.cookie
+    .split("; ")
+    .some((item) => item.startsWith("intro-played=1"));
+}
+
+export default function Intro({ enabled }: IntroProps) {
+  /**
+   * Если enabled передан явно — используем его как источник истины.
+   * Если не передан, пока ничего не рендерим до клиентской проверки.
+   *
+   * Это важно:
+   * - не ломает текущую серверную схему;
+   * - подготавливает компонент к будущему отказу от cookies() в layout.tsx;
+   * - не создает hydration mismatch.
+   */
+  const [resolvedEnabled, setResolvedEnabled] = useState<boolean>(
+    typeof enabled === "boolean" ? enabled : false,
+  );
+
+  // Если интро не нужно показывать — компонент вообще не рендерим.
+  const [shouldRender, setShouldRender] = useState(
+    typeof enabled === "boolean" ? enabled : false,
+  );
+
+  // Начальная стадия зависит от уже разрешенного флага.
   const [stage, setStage] = useState<IntroStage>(
-    enabled ? "visible" : "hidden",
+    typeof enabled === "boolean" && enabled ? "visible" : "hidden",
   );
 
   const [transformValue, setTransformValue] = useState(
@@ -37,10 +71,35 @@ export default function Intro({ enabled }: IntroProps) {
   // Храним id requestAnimationFrame, чтобы корректно чистить.
   const rafRef = useRef<number | null>(null);
 
-  // Синхронизация с серверным enabled.
-  // Это не меняет текущую рабочую логику, но делает компонент устойчивее,
-  // если когда-нибудь поведение enabled станет более динамическим.
+  /**
+   * Если enabled не пришел снаружи,
+   * определяем необходимость показа уже на клиенте через cookie.
+   *
+   * Пока layout.tsx все еще передает enabled,
+   * этот блок не изменит текущее рабочее поведение.
+   */
   useEffect(() => {
+    if (typeof enabled === "boolean") {
+      return;
+    }
+
+    const clientEnabled = getClientIntroEnabled();
+    setResolvedEnabled(clientEnabled);
+    setShouldRender(clientEnabled);
+    setStage(clientEnabled ? "visible" : "hidden");
+  }, [enabled]);
+
+  /**
+   * Синхронизация с внешним enabled.
+   * Это основной текущий режим работы компонента.
+   */
+  useEffect(() => {
+    if (typeof enabled !== "boolean") {
+      return;
+    }
+
+    setResolvedEnabled(enabled);
+
     if (enabled) {
       setShouldRender(true);
       setStage("visible");
@@ -57,7 +116,7 @@ export default function Intro({ enabled }: IntroProps) {
   }, [enabled]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!resolvedEnabled) return;
 
     document.body.classList.add("intro-lock");
 
@@ -76,7 +135,7 @@ export default function Intro({ enabled }: IntroProps) {
         rafRef.current = null;
       }
     };
-  }, [enabled]);
+  }, [resolvedEnabled]);
 
   function runAnimation() {
     if (hasStartedRef.current || hasFinishedRef.current) return;
@@ -147,6 +206,7 @@ export default function Intro({ enabled }: IntroProps) {
     document.body.classList.remove("intro-lock");
     setStage("hidden");
     setShouldRender(false);
+    setResolvedEnabled(false);
   }
 
   if (!shouldRender) {

@@ -86,6 +86,10 @@ const portableTextComponents: PortableTextComponents = {
   },
 };
 
+/**
+ * Предварительно собираем известные slug'и для статических страниц.
+ * Актуальность списка дальше будет зависеть от fetch-слоя Sanity.
+ */
 export async function generateStaticParams() {
   const slugs = await getBlogPostSlugs();
 
@@ -94,6 +98,10 @@ export async function generateStaticParams() {
   }));
 }
 
+/**
+ * Metadata берем из Sanity через тот же fetch-слой,
+ * чтобы кэш и revalidation вели себя одинаково для страницы и SEO.
+ */
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
@@ -116,6 +124,11 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
+
+  /**
+   * Основной контент статьи также идет через общий fetch-слой.
+   * Это важно, чтобы route не жил отдельно от общей стратегии кэша Sanity.
+   */
   const article = await getBlogPostBySlug(slug);
 
   if (!article) {

@@ -20,6 +20,16 @@ import {
   type VideoCase,
 } from "@/sanity/lib/fetchers";
 
+/**
+ * Fallback revalidation для главной страницы.
+ * Даже если webhook не сработает — страница обновится сама.
+ *
+ * Важно:
+ * - не заменяет tag-based revalidation
+ * - работает как страховка
+ */
+export const revalidate = 120;
+
 export default async function HomePage() {
   let settings: SiteSettings = null;
   let videoCases: VideoCase[] = [];

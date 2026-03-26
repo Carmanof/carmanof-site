@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import localFont from "next/font/local";
 
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
@@ -51,20 +50,22 @@ export const metadata: Metadata = {
     "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Если cookie есть, интро не рендерим вообще —
-  // без вспышек и без гидрационных конфликтов.
-  const cookieStore = await cookies();
-  const introPlayed = cookieStore.get("intro-played")?.value === "1";
-
+  /**
+   * Больше не читаем cookies() в корневом layout.
+   * Это уменьшает связанность layout с request-based данными
+   * и делает корневую обертку чище для общей стратегии кэша.
+   *
+   * Логика показа интро теперь может решаться на клиенте внутри Intro.
+   */
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={manrope.variable}>
-        <LayoutChrome introPlayed={introPlayed}>{children}</LayoutChrome>
+        <LayoutChrome>{children}</LayoutChrome>
       </body>
     </html>
   );

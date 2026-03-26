@@ -6,13 +6,9 @@ import Intro from "@/components/Intro/Intro";
 
 type LayoutChromeProps = {
   children: React.ReactNode;
-  introPlayed: boolean;
 };
 
-export default function LayoutChrome({
-  children,
-  introPlayed,
-}: LayoutChromeProps) {
+export default function LayoutChrome({ children }: LayoutChromeProps) {
   const pathname = usePathname() || "/";
 
   // Studio полностью изолирован
@@ -27,8 +23,10 @@ export default function LayoutChrome({
 
   return (
     <>
-      {/* Intro только на главной */}
-      {isHomePage && <Intro enabled={!introPlayed} />}
+      {/* Intro только на главной.
+          enabled больше не передаем:
+          компонент сам проверит cookie на клиенте и решит, нужно ли показываться. */}
+      {isHomePage && <Intro />}
 
       <Header />
 
