@@ -106,6 +106,14 @@ const SANITY_TAGS = {
   blogSlugs: "blogSlugs",
 } as const;
 
+/**
+ * Точечный тег конкретной статьи.
+ * Нужен для более адресной revalidation по slug.
+ */
+function getBlogPostTag(slug: string) {
+  return `blogPost:${slug}`;
+}
+
 /* =========================
    SAFE FETCH
 ========================= */
@@ -215,11 +223,14 @@ export async function getBlogPostBySlug(
   return safeFetch<BlogArticle | null>(blogPostBySlugQuery, { slug }, null, {
     /**
      * Общий тег списка/раздела блога.
-     * Отдельный тег для конкретного типа сущности.
-     * Позже можно будет усилить схему и добавлять тег вида blogPost:${slug},
-     * но пока не делаем этого, чтобы не ломать существующую структуру.
+     * Общий тег типа сущности.
+     * И точечный тег конкретной статьи по slug.
+     *
+     * Такая схема позволяет:
+     * - при необходимости сбрасывать весь блог;
+     * - или сбрасывать только одну статью.
      */
-    tags: [SANITY_TAGS.blogPosts, SANITY_TAGS.blogPost],
+    tags: [SANITY_TAGS.blogPosts, SANITY_TAGS.blogPost, getBlogPostTag(slug)],
   });
 }
 

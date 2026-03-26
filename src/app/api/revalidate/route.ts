@@ -15,6 +15,14 @@ type SanityWebhookBody = {
 const secret = process.env.SANITY_REVALIDATE_SECRET;
 
 /**
+ * Точечный тег конкретной статьи.
+ * Должен совпадать с логикой в fetchers.ts.
+ */
+function getBlogPostTag(slug: string) {
+  return `blogPost:${slug}`;
+}
+
+/**
  * Маппинг типов документов Sanity на теги Next.js.
  * Эти теги должны совпадать с теми, которые уже используются в fetchers.ts.
  */
@@ -77,6 +85,14 @@ export async function POST(req: NextRequest) {
     }
 
     /**
+     * Для blogPost дополнительно сбрасываем точечный тег конкретной статьи.
+     * Это позволяет обновлять slug-страницу более адресно.
+     */
+    if (docType === "blogPost" && slug) {
+      revalidateTag(getBlogPostTag(slug), "max");
+    }
+
+    /**
      * Path-based revalidation:
      * дополнительно помечаем связанные страницы на пересборку
      * при следующем запросе.
@@ -110,7 +126,8 @@ export async function POST(req: NextRequest) {
       revalidated: true,
       type: docType ?? null,
       slug: slug ?? null,
-      tags,
+      tags:
+        docType === "blogPost" && slug ? [...tags, getBlogPostTag(slug)] : tags,
       now: Date.now(),
     });
   } catch (error) {
