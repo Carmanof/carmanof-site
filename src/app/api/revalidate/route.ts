@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
   try {
     /**
      * parseBody() проверяет подпись webhook.
-     * Это рекомендуемый путь для next-sanity webhook verification. :contentReference[oaicite:0]{index=0}
      */
     const { isValidSignature, body } = await parseBody<SanityWebhookBody>(
       req,
@@ -69,17 +68,18 @@ export async function POST(req: NextRequest) {
     /**
      * Tag-based revalidation:
      * сбрасывает кэш всех fetch-запросов, помеченных соответствующими тегами.
-     * Next.js рекомендует использовать revalidateTag() в Route Handlers
-     * для on-demand invalidation. :contentReference[oaicite:1]{index=1}
+     *
+     * "max" — безопасный режим для текущей версии Next.js,
+     * чтобы сборка не падала из-за сигнатуры функции.
      */
     for (const tag of tags) {
-      revalidateTag(tag);
+      revalidateTag(tag, "max");
     }
 
     /**
      * Path-based revalidation:
-     * дополнительно помечаем связанные страницы на пересборку при следующем запросе.
-     * Для Route Handlers revalidatePath() срабатывает на следующем посещении пути. :contentReference[oaicite:2]{index=2}
+     * дополнительно помечаем связанные страницы на пересборку
+     * при следующем запросе.
      */
     if (docType === "blogPost") {
       revalidatePath("/blog");
