@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import type { BooleanInputProps } from "sanity";
-import { set, useClient } from "sanity";
+import { set, useClient, useFormValue } from "sanity";
 
 const SANITY_API_VERSION = "2026-03-25";
 
@@ -48,12 +48,16 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
   const client = useClient({ apiVersion: SANITY_API_VERSION });
 
   /**
-   * В типах Sanity это поле часто не пробрасывается красиво,
-   * поэтому берем его мягко через any.
+   * Это надежнее, чем пытаться брать document из props:
+   * useFormValue читает текущее состояние формы прямо из Studio.
    */
-  const documentId = (props as { document?: { _id?: string } }).document?._id;
+  const rawDocumentId = useFormValue(["_id"]);
+  const documentId =
+    typeof rawDocumentId === "string" ? rawDocumentId : undefined;
 
-  const [activeCount, setActiveCount] = useState<number | null>(null);
+  const [activeCountWithoutCurrent, setActiveCountWithoutCurrent] = useState<
+    number | null
+  >(null);
   const [isLoadingCount, setIsLoadingCount] = useState(false);
 
   const { publishedId, draftId } = getDocumentIds(documentId);
@@ -65,6 +69,10 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
       setIsLoadingCount(true);
 
       try {
+        /**
+         * Считаем все остальные документы этого типа,
+         * кроме текущего draft/published pair.
+         */
         const count = await client.fetch<number>(
           `
             count(
@@ -84,7 +92,7 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
         );
 
         if (isMounted) {
-          setActiveCount(count);
+          setActiveCountWithoutCurrent(count);
         }
       } catch (error) {
         console.error("[LimitedCaseBooleanInput] count failed", {
@@ -94,7 +102,7 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
         });
 
         if (isMounted) {
-          setActiveCount(null);
+          setActiveCountWithoutCurrent(null);
         }
       } finally {
         if (isMounted) {
@@ -111,14 +119,24 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
   }, [activeFilter, client, documentType, draftId, fieldName, publishedId]);
 
   /**
-   * Если текущее значение уже true, выключить его можно всегда.
-   * Блокируем только новое включение сверх лимита.
+   * Если текущее значение true — текущий документ уже должен входить в итоговый счетчик.
+   * Базовый запрос считает только "остальных".
    */
-  const isCurrentValueEnabled = value === true;
+  const currentDocumentContribution = value === true ? 1 : 0;
+
+  const totalActive =
+    typeof activeCountWithoutCurrent === "number"
+      ? activeCountWithoutCurrent + currentDocumentContribution
+      : null;
+
+  /**
+   * Блокируем только включение нового элемента сверх лимита.
+   * Выключать уже активный всегда можно.
+   */
   const limitReached =
-    typeof activeCount === "number" &&
-    activeCount >= limit &&
-    !isCurrentValueEnabled;
+    typeof activeCountWithoutCurrent === "number" &&
+    activeCountWithoutCurrent >= limit &&
+    value !== true;
 
   const isDisabled = Boolean(readOnly) || isLoadingCount || limitReached;
 
@@ -128,21 +146,21 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
     }
 
     if (limitReached) {
-      return `${limitReachedDescription} Сейчас активно: ${activeCount}/${limit}.`;
+      return `${limitReachedDescription} Сейчас активно: ${totalActive}/${limit}.`;
     }
 
-    if (typeof activeCount === "number") {
-      return `${enabledDescription} Сейчас активно: ${activeCount}/${limit}.`;
+    if (typeof totalActive === "number") {
+      return `${enabledDescription} Сейчас активно: ${totalActive}/${limit}.`;
     }
 
     return enabledDescription;
   }, [
-    activeCount,
     enabledDescription,
     isLoadingCount,
     limit,
     limitReached,
     limitReachedDescription,
+    totalActive,
   ]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
