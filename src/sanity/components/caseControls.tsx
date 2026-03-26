@@ -45,11 +45,19 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
     limitReachedDescription,
   } = props;
 
-  const client = useClient({ apiVersion: SANITY_API_VERSION });
+  /**
+   * Очень важно:
+   * считаем лимиты только по published-перспективе,
+   * иначе Studio может учитывать draft/published-версии как отдельные состояния
+   * и завышать счетчик.
+   */
+  const client = useClient({ apiVersion: SANITY_API_VERSION }).withConfig({
+    perspective: "published",
+  });
 
   /**
-   * Это надежнее, чем пытаться брать document из props:
-   * useFormValue читает текущее состояние формы прямо из Studio.
+   * Берем _id прямо из формы Studio.
+   * Это надежнее, чем читать document из props.
    */
   const rawDocumentId = useFormValue(["_id"]);
   const documentId =
@@ -70,8 +78,8 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
 
       try {
         /**
-         * Считаем все остальные документы этого типа,
-         * кроме текущего draft/published pair.
+         * Считаем все активные документы этого типа,
+         * кроме текущего документа (и его draft/published-пары).
          */
         const count = await client.fetch<number>(
           `
@@ -119,8 +127,8 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
   }, [activeFilter, client, documentType, draftId, fieldName, publishedId]);
 
   /**
-   * Если текущее значение true — текущий документ уже должен входить в итоговый счетчик.
-   * Базовый запрос считает только "остальных".
+   * Базовый count считает только "остальные" документы.
+   * Если текущий тумблер включен, добавляем его отдельно в итог.
    */
   const currentDocumentContribution = value === true ? 1 : 0;
 
@@ -130,8 +138,13 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
       : null;
 
   /**
-   * Блокируем только включение нового элемента сверх лимита.
-   * Выключать уже активный всегда можно.
+   * Лимит достигнут, если:
+   * - остальных уже >= limit
+   * - и текущий документ сейчас не включен
+   *
+   * Это позволяет:
+   * - заблокировать новое включение сверх лимита
+   * - но всегда разрешать выключение уже активного тумблера
    */
   const limitReached =
     typeof activeCountWithoutCurrent === "number" &&
