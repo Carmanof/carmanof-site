@@ -17,12 +17,16 @@ export const siteSettingsQuery = groq`
    VIDEO CASES
 ========================= */
 
+/**
+ * Для страницы видео-кейсов ограничиваем выдачу первыми 18 элементами.
+ * Главная страница продолжает отдельно брать только 3 кейса через fetchers.ts.
+ */
 export const videoCasesQuery = groq`
   *[
     _type == "videoCase" &&
     (!defined(isPublished) || isPublished == true)
   ]
-  | order(order asc){
+  | order(order asc)[0...18]{
     _id,
     title,
     description,
@@ -36,12 +40,16 @@ export const videoCasesQuery = groq`
    PHOTO CASES
 ========================= */
 
+/**
+ * Для страницы фото-кейсов ограничиваем выдачу первыми 18 элементами.
+ * Это лимит отображения на сайте, а не запрет на создание документов в Sanity.
+ */
 export const photoCasesQuery = groq`
   *[
     _type == "photoCase" &&
     (!defined(isPublished) || isPublished == true)
   ]
-  | order(order asc){
+  | order(order asc)[0...18]{
     _id,
     title,
     order,
