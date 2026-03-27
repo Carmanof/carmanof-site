@@ -39,6 +39,25 @@ export default function CasesPage() {
         <Container>
           <div className={styles.inner}>
             <div className={styles.hero}>
+              <Link
+                href="/#other-works"
+                aria-label="Вернуться на главную к блоку Другие работы"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 14,
+                  fontSize: 14,
+                  lineHeight: 1.2,
+                  fontWeight: 600,
+                  color: "rgba(0, 0, 0, 0.56)",
+                  textDecoration: "none",
+                  transition: "opacity 0.2s ease, transform 0.2s ease",
+                }}
+              >
+                ← Назад
+              </Link>
+
               <h1 className={styles.title}>Примеры наших работ</h1>
             </div>
 
@@ -63,7 +82,6 @@ export default function CasesPage() {
                   <span className={styles.overlay} />
                   <span className={styles.glow} />
 
-                  {/* VIDEO PLAY ICON */}
                   {item.previewType === "video" && (
                     <span className={styles.playWrapper}>
                       <Image
@@ -76,7 +94,6 @@ export default function CasesPage() {
                     </span>
                   )}
 
-                  {/* ARROW */}
                   <span className={styles.arrow}>↗</span>
                 </Link>
               ))}

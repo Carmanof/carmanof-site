@@ -9,7 +9,7 @@ type OtherWorkItem = {
 };
 
 type OtherWorksProps = {
-  hasCases: boolean; // 🔥 было hasPhotoCases
+  hasCases: boolean;
 };
 
 const otherWorksItems: OtherWorkItem[] = [
@@ -27,7 +27,12 @@ const otherWorksItems: OtherWorkItem[] = [
 
 export default function OtherWorks({ hasCases }: OtherWorksProps) {
   return (
-    <section className={styles.section}>
+    /**
+     * 🔥 КЛЮЧЕВОЕ ИЗМЕНЕНИЕ
+     * Добавили id="other-works"
+     * Теперь сюда можно вернуться по ссылке /#other-works
+     */
+    <section id="other-works" className={styles.section}>
       <Container>
         <div className={styles.wrapper}>
           <h2 className={styles.title}>Другие работы</h2>
