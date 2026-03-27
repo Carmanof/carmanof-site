@@ -21,7 +21,7 @@ type VideoCaseBlockProps = {
   videoCases: VideoCaseItem[];
 };
 
-const PREVIEW_TEXT_LIMIT = 44;
+const PREVIEW_TEXT_LIMIT = 42;
 
 function truncateText(text: string, maxLength: number) {
   if (text.length <= maxLength) return text;

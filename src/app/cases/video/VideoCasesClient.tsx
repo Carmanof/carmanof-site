@@ -54,7 +54,7 @@ export default function VideoCasesClient({
       <section className={styles.section}>
         <Container>
           <div className={styles.inner}>
-            <BackToFlow href="/#other-works" />
+            <BackToFlow href="/#cases" />
 
             <div className={styles.topbar}>
               <Link href="/cases" className={styles.backLink}>
