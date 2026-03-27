@@ -45,14 +45,19 @@ export default async function HomePage() {
     console.error("HomePage error:", error);
   }
 
-  const hasPhotoCases = photoCases.length > 0;
+  /**
+   * Кнопка перехода в хаб кейсов должна быть активна,
+   * если на сайте есть хотя бы один кейс любого типа:
+   * видео или фото.
+   */
+  const hasCases = videoCases.length > 0 || photoCases.length > 0;
 
   return (
     <>
       <Hero />
       <VideoCaseBlock videoCases={videoCases} />
       <MainOffer />
-      <OtherWorks hasPhotoCases={hasPhotoCases} />
+      <OtherWorks hasCases={hasCases} />
       <AdditionalElements />
       <ProcessBlock />
       <MoreExamplesBlock />

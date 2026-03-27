@@ -6,18 +6,42 @@ const SANITY_API_VERSION = "2026-03-25";
 const MAX_VISIBLE_VIDEO_CASES = 18;
 const MAX_FEATURED_VIDEO_CASES = 3;
 
-function getYoutubeThumbnail(youtubeId?: string) {
-  if (!youtubeId) {
-    return null;
+function getDocumentIds(documentId?: string) {
+  if (!documentId) {
+    return {
+      publishedId: "",
+      draftId: "",
+    };
   }
 
-  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+  const publishedId = documentId.replace(/^drafts\./, "");
+  const draftId = `drafts.${publishedId}`;
+
+  return { publishedId, draftId };
+}
+
+function getVideoCaseStatusLabel(params: {
+  featured?: boolean;
+  published?: boolean;
+}) {
+  const { featured, published } = params;
+
+  if (featured && published) {
+    return "🟣 На главной";
+  }
+
+  if (published) {
+    return "🟢 На сайте";
+  }
+
+  return "🟡 Скрыт";
 }
 
 export const videoCaseType = defineType({
   name: "videoCase",
   title: "Видео кейс",
   type: "document",
+
   fields: [
     defineField({
       name: "title",
@@ -76,13 +100,16 @@ export const videoCaseType = defineType({
       },
       validation: (Rule) =>
         Rule.custom(async (value, context) => {
-          if (value !== true) return true;
+          if (value !== true) {
+            return true;
+          }
 
           const documentId = context.document?._id;
-          if (!documentId) return true;
+          if (!documentId) {
+            return true;
+          }
 
-          const publishedId = documentId.replace(/^drafts\./, "");
-          const draftId = `drafts.${publishedId}`;
+          const { publishedId, draftId } = getDocumentIds(documentId);
 
           const client = context
             .getClient({ apiVersion: SANITY_API_VERSION })
@@ -131,13 +158,16 @@ export const videoCaseType = defineType({
       },
       validation: (Rule) =>
         Rule.required().custom(async (value, context) => {
-          if (value !== true) return true;
+          if (value !== true) {
+            return true;
+          }
 
           const documentId = context.document?._id;
-          if (!documentId) return true;
+          if (!documentId) {
+            return true;
+          }
 
-          const publishedId = documentId.replace(/^drafts\./, "");
-          const draftId = `drafts.${publishedId}`;
+          const { publishedId, draftId } = getDocumentIds(documentId);
 
           const client = context
             .getClient({ apiVersion: SANITY_API_VERSION })
@@ -176,35 +206,28 @@ export const videoCaseType = defineType({
     },
 
     prepare({ title, youtubeId, featured, published, order }) {
-      const meta: string[] = [];
+      const statusLabel = getVideoCaseStatusLabel({
+        featured,
+        published,
+      });
 
-      if (featured && published) {
-        meta.push("🟣 На главной");
-      } else if (published) {
-        meta.push("🟢 На сайте");
+      const meta: string[] = [statusLabel];
+
+      if (typeof order === "number") {
+        meta.push(`Порядок: ${order}`);
       } else {
-        meta.push("🟡 Скрыт");
+        meta.push("Порядок не задан");
       }
 
-      meta.push(`№${order}`);
-
-      const thumbnailUrl = getYoutubeThumbnail(youtubeId);
+      if (youtubeId) {
+        meta.push(`YouTube: ${youtubeId}`);
+      } else {
+        meta.push("YouTube ID не указан");
+      }
 
       return {
-        title,
-        subtitle: [`YouTube: ${youtubeId}`, ...meta].join(" • "),
-        media: thumbnailUrl
-          ? React.createElement("img", {
-              src: thumbnailUrl,
-              alt: "",
-              style: {
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: "8px",
-              },
-            })
-          : undefined,
+        title: title || "Без названия",
+        subtitle: meta.join(" • "),
       };
     },
   },

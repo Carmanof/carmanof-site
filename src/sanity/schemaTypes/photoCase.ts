@@ -5,10 +5,33 @@ import { LimitedCaseBooleanInput } from "../components/caseControls";
 const SANITY_API_VERSION = "2026-03-25";
 const MAX_VISIBLE_PHOTO_CASES = 18;
 
+function getDocumentIds(documentId?: string) {
+  if (!documentId) {
+    return {
+      publishedId: "",
+      draftId: "",
+    };
+  }
+
+  const publishedId = documentId.replace(/^drafts\./, "");
+  const draftId = `drafts.${publishedId}`;
+
+  return { publishedId, draftId };
+}
+
+function getPhotoCaseStatusLabel(published?: boolean) {
+  if (published) {
+    return "🟢 На сайте";
+  }
+
+  return "🟡 Скрыт";
+}
+
 export const photoCaseType = defineType({
   name: "photoCase",
   title: "Фото кейс",
   type: "document",
+
   fields: [
     defineField({
       name: "title",
@@ -82,8 +105,7 @@ export const photoCaseType = defineType({
             return true;
           }
 
-          const publishedId = documentId.replace(/^drafts\./, "");
-          const draftId = `drafts.${publishedId}`;
+          const { publishedId, draftId } = getDocumentIds(documentId);
 
           const client = context
             .getClient({ apiVersion: SANITY_API_VERSION })
@@ -118,25 +140,24 @@ export const photoCaseType = defineType({
   preview: {
     select: {
       title: "title",
-      media: "image",
       order: "order",
       published: "isPublished",
     },
-    prepare({ title, media, order, published }) {
-      const meta: string[] = [];
 
-      if (published) {
-        meta.push("🟢 На сайте");
+    prepare({ title, order, published }) {
+      const statusLabel = getPhotoCaseStatusLabel(published);
+
+      const meta: string[] = [statusLabel];
+
+      if (typeof order === "number") {
+        meta.push(`Порядок: ${order}`);
       } else {
-        meta.push("🟡 Скрыт");
+        meta.push("Порядок не задан");
       }
 
-      meta.push(`№${order}`);
-
       return {
-        title,
+        title: title || "Без названия",
         subtitle: meta.join(" • "),
-        media,
       };
     },
   },

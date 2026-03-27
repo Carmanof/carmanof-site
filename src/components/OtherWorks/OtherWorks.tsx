@@ -9,7 +9,7 @@ type OtherWorkItem = {
 };
 
 type OtherWorksProps = {
-  hasPhotoCases: boolean;
+  hasCases: boolean; // 🔥 было hasPhotoCases
 };
 
 const otherWorksItems: OtherWorkItem[] = [
@@ -25,7 +25,7 @@ const otherWorksItems: OtherWorkItem[] = [
   },
 ];
 
-export default function OtherWorks({ hasPhotoCases }: OtherWorksProps) {
+export default function OtherWorks({ hasCases }: OtherWorksProps) {
   return (
     <section className={styles.section}>
       <Container>
@@ -50,7 +50,7 @@ export default function OtherWorks({ hasPhotoCases }: OtherWorksProps) {
           </div>
 
           <div className={styles.actions}>
-            {hasPhotoCases ? (
+            {hasCases ? (
               <Button href="/cases" variant="secondary" size="sm">
                 Посмотреть примеры работ
               </Button>

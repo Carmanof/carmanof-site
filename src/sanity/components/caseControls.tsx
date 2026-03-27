@@ -32,6 +32,81 @@ function getDocumentIds(documentId?: string) {
   return { publishedId, draftId };
 }
 
+function getProgressPercent(totalActive: number | null, limit: number) {
+  if (typeof totalActive !== "number" || limit <= 0) {
+    return 0;
+  }
+
+  return Math.max(0, Math.min(100, Math.round((totalActive / limit) * 100)));
+}
+
+function getStatusConfig(params: {
+  isLoadingCount: boolean;
+  limitReached: boolean;
+  readOnly: boolean;
+  value: unknown;
+}) {
+  const { isLoadingCount, limitReached, readOnly, value } = params;
+
+  if (readOnly) {
+    return {
+      label: "Только чтение",
+      badgeBackground: "#f3f4f6",
+      badgeColor: "#4b5563",
+      helperColor: "#6b7280",
+      borderColor: "#d1d5db",
+      backgroundColor: "#ffffff",
+      progressColor: "#9ca3af",
+    };
+  }
+
+  if (isLoadingCount) {
+    return {
+      label: "Проверяем лимит",
+      badgeBackground: "#eff6ff",
+      badgeColor: "#1d4ed8",
+      helperColor: "#1d4ed8",
+      borderColor: "#bfdbfe",
+      backgroundColor: "#ffffff",
+      progressColor: "#3b82f6",
+    };
+  }
+
+  if (limitReached) {
+    return {
+      label: "Лимит достигнут",
+      badgeBackground: "#ffedd5",
+      badgeColor: "#b45309",
+      helperColor: "#b45309",
+      borderColor: "#f59e0b",
+      backgroundColor: "#fff7ed",
+      progressColor: "#f59e0b",
+    };
+  }
+
+  if (value === true) {
+    return {
+      label: "Включено",
+      badgeBackground: "#ecfdf5",
+      badgeColor: "#047857",
+      helperColor: "#4b5563",
+      borderColor: "#a7f3d0",
+      backgroundColor: "#ffffff",
+      progressColor: "#10b981",
+    };
+  }
+
+  return {
+    label: "Выключено",
+    badgeBackground: "#f3f4f6",
+    badgeColor: "#4b5563",
+    helperColor: "#6b7280",
+    borderColor: "#d1d5db",
+    backgroundColor: "#ffffff",
+    progressColor: "#6366f1",
+  };
+}
+
 export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
   const {
     value,
@@ -43,6 +118,7 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
     activeFilter,
     enabledDescription,
     limitReachedDescription,
+    schemaType,
   } = props;
 
   /**
@@ -154,6 +230,10 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
   const isDisabled = Boolean(readOnly) || isLoadingCount || limitReached;
 
   const helperText = useMemo(() => {
+    if (readOnly) {
+      return "Поле недоступно для редактирования в текущем состоянии документа.";
+    }
+
     if (isLoadingCount) {
       return "Проверяем доступный лимит…";
     }
@@ -173,8 +253,26 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
     limit,
     limitReached,
     limitReachedDescription,
+    readOnly,
     totalActive,
   ]);
+
+  /**
+   * Отдельно считаем прогресс для полосы лимита,
+   * чтобы редактору было визуально понятно, насколько заполнен слот.
+   */
+  const progressPercent = getProgressPercent(totalActive, limit);
+
+  /**
+   * Собираем визуальные токены состояния в одном месте.
+   * Так проще управлять цветами и не плодить условия по JSX.
+   */
+  const statusConfig = getStatusConfig({
+    isLoadingCount,
+    limitReached,
+    readOnly: Boolean(readOnly),
+    value,
+  });
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     onChange(set(event.currentTarget.checked));
@@ -183,49 +281,152 @@ export function LimitedCaseBooleanInput(props: LimitedCaseBooleanInputProps) {
   return (
     <div
       style={{
-        border: limitReached ? "1px solid #f59e0b" : "1px solid #d1d5db",
-        borderRadius: 10,
+        border: `1px solid ${statusConfig.borderColor}`,
+        borderRadius: 12,
         padding: 14,
-        background: limitReached ? "#fff7ed" : "#ffffff",
+        background: statusConfig.backgroundColor,
+        boxShadow: "0 1px 2px rgba(16, 24, 40, 0.04)",
       }}
     >
-      <label
+      <div
         style={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           gap: 16,
-          cursor: isDisabled ? "not-allowed" : "pointer",
         }}
       >
-        <span
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 8,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 14,
+                fontWeight: 700,
+                color: "#111827",
+                lineHeight: 1.35,
+              }}
+            >
+              {schemaType.title}
+            </span>
+
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                borderRadius: 999,
+                padding: "4px 8px",
+                fontSize: 12,
+                fontWeight: 700,
+                lineHeight: 1,
+                background: statusConfig.badgeBackground,
+                color: statusConfig.badgeColor,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {statusConfig.label}
+            </span>
+          </div>
+
+          <div
+            style={{
+              marginTop: 10,
+              display: "grid",
+              gap: 8,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                fontSize: 12,
+                lineHeight: 1.4,
+                color: "#6b7280",
+              }}
+            >
+              <span>Заполнение лимита</span>
+              <span style={{ fontWeight: 700, color: "#374151" }}>
+                {typeof totalActive === "number"
+                  ? `${totalActive}/${limit}`
+                  : `—/${limit}`}
+              </span>
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                height: 8,
+                borderRadius: 999,
+                background: "#e5e7eb",
+                overflow: "hidden",
+              }}
+              aria-hidden="true"
+            >
+              <div
+                style={{
+                  width: `${progressPercent}%`,
+                  height: "100%",
+                  borderRadius: 999,
+                  background: statusConfig.progressColor,
+                  transition: "width 180ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <label
           style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: "#111827",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: isDisabled ? "not-allowed" : "pointer",
+            opacity: isDisabled ? 0.75 : 1,
+            flexShrink: 0,
+            paddingTop: 2,
           }}
         >
-          {props.schemaType.title}
-        </span>
-
-        <input
-          type="checkbox"
-          checked={value === true}
-          disabled={isDisabled}
-          onChange={handleChange}
-        />
-      </label>
+          <input
+            type="checkbox"
+            checked={value === true}
+            disabled={isDisabled}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
 
       <div
         style={{
-          marginTop: 10,
+          marginTop: 12,
           fontSize: 13,
-          lineHeight: 1.45,
-          color: limitReached ? "#b45309" : "#6b7280",
+          lineHeight: 1.5,
+          color: statusConfig.helperColor,
         }}
       >
         {helperText}
       </div>
+
+      {value === true && !isLoadingCount && !readOnly ? (
+        <div
+          style={{
+            marginTop: 8,
+            fontSize: 12,
+            lineHeight: 1.45,
+            color: "#6b7280",
+          }}
+        >
+          Этот кейс уже активен. Даже при заполненном лимите его можно выключить
+          вручную.
+        </div>
+      ) : null}
     </div>
   );
 }
