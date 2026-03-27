@@ -9,7 +9,65 @@ export const siteSettingsQuery = groq`
     phone,
     email,
     telegram,
-    vk
+    vk,
+
+    heroDefaultImage{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+    heroHoverImage{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+
+    moreExamplesImage01{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+    moreExamplesImage02{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+    moreExamplesImage03{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+    moreExamplesImage04{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+    moreExamplesImage05{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
+
+    pricesItem01Title,
+    pricesItem01Value,
+    pricesItem02Title,
+    pricesItem02Value,
+    pricesItem03Title,
+    pricesItem03Value
   }
 `;
 

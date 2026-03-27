@@ -7,7 +7,24 @@ import Button from "@/components/ui/Button/Button";
 
 type IntroPhase = "idle" | "animating" | "done";
 
-export default function Hero() {
+type HeroProps = {
+  /**
+   * Картинка Hero для обычного состояния ("до").
+   * Если из Sanity ничего не пришло — используем локальный fallback.
+   */
+  defaultImageSrc?: string;
+
+  /**
+   * Картинка Hero для второго состояния ("после").
+   * Если из Sanity ничего не пришло — используем локальный fallback.
+   */
+  hoverImageSrc?: string;
+};
+
+export default function Hero({
+  defaultImageSrc = "/images/hero/hero-default.webp",
+  hoverImageSrc = "/images/hero/hero-hover.webp",
+}: HeroProps) {
   const [introPhase, setIntroPhase] = useState<IntroPhase>("idle");
   const [isHovered, setIsHovered] = useState(false);
   const autoTimerRef = useRef<number | null>(null);
@@ -89,10 +106,14 @@ export default function Hero() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <div className={styles.imageBase} />
+            <div
+              className={styles.imageBase}
+              style={{ backgroundImage: `url("${defaultImageSrc}")` }}
+            />
 
             <div
               className={styles.imageHover}
+              style={{ backgroundImage: `url("${hoverImageSrc}")` }}
               onTransitionEnd={handleIntroTransitionEnd}
             />
           </div>

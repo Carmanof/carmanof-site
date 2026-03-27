@@ -123,13 +123,11 @@
 /* базовая (default) */
 .imageBase {
   z-index: 1;
-  background-image: url("/images/hero/hero-default.webp");
 }
 
 /* hover-картинка */
 .imageHover {
   z-index: 2;
-  background-image: url("/images/hero/hero-hover.webp");
 
   /*
     Базовое состояние:

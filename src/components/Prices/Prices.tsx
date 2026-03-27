@@ -1,21 +1,35 @@
 import styles from "./Prices.module.scss";
 
-const priceItems = [
+type PriceItem = {
+  title: string;
+  value: string;
+};
+
+type PricesProps = {
+  items?: PriceItem[];
+};
+
+const fallbackItems: PriceItem[] = [
   {
     title: "Накладки",
-    price: "от 7 000 ₽",
+    value: "7 000",
   },
   {
     title: "Пересвет",
-    price: "от 3 500 ₽",
+    value: "3 500",
   },
   {
     title: "Ремонт",
-    price: "от 2 500 ₽",
+    value: "2 500",
   },
 ];
 
-export default function Prices() {
+export default function Prices({ items = fallbackItems }: PricesProps) {
+  const normalizedItems = fallbackItems.map((fallbackItem, index) => ({
+    title: items[index]?.title || fallbackItem.title,
+    value: items[index]?.value || fallbackItem.value,
+  }));
+
   return (
     <section
       id="prices"
@@ -31,10 +45,10 @@ export default function Prices() {
               Расценки
             </h2>
 
-            {priceItems.map((item) => (
+            {normalizedItems.map((item) => (
               <article key={item.title} className={styles.item}>
                 <h3 className={styles.itemTitle}>{item.title}</h3>
-                <p className={styles.itemPrice}>{item.price}</p>
+                <p className={styles.itemPrice}>от {item.value} ₽</p>
               </article>
             ))}
           </div>

@@ -12,27 +12,60 @@ import {
    TYPES
 ========================= */
 
-export type SiteSettings = {
-  phone?: string;
-  email?: string;
-  telegram?: string;
-  vk?: string;
-} | null;
-
 export type SanityImageAsset = {
   _id?: string;
   url?: string;
 };
 
-export type BlogImage = {
+export type SanityImage = {
   alt?: string;
   asset?: SanityImageAsset;
 };
 
-export type PhotoCaseImage = {
-  alt?: string;
-  asset?: SanityImageAsset;
-};
+export type SiteSettings = {
+  phone?: string;
+  email?: string;
+  telegram?: string;
+  vk?: string;
+
+  /**
+   * Изображение Hero в обычном состоянии.
+   * Если не заполнено в Sanity, на фронте используем fallback из /public.
+   */
+  heroDefaultImage?: SanityImage;
+
+  /**
+   * Изображение Hero для второго состояния ("после"/hover).
+   * Если не заполнено в Sanity, на фронте используем fallback из /public.
+   */
+  heroHoverImage?: SanityImage;
+
+  /**
+   * 5 изображений блока MoreExamplesBlock.
+   * Если поле пустое — на фронте используется локальный fallback.
+   */
+  moreExamplesImage01?: SanityImage;
+  moreExamplesImage02?: SanityImage;
+  moreExamplesImage03?: SanityImage;
+  moreExamplesImage04?: SanityImage;
+  moreExamplesImage05?: SanityImage;
+
+  /**
+   * Блок Prices:
+   * - названия услуг
+   * - значения цен без префикса "от"
+   */
+  pricesItem01Title?: string;
+  pricesItem01Value?: string;
+  pricesItem02Title?: string;
+  pricesItem02Value?: string;
+  pricesItem03Title?: string;
+  pricesItem03Value?: string;
+} | null;
+
+export type BlogImage = SanityImage;
+
+export type PhotoCaseImage = SanityImage;
 
 export type VideoCase = {
   _id: string;
@@ -126,8 +159,8 @@ type SafeFetchOptions = {
   tags?: string[];
 
   /**
-   * Если tags нет, используем time-based revalidation.
-   * Можно переопределять точечно под конкретный запрос.
+   * Даже если используем tags, оставляем fallback revalidation по времени.
+   * Это защищает от ситуации, когда webhook не настроен или не сработал.
    */
   revalidate?: number;
 };
@@ -146,9 +179,10 @@ async function safeFetch<T>(
        * Важно:
        * - убрали cache: "no-store", потому что он отключает преимущества кэша;
        * - если есть tags, Next сможет инвалидировать кэш точечно;
-       * - если tags нет, работает обычный revalidation по времени.
+       * - revalidate оставляем всегда как страховку по времени,
+       *   чтобы данные не "залипали", даже если webhook не сработал.
        */
-      next: tags?.length ? { tags } : { revalidate },
+      next: tags?.length ? { tags, revalidate } : { revalidate },
     });
   } catch (error) {
     console.error("Sanity fetch failed:", error);
@@ -161,9 +195,17 @@ async function safeFetch<T>(
 ========================= */
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  return safeFetch<SiteSettings>(siteSettingsQuery, {}, null, {
-    tags: [SANITY_TAGS.settings],
-  });
+  try {
+    /**
+     * Для настроек сайта используем клиент без CDN.
+     * Это уменьшает риск получить устаревшую published-версию
+     * при работе с singleton-документом siteSettings.
+     */
+    return await clientNoCdn.fetch<SiteSettings>(siteSettingsQuery, {});
+  } catch (error) {
+    console.error("Sanity siteSettings fetch failed:", error);
+    return null;
+  }
 }
 
 /* =========================
