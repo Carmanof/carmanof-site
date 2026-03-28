@@ -7,7 +7,6 @@ import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 
 type IntroPhase = "idle" | "animating" | "done";
-type DeviceMode = "mobile" | "desktop";
 
 type HeroProps = {
   /**
@@ -30,10 +29,9 @@ export default function Hero({
   defaultImageSrc = "/images/hero/hero-default.webp",
   hoverImageSrc = "/images/hero/hero-hover.webp",
 }: HeroProps) {
-  const [deviceMode, setDeviceMode] = useState<DeviceMode>("mobile");
   const [introPhase, setIntroPhase] = useState<IntroPhase>("done");
   const [isHovered, setIsHovered] = useState(false);
-  const [shouldLoadHoverImage, setShouldLoadHoverImage] = useState(false);
+  const [isDesktopHover, setIsDesktopHover] = useState(false);
 
   const introTimerRef = useRef<number | null>(null);
 
@@ -43,34 +41,19 @@ export default function Hero({
       "(prefers-reduced-motion: reduce)",
     );
 
-    const isDesktopHoverDevice =
+    const shouldUseDesktopAnimation =
       hoverQuery.matches &&
       !reducedMotionQuery.matches &&
       window.innerWidth > 1024;
 
-    /**
-     * MOBILE / TOUCH:
-     * - сразу финальная картинка
-     * - без анимации
-     * - без второй картинки
-     */
-    if (!isDesktopHoverDevice) {
-      setDeviceMode("mobile");
+    if (!shouldUseDesktopAnimation) {
+      setIsDesktopHover(false);
       setIntroPhase("done");
-      setShouldLoadHoverImage(false);
       return;
     }
 
-    /**
-     * DESKTOP:
-     * - сохраняем привычную механику
-     * - default картинка видна сразу
-     * - hover картинку подключаем
-     * - анимация стартует через 1.2с, как было задумано
-     */
-    setDeviceMode("desktop");
+    setIsDesktopHover(true);
     setIntroPhase("idle");
-    setShouldLoadHoverImage(true);
 
     introTimerRef.current = window.setTimeout(() => {
       setIntroPhase("animating");
@@ -84,13 +67,13 @@ export default function Hero({
   }, []);
 
   function handleIntroTransitionEnd() {
-    if (deviceMode === "desktop" && introPhase === "animating") {
+    if (isDesktopHover && introPhase === "animating") {
       setIntroPhase("done");
     }
   }
 
   function handleMouseEnter() {
-    if (deviceMode !== "desktop") {
+    if (!isDesktopHover) {
       return;
     }
 
@@ -98,7 +81,7 @@ export default function Hero({
   }
 
   function handleMouseLeave() {
-    if (deviceMode !== "desktop") {
+    if (!isDesktopHover) {
       return;
     }
 
@@ -107,16 +90,12 @@ export default function Hero({
 
   const mediaClassName = [
     styles.media,
-    deviceMode === "desktop" && introPhase === "idle"
-      ? styles.stateDefault
-      : "",
-    deviceMode === "desktop" && introPhase === "animating"
-      ? styles.toHover
-      : "",
-    deviceMode === "desktop" && introPhase === "done" && isHovered
+    isDesktopHover && introPhase === "idle" ? styles.stateDefault : "",
+    isDesktopHover && introPhase === "animating" ? styles.toHover : "",
+    isDesktopHover && introPhase === "done" && isHovered
       ? styles.showDefaultOnHover
       : "",
-    deviceMode === "desktop" && introPhase === "done" && !isHovered
+    isDesktopHover && introPhase === "done" && !isHovered
       ? styles.showHoverIdle
       : "",
   ]
@@ -124,14 +103,13 @@ export default function Hero({
     .join(" ");
 
   /**
-   * MOBILE:
-   * - сразу показываем финальный hover-вариант
+   * Mobile / touch:
+   * сразу показываем финальную картинку.
    *
-   * DESKTOP:
-   * - основной первый кадр = default
+   * Desktop:
+   * первый кадр = default.
    */
-  const mainImageSrc =
-    deviceMode === "mobile" ? hoverImageSrc : defaultImageSrc;
+  const mainImageSrc = isDesktopHover ? defaultImageSrc : hoverImageSrc;
 
   return (
     <section className={styles.hero} id="home">
@@ -183,7 +161,7 @@ export default function Hero({
               />
             </div>
 
-            {deviceMode === "desktop" && shouldLoadHoverImage ? (
+            {isDesktopHover ? (
               <div
                 className={styles.imageHover}
                 onTransitionEnd={handleIntroTransitionEnd}

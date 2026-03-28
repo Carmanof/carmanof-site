@@ -11,10 +11,7 @@ type LayoutChromeProps = {
 export default function LayoutChrome({ children }: LayoutChromeProps) {
   const pathname = usePathname() || "/";
 
-  // Studio полностью изолирован
   const isStudioPage = pathname.startsWith("/studio");
-
-  // Главная страница
   const isHomePage = pathname === "/";
 
   if (isStudioPage) {
@@ -23,13 +20,8 @@ export default function LayoutChrome({ children }: LayoutChromeProps) {
 
   return (
     <>
-      {/* Intro только на главной.
-          enabled больше не передаем:
-          компонент сам проверит cookie на клиенте и решит, нужно ли показываться. */}
-      {isHomePage && <Intro />}
-
+      {isHomePage ? <Intro /> : null}
       <Header />
-
       {children}
     </>
   );

@@ -8,144 +8,128 @@ type IntroStage = "visible" | "moving" | "fading" | "hidden";
 
 type IntroProps = {
   /**
-   * Текущий основной режим:
-   * enabled приходит с сервера из layout.tsx.
-   *
-   * Дополнительно делаем проп опциональным,
-   * чтобы в следующем шаге можно было безопасно перевести интро
-   * на полностью клиентскую проверку cookie без резкой ломки API компонента.
+   * Если enabled передан явно, используем его как входной флаг.
+   * Если не передан, решение о показе принимаем на клиенте.
    */
   enabled?: boolean;
 };
 
-/**
- * Читает флаг проигранного интро на клиенте.
- * Если cookie нет, значит интро можно показывать.
- */
-function getClientIntroEnabled() {
+function hasPlayedIntroInSession() {
   if (typeof document === "undefined") {
-    return false;
+    return true;
   }
 
-  return !document.cookie
+  return document.cookie
     .split("; ")
     .some((item) => item.startsWith("intro-played=1"));
 }
 
+/**
+ * Интро показываем только там, где оно реально даёт UX-эффект:
+ * - есть hover
+ * - точный указатель
+ * - нет reduced motion
+ * - ширина больше мобильной/планшетной
+ */
+function canUseIntroAnimation() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const reducedMotionQuery = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  );
+
+  return (
+    hoverQuery.matches &&
+    !reducedMotionQuery.matches &&
+    window.innerWidth > 1024
+  );
+}
+
 export default function Intro({ enabled }: IntroProps) {
-  /**
-   * Если enabled передан явно — используем его как источник истины.
-   * Если не передан, пока ничего не рендерим до клиентской проверки.
-   *
-   * Это важно:
-   * - не ломает текущую серверную схему;
-   * - подготавливает компонент к будущему отказу от cookies() в layout.tsx;
-   * - не создает hydration mismatch.
-   */
-  const [resolvedEnabled, setResolvedEnabled] = useState<boolean>(
-    typeof enabled === "boolean" ? enabled : false,
-  );
-
-  // Если интро не нужно показывать — компонент вообще не рендерим.
-  const [shouldRender, setShouldRender] = useState(
-    typeof enabled === "boolean" ? enabled : false,
-  );
-
-  // Начальная стадия зависит от уже разрешенного флага.
-  const [stage, setStage] = useState<IntroStage>(
-    typeof enabled === "boolean" && enabled ? "visible" : "hidden",
-  );
-
+  const [shouldRender, setShouldRender] = useState(false);
+  const [stage, setStage] = useState<IntroStage>("hidden");
   const [transformValue, setTransformValue] = useState(
     "translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1)",
   );
 
   const logoRef = useRef<HTMLDivElement | null>(null);
-
-  // Защита от повторного старта анимации.
   const hasStartedRef = useRef(false);
-
-  // Защита от повторного завершения интро.
   const hasFinishedRef = useRef(false);
-
-  // Храним id requestAnimationFrame, чтобы корректно чистить.
   const rafRef = useRef<number | null>(null);
+  const startTimerRef = useRef<number | null>(null);
 
-  /**
-   * Если enabled не пришел снаружи,
-   * определяем необходимость показа уже на клиенте через cookie.
-   *
-   * Пока layout.tsx все еще передает enabled,
-   * этот блок не изменит текущее рабочее поведение.
-   */
   useEffect(() => {
-    if (typeof enabled === "boolean") {
-      return;
-    }
+    const introAllowedByDevice = canUseIntroAnimation();
+    const introAlreadyPlayed = hasPlayedIntroInSession();
 
-    const clientEnabled = getClientIntroEnabled();
-    setResolvedEnabled(clientEnabled);
-    setShouldRender(clientEnabled);
-    setStage(clientEnabled ? "visible" : "hidden");
-  }, [enabled]);
-
-  /**
-   * Синхронизация с внешним enabled.
-   * Это основной текущий режим работы компонента.
-   */
-  useEffect(() => {
+    /**
+     * Если enabled не передан, принимаем решение полностью на клиенте.
+     */
     if (typeof enabled !== "boolean") {
+      const shouldShow = introAllowedByDevice && !introAlreadyPlayed;
+
+      setShouldRender(shouldShow);
+      setStage(shouldShow ? "visible" : "hidden");
       return;
     }
 
-    setResolvedEnabled(enabled);
+    /**
+     * Если enabled передан, он задаёт базовое поведение,
+     * но mobile / touch / reduced-motion всё равно принудительно отключают интро.
+     */
+    const shouldShow = enabled && introAllowedByDevice && !introAlreadyPlayed;
 
-    if (enabled) {
-      setShouldRender(true);
-      setStage("visible");
-      hasStartedRef.current = false;
-      hasFinishedRef.current = false;
-      setTransformValue(
-        "translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1)",
-      );
-    } else {
+    setShouldRender(shouldShow);
+    setStage(shouldShow ? "visible" : "hidden");
+
+    if (!shouldShow) {
       document.body.classList.remove("intro-lock");
-      setStage("hidden");
-      setShouldRender(false);
     }
   }, [enabled]);
 
   useEffect(() => {
-    if (!resolvedEnabled) return;
+    if (!shouldRender || stage === "hidden") {
+      return;
+    }
 
     document.body.classList.add("intro-lock");
 
-    // ===== НАСТРОЙКА: пауза перед стартом полёта =====
-    // Если хочешь подержать логотип дольше в центре — увеличь значение.
-    const startTimer = window.setTimeout(() => {
+    /**
+     * Оставляем комфортную паузу перед стартом —
+     * примерно ту же, что у тебя была и визуально нравилась.
+     */
+    startTimerRef.current = window.setTimeout(() => {
       runAnimation();
     }, 650);
 
     return () => {
       document.body.classList.remove("intro-lock");
-      window.clearTimeout(startTimer);
+
+      if (startTimerRef.current !== null) {
+        window.clearTimeout(startTimerRef.current);
+        startTimerRef.current = null;
+      }
 
       if (rafRef.current !== null) {
         window.cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
     };
-  }, [resolvedEnabled]);
+  }, [shouldRender, stage]);
 
   function runAnimation() {
-    if (hasStartedRef.current || hasFinishedRef.current) return;
+    if (hasStartedRef.current || hasFinishedRef.current) {
+      return;
+    }
+
     hasStartedRef.current = true;
 
     const logo = logoRef.current;
     const target = document.getElementById("header-logo");
 
-    // Если цель в хедере не найдена, завершаем аккуратно,
-    // чтобы интро не зависало поверх страницы.
     if (!logo || !target) {
       finishIntro();
       return;
@@ -163,8 +147,6 @@ export default function Intro({ enabled }: IntroProps) {
     const deltaX = targetCenterX - logoCenterX;
     const deltaY = targetCenterY - logoCenterY;
 
-    // ===== НАСТРОЙКА: конечный scale =====
-    // Чем меньше число, тем сильнее логотип схлопывается в финале.
     setTransformValue(
       `translate(-50%, -50%) translate3d(${deltaX}px, ${deltaY}px, 0) scale(0.05)`,
     );
@@ -178,9 +160,13 @@ export default function Intro({ enabled }: IntroProps) {
   function handleLogoTransitionEnd(
     event: React.TransitionEvent<HTMLDivElement>,
   ) {
-    if (event.propertyName !== "transform") return;
-    if (stage !== "moving") return;
-    if (hasFinishedRef.current) return;
+    if (event.propertyName !== "transform") {
+      return;
+    }
+
+    if (stage !== "moving" || hasFinishedRef.current) {
+      return;
+    }
 
     setStage("fading");
   }
@@ -188,25 +174,28 @@ export default function Intro({ enabled }: IntroProps) {
   function handleOverlayTransitionEnd(
     event: React.TransitionEvent<HTMLDivElement>,
   ) {
-    if (event.propertyName !== "opacity") return;
-    if (stage !== "fading") return;
-    if (hasFinishedRef.current) return;
+    if (event.propertyName !== "opacity") {
+      return;
+    }
+
+    if (stage !== "fading" || hasFinishedRef.current) {
+      return;
+    }
 
     finishIntro();
   }
 
   function finishIntro() {
-    if (hasFinishedRef.current) return;
+    if (hasFinishedRef.current) {
+      return;
+    }
+
     hasFinishedRef.current = true;
 
-    // Ставим session cookie:
-    // без expires/max-age это cookie живёт до закрытия браузера.
     document.cookie = "intro-played=1; path=/; SameSite=Lax";
-
     document.body.classList.remove("intro-lock");
     setStage("hidden");
     setShouldRender(false);
-    setResolvedEnabled(false);
   }
 
   if (!shouldRender) {
