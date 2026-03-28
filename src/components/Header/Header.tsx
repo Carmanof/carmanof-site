@@ -51,9 +51,9 @@ export default function Header() {
     };
   }, [isMainVariant, isMenuOpen]);
 
-  /* Закрытие mobile-меню по Escape только для полной версии header */
+  /* Закрытие mobile-меню по Escape только когда оно реально открыто */
   useEffect(() => {
-    if (!isMainVariant) return;
+    if (!isMainVariant || !isMenuOpen) return;
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -66,7 +66,7 @@ export default function Header() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isMainVariant]);
+  }, [isMainVariant, isMenuOpen]);
 
   /* Плавный скролл по якорям на главной с учетом fixed header */
   const handleScroll = useCallback(
@@ -147,7 +147,6 @@ export default function Header() {
                   width={64}
                   height={64}
                   className={styles.logoImage}
-                  priority
                 />
               </Link>
 
@@ -192,7 +191,6 @@ export default function Header() {
                     width={48}
                     height={48}
                     className={styles.mobileLogoImage}
-                    priority
                   />
                 </Link>
               )}
