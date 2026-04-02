@@ -161,6 +161,7 @@ export default function Header({ phone }: HeaderProps) {
                       <li key={item.href}>
                         <Link
                           href={item.href}
+                          className="link-primary"
                           onClick={(e) => handleScroll(e, item.href)}
                         >
                           {item.label}
