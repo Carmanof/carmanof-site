@@ -1,21 +1,38 @@
+@use "@/styles/variables" as *;
+
 .section {
-  margin: 96px 0;
+  margin: $space-96 0;
 }
 
 .container {
-  width: min(1200px, calc(100vw - 32px));
+  position: relative;
+  width: min($container-width, calc(100vw - 32px));
   margin: 0 auto;
   overflow: hidden;
 
-  border-radius: 28px;
-  background: #9aa7bc;
+  border-radius: $radius-xl;
+  border: 1px solid $color-border-soft;
+  background: $color-surface-accent;
+  box-shadow: $shadow-md, $highlight-soft;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(27, 37, 43, 0.06), rgba(27, 37, 43, 0.12)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 46%);
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 20px 28px 20px;
+  gap: $space-24;
+  padding: 28px 32px;
 }
 
 .top {
@@ -29,25 +46,23 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 22px;
-  font-weight: 400;
-  color: #1d1f23;
+  font-weight: 500;
+  color: $color-text-soft;
 }
 
 .bottom {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) 436px;
-  gap: 24px;
-  align-items: center;
+  grid-template-columns: minmax(0, 1.15fr) 460px;
+  gap: 28px;
+  align-items: stretch;
 }
 
 .leftArea {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 18px;
-
-  min-height: 150px;
-  padding-bottom: 8px;
+  gap: 20px;
+  min-height: 170px;
 }
 
 .brandArea {
@@ -59,9 +74,9 @@
 .brandLogo {
   display: block;
   width: auto;
-  height: 64px;
+  height: 70px;
   object-fit: contain;
-  opacity: 0.86;
+  opacity: 0.98;
 }
 
 .formArea {
@@ -70,28 +85,42 @@
 
 .form {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(260px, 1.25fr) 126px;
+  grid-template-columns: minmax(180px, 1fr) minmax(260px, 1.2fr) 140px;
   gap: 14px;
   align-items: center;
 }
 
 .input {
-  height: 46px;
+  height: 50px;
   padding: 0 16px;
-  border: 0;
-  border-radius: 16px;
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-md;
   outline: none;
 
-  background: #fcfbf8;
+  background: $color-surface-strong;
+  box-shadow: $highlight-soft;
+
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 22px;
   font-weight: 400;
-  color: #1d1f23;
+  color: $color-text;
+
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
 }
 
 .input::placeholder {
-  color: rgba(29, 31, 35, 0.38);
+  color: $color-text-faint;
+}
+
+.input:focus {
+  border-color: $color-accent-soft;
+  box-shadow:
+    0 0 0 3px rgba(39, 170, 225, 0.1),
+    $highlight-soft;
 }
 
 .phoneField {
@@ -99,17 +128,29 @@
   align-items: center;
   overflow: hidden;
 
-  height: 46px;
-  border-radius: 16px;
-  background: #fcfbf8;
+  height: 50px;
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-md;
+  background: $color-surface-strong;
+  box-shadow: $highlight-soft;
 
   transition:
     background-color 180ms ease,
-    color 180ms ease;
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.phoneField:focus-within {
+  border-color: $color-accent-soft;
+  box-shadow:
+    0 0 0 3px rgba(39, 170, 225, 0.1),
+    $highlight-soft;
 }
 
 .phoneFieldSuccess {
-  background: #27ae60;
+  border-color: transparent;
+  background: $color-accent-dark;
+  box-shadow: $shadow-sm;
 }
 
 .phonePrefix {
@@ -121,13 +162,13 @@
   font-size: 16px;
   line-height: 22px;
   font-weight: 500;
-  color: #1d1f23;
+  color: $color-text;
 
   transition: color 180ms ease;
 }
 
 .phoneFieldSuccess .phonePrefix {
-  color: rgba(255, 255, 255, 0.96);
+  color: $color-text-inverse;
 }
 
 .phoneInput {
@@ -137,17 +178,18 @@
 
   border-radius: 0;
   background: transparent;
+  border: 0;
+  outline: none;
 }
 
 .phoneInput::placeholder {
-  color: rgba(29, 31, 35, 0.28);
+  color: $color-text-faint;
 }
 
 .phoneSuccessMessage {
   display: inline-flex;
   align-items: center;
   flex: 1 1 auto;
-
   min-width: 0;
   padding-right: 14px;
   white-space: nowrap;
@@ -156,30 +198,35 @@
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
-  color: #ffffff;
+  color: $color-text-inverse;
 }
 
 .button {
-  height: 46px;
-  border: 0;
-  border-radius: 16px;
+  height: 50px;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
   cursor: pointer;
 
-  background: #6c89bd;
+  background: $color-accent;
+  box-shadow: $shadow-sm;
+
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 22px;
-  font-weight: 400;
-  color: #fcfbf8;
+  font-weight: 600;
+  color: $color-text-inverse;
 
   transition:
     background-color 180ms ease,
     transform 180ms ease,
+    box-shadow 180ms ease,
     opacity 180ms ease;
 }
 
 .button:hover:not(:disabled) {
-  background: #6382ba;
+  background: $color-accent-dark;
+  box-shadow: $shadow-md;
+  transform: translateY(-1px);
 }
 
 .button:active:not(:disabled) {
@@ -189,46 +236,52 @@
 .button:disabled {
   cursor: not-allowed;
   transform: none;
-
-  background: rgba(252, 251, 248, 0.16);
-  color: rgba(252, 251, 248, 0.55);
+  background: $color-surface-muted;
+  box-shadow: none;
+  color: $color-text-faint;
 }
 
 .formNote {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.72);
+  color: $color-text-muted;
 }
 
 .checkbox {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-
   margin-top: 10px;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 13px;
   line-height: 18px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.7);
+  color: $color-text-muted;
 
   input {
     flex: 0 0 auto;
     margin-top: 3px;
+    accent-color: $color-accent-dark;
   }
 }
 
 .rightArea {
   display: grid;
-  grid-template-columns: 132px 48px 160px;
-  gap: 24px;
+  grid-template-columns: 140px 52px 170px;
+  gap: 20px;
   align-items: start;
   width: 100%;
+
+  padding: 18px;
+  border-radius: 24px;
+  background: $color-surface-accent-soft;
+  border: 1px solid $color-border-soft;
+  box-shadow: $highlight-soft;
 }
 
 .workInfo {
@@ -237,8 +290,7 @@
   align-items: flex-start;
   justify-content: flex-start;
   gap: 6px;
-
-  height: 160px;
+  min-height: 170px;
   text-align: left;
 }
 
@@ -249,7 +301,7 @@
   font-size: 14px;
   line-height: 18px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.62);
+  color: $color-text-muted;
 }
 
 .workValue {
@@ -258,8 +310,8 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 22px;
-  font-weight: 400;
-  color: #1d1f23;
+  font-weight: 500;
+  color: $color-text-strong;
 }
 
 .workPhone {
@@ -268,16 +320,18 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 15px;
   line-height: 21px;
-  font-weight: 500;
-  color: #1d1f23;
+  font-weight: 600;
+  color: $color-text-strong;
   text-decoration: none;
   white-space: nowrap;
 
-  transition: opacity 180ms ease;
+  transition:
+    color 180ms ease,
+    opacity 180ms ease;
 }
 
 .workPhone:hover {
-  opacity: 0.72;
+  color: $color-accent-dark;
 }
 
 .messengers {
@@ -286,8 +340,7 @@
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-
-  height: 160px;
+  min-height: 170px;
 }
 
 .messengerLink {
@@ -295,19 +348,27 @@
   align-items: center;
   justify-content: center;
 
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  box-shadow: $highlight-soft;
 
   text-decoration: none;
   transition:
     transform 180ms ease,
     opacity 180ms ease,
-    filter 180ms ease;
+    filter 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
 }
 
 .messengerLink:hover {
   transform: translateY(-2px);
+  border-color: $color-border-medium;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .messengerLinkDisabled {
@@ -323,8 +384,8 @@
 
 .messengerIcon {
   display: block;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
 }
 
 .qrArea {
@@ -339,28 +400,30 @@
   align-items: center;
   justify-content: center;
 
-  width: 160px;
-  height: 160px;
+  width: 170px;
+  height: 170px;
 }
 
 .qrBox {
-  width: 160px;
-  height: 160px;
+  width: 170px;
+  height: 170px;
   overflow: hidden;
 
   border-radius: 22px;
-  background: #fcfbf8;
+  border: 1px solid $color-border-soft;
+  background: $color-surface-strong;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .qrImage {
   display: block;
-  width: 160px;
-  height: 160px;
+  width: 170px;
+  height: 170px;
   object-fit: cover;
 }
 
 .qrText {
-  max-width: 160px;
+  max-width: 170px;
   margin: 0;
 
   text-align: center;
@@ -368,7 +431,7 @@
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.68);
+  color: $color-text-muted;
 }
 
 .visuallyHidden {
@@ -401,7 +464,6 @@
 
   .leftArea {
     min-height: unset;
-    padding-bottom: 0;
   }
 
   .form {
@@ -415,20 +477,13 @@
   }
 
   .rightArea {
-    display: grid;
     grid-template-columns: 1fr 44px 144px;
     gap: 20px;
-    align-items: start;
-    justify-self: start;
-    width: 100%;
   }
 
   .workInfo {
-    height: 144px;
-    align-items: flex-start;
-    justify-content: flex-start;
+    min-height: 144px;
     gap: 4px;
-    text-align: left;
   }
 
   .workPhone {
@@ -438,9 +493,8 @@
   }
 
   .messengers {
-    justify-content: flex-start;
     gap: 6px;
-    height: 144px;
+    min-height: 144px;
   }
 
   .messengerLink,
@@ -451,11 +505,6 @@
 
   .messengerLink {
     border-radius: 12px;
-  }
-
-  .qrArea {
-    align-items: center;
-    gap: 8px;
   }
 
   .qrMain {
@@ -474,7 +523,6 @@
     max-width: 144px;
     font-size: 12px;
     line-height: 16px;
-    text-align: center;
   }
 }
 
@@ -537,17 +585,14 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-self: start;
     gap: 18px;
     width: 100%;
+    padding: 16px;
   }
 
   .workInfo {
-    height: auto;
-    align-items: flex-start;
-    justify-content: flex-start;
+    min-height: auto;
     gap: 4px;
-    text-align: left;
   }
 
   .workLabel {
@@ -571,7 +616,7 @@
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
-    height: auto;
+    min-height: auto;
   }
 
   .messengerLink,

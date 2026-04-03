@@ -1,11 +1,13 @@
+@use "@/styles/variables" as *;
+
 .section {
-  margin: 96px 0;
+  margin: $space-96 0;
   scroll-margin-top: 172px;
 }
 
 .wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: $container-width;
   margin: 0 auto;
   padding: 0;
 }
@@ -19,7 +21,7 @@
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.03em;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .steps {
@@ -29,7 +31,7 @@
   gap: 8px;
 
   width: 100%;
-  max-width: 1200px;
+  max-width: $container-width;
   margin: 0 auto;
 }
 
@@ -50,12 +52,22 @@
   min-height: 152px;
   padding: 24px 36px;
 
-  background: #ffffff;
-  border: 1px solid #dadde3;
-  border-radius: 20px;
-  box-shadow:
-    0 4px 12px rgba(17, 24, 39, 0.025),
-    inset 0 1px 0 rgba(255, 255, 255, 0.36);
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm, $highlight-soft;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.stepItem:hover .card {
+  transform: translateY(-2px);
+  border-color: $color-border-medium;
+  background: $color-surface;
+  box-shadow: $shadow-md, $highlight-soft;
 }
 
 .cardTitle {
@@ -65,7 +77,7 @@
   font-size: 22px;
   font-weight: 600;
   line-height: 1.2;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .cardDescription {
@@ -75,8 +87,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  color: #1d1f23;
-  opacity: 0.78;
+  color: $color-text-soft;
 }
 
 .arrow {
@@ -168,9 +179,7 @@
     min-height: auto;
     padding: 20px 24px;
     border-radius: 18px;
-    box-shadow:
-      0 2px 8px rgba(17, 24, 39, 0.022),
-      inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    box-shadow: $shadow-xs, $highlight-soft;
   }
 
   .cardTitle {

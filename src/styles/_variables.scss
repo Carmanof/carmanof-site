@@ -1,25 +1,123 @@
-// COLORS
-$color-bg: #f3f0ea;
-$color-white: #ffffff;
-$color-text: #222222;
-$color-muted: #6d6a66;
-$color-accent: #6e8ec9;
-$color-accent-dark: #4e6fae;
-$color-border: #e3ddd2;
+@use "sass:color";
 
+// =========================
+// BASE COLORS (8 COLORS)
+// Меняешь только этот блок
+// =========================
+$color-bg: #fcfcfd;
+$color-surface: #f3f5fa;
+$color-surface-strong: #ffffff;
+$color-text: #26333a;
+$color-text-strong: #1b252b;
+$color-muted: #6e7b84;
+$color-accent: #27aae1;
+$color-border: #dde3ec;
+
+// =========================
+// DERIVED COLORS
+// Считаются автоматически
+// =========================
+$color-white: #ffffff;
+
+// Поверхности
+$color-surface-soft: color.mix($color-surface, $color-bg, 78%);
+$color-surface-muted: color.mix($color-border, $color-surface, 48%);
+
+// Акцентные поверхности
+$color-surface-accent: color.mix($color-accent, $color-surface, 10%);
+$color-surface-accent-soft: color.mix($color-accent, $color-surface, 6%);
+
+// Медиа-подложки
+$color-media-bg: color.mix($color-border, $color-surface, 70%);
+$color-media-bg-dark: color.scale($color-media-bg, $lightness: -8%);
+
+// Акцент
+$color-accent-dark: color.scale(
+  $color-accent,
+  $lightness: -18%,
+  $saturation: 6%
+);
+$color-accent-soft: color.mix($color-accent, $color-white, 22%);
+
+// Текстовые состояния
+$color-text-soft: color.change($color-text, $alpha: 0.78);
+$color-text-muted: color.change($color-text, $alpha: 0.62);
+$color-text-faint: color.change($color-text, $alpha: 0.46);
+$color-text-inverse: #ffffff;
+$color-text-inverse-soft: rgba(255, 255, 255, 0.88);
+
+// Границы
+$color-border-soft: color.change($color-text, $alpha: 0.06);
+$color-border-medium: color.change($color-text, $alpha: 0.1);
+$color-border-strong: color.change($color-text, $alpha: 0.16);
+
+$color-border-white-soft: rgba(255, 255, 255, 0.24);
+$color-border-white-medium: rgba(255, 255, 255, 0.36);
+
+// =========================
+// SHADOWS
+// =========================
+$shadow-xs: 0 2px 8px rgba(27, 37, 43, 0.02);
+$shadow-sm: 0 4px 12px rgba(27, 37, 43, 0.035);
+$shadow-md: 0 10px 28px rgba(27, 37, 43, 0.055);
+$shadow-lg: 0 18px 44px rgba(27, 37, 43, 0.09);
+$shadow-xl: 0 24px 80px rgba(27, 37, 43, 0.14);
+
+// =========================
+// HIGHLIGHTS
+// =========================
+$highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.58);
+$highlight-medium: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+$highlight-strong: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+
+// =========================
+// OVERLAYS / GLASS
+// =========================
+$overlay-dark-soft: rgba(27, 37, 43, 0.14);
+$overlay-dark-medium: rgba(27, 37, 43, 0.24);
+$overlay-dark-strong: rgba(27, 37, 43, 0.42);
+
+$glass-light: rgba(255, 255, 255, 0.56);
+$glass-light-strong: rgba(255, 255, 255, 0.78);
+
+// =========================
+// STATES
+// =========================
+$color-success: #2fa873;
+$color-success-bg: #ddf4ea;
+
+$color-warning: #c3933c;
+$color-warning-bg: #f8eddc;
+
+$color-danger: #d25e5e;
+$color-danger-bg: #f8e1e1;
+
+// =========================
 // SPACING
+// =========================
+$space-8: 8px;
+$space-12: 12px;
 $space-16: 16px;
+$space-20: 20px;
 $space-24: 24px;
+$space-32: 32px;
 $space-40: 40px;
+$space-48: 48px;
 $space-64: 64px;
 $space-96: 96px;
 
+// =========================
 // RADIUS
+// =========================
+$radius-xs: 10px;
 $radius-sm: 12px;
 $radius-md: 16px;
-$radius-lg: 24px;
-$radius-xl: 32px;
+$radius-lg: 20px;
+$radius-xl: 28px;
+$radius-2xl: 32px;
 
+// =========================
 // CONTAINER
+// =========================
 $container-width: 1200px;
 $page-max-width: 1440px;

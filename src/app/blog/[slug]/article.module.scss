@@ -1,3 +1,5 @@
+@use "@/styles/variables" as *;
+
 .page {
   min-height: 100vh;
 }
@@ -8,12 +10,10 @@
 
 .inner {
   padding: 16px;
-  border-radius: 28px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 10px 30px rgba(0, 0, 0, 0.04);
+  border-radius: $radius-xl;
+  background: $color-surface;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .hero {
@@ -28,7 +28,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.52;
+  color: $color-text-faint;
 }
 
 .meta {
@@ -38,7 +38,7 @@
   margin-bottom: 14px;
   font-size: 14px;
   line-height: 1.2;
-  opacity: 0.58;
+  color: $color-text-faint;
 }
 
 .title {
@@ -49,6 +49,7 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   text-wrap: balance;
+  color: $color-text-strong;
 }
 
 .excerpt {
@@ -56,7 +57,7 @@
   margin: 18px 0 0;
   font-size: 18px;
   line-height: 1.68;
-  opacity: 0.74;
+  color: $color-text-soft;
 }
 
 .cover {
@@ -65,11 +66,9 @@
   aspect-ratio: 16 / 9;
   margin-top: 28px;
   overflow: hidden;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 18px 44px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  border-radius: $radius-xl;
+  background: $color-media-bg;
+  box-shadow: $shadow-lg, $highlight-soft;
 }
 
 .coverImage {
@@ -81,7 +80,7 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.14)),
+    linear-gradient(180deg, rgba(23, 23, 23, 0.04), rgba(23, 23, 23, 0.14)),
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%);
   pointer-events: none;
 }
@@ -107,6 +106,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   text-wrap: balance;
+  color: $color-text-strong;
 }
 
 .sectionSubtitle {
@@ -116,6 +116,7 @@
   line-height: 1.16;
   font-weight: 600;
   text-wrap: balance;
+  color: $color-text-strong;
 }
 
 .paragraph {
@@ -123,7 +124,7 @@
   margin: 0;
   font-size: 17px;
   line-height: 1.8;
-  opacity: 0.88;
+  color: $color-text-soft;
 }
 
 .paragraph + .paragraph {
@@ -139,7 +140,7 @@
 .listItem {
   font-size: 17px;
   line-height: 1.75;
-  opacity: 0.88;
+  color: $color-text-soft;
 }
 
 .listItem + .listItem {
@@ -150,15 +151,13 @@
   max-width: 760px;
   margin: 24px 0;
   padding: 16px 20px;
-  border-left: 3px solid rgba(108, 136, 181, 0.55);
+  border-left: 3px solid rgba(110, 142, 201, 0.55);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.36);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    0 8px 20px rgba(0, 0, 0, 0.03);
+  background: $color-surface-strong;
+  box-shadow: $shadow-sm, $highlight-soft;
   font-size: 17px;
   line-height: 1.75;
-  opacity: 0.9;
+  color: $color-text-soft;
 }
 
 .contentFigure {
@@ -172,10 +171,8 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 18px 44px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  background: $color-media-bg;
+  box-shadow: $shadow-lg, $highlight-soft;
 }
 
 .contentFigureImage {
@@ -187,7 +184,7 @@
   margin-top: 10px;
   font-size: 14px;
   line-height: 1.5;
-  opacity: 0.68;
+  color: $color-text-muted;
 }
 
 .ctaBox {
@@ -198,11 +195,9 @@
 .ctaInner {
   padding: 20px;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .ctaEyebrow {
@@ -212,14 +207,14 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.5;
+  color: $color-text-faint;
 }
 
 .ctaText {
   margin: 0 0 16px;
   font-size: 15px;
   line-height: 1.65;
-  opacity: 0.76;
+  color: $color-text-soft;
 }
 
 @media (max-width: 1100px) {

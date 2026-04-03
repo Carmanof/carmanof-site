@@ -81,13 +81,6 @@ export const siteSettingsQuery = groq`
    VIDEO CASES
 ========================= */
 
-/**
- * Для страницы видео-кейсов ограничиваем выдачу первыми 18 элементами.
- * Главная страница отдельно выбирает 3 кейса через fetchers.ts.
- *
- * defined(order) добавлен для стабильной сортировки:
- * записи без order не должны случайно попадать в верх списка.
- */
 export const videoCasesQuery = groq`
   *[
     _type == "videoCase" &&
@@ -108,12 +101,6 @@ export const videoCasesQuery = groq`
    PHOTO CASES
 ========================= */
 
-/**
- * Для страницы фото-кейсов ограничиваем выдачу первыми 18 элементами.
- * Это лимит отображения на сайте, а не запрет на создание документов в Sanity.
- *
- * defined(order) нужен для предсказуемого порядка карточек.
- */
 export const photoCasesQuery = groq`
   *[
     _type == "photoCase" &&
@@ -134,13 +121,6 @@ export const photoCasesQuery = groq`
   }
 `;
 
-/**
- * Облегчённый запрос только для проверки:
- * есть ли вообще хотя бы один фото-кейс.
- *
- * Используем count(), чтобы не тянуть список карточек,
- * когда на главной нужна только булевая проверка.
- */
 export const photoCasesExistQuery = groq`
   {
     "hasItems": count(
@@ -181,10 +161,6 @@ export const blogPostsQuery = groq`
   }
 `;
 
-/**
- * Явная сортировка нужна, чтобы generateStaticParams / slug-списки
- * были детерминированными и не "плавали" между запросами.
- */
 export const blogPostSlugsQuery = groq`
   *[
     _type == "blogPost" &&
@@ -198,10 +174,6 @@ export const blogPostSlugsQuery = groq`
   }
 `;
 
-/**
- * Даже если в CMS по ошибке появится дубль slug,
- * сортировка перед [0] делает выбор предсказуемым.
- */
 export const blogPostBySlugQuery = groq`
   *[
     _type == "blogPost" &&

@@ -1,3 +1,5 @@
+@use "@/styles/variables" as *;
+
 .page {
   min-height: 100vh;
 }
@@ -9,12 +11,10 @@
 /* Слой блока: отделяет контент страницы от общего фона */
 .inner {
   padding: 16px;
-  border-radius: 32px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 10px 30px rgba(0, 0, 0, 0.04);
+  border-radius: $radius-2xl;
+  background: $color-surface;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .hero {
@@ -27,7 +27,7 @@
   font-size: clamp(20px, 2.2vw, 28px);
   line-height: 1.25;
   font-weight: 500;
-  opacity: 0.85;
+  color: $color-text-strong;
 }
 
 /* Сетка карточек внутри общего контейнера */
@@ -42,18 +42,17 @@
   position: relative;
   display: block;
   min-height: 480px;
-  border-radius: 28px;
+  border-radius: $radius-xl;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-md, $highlight-soft;
   transition:
     transform 0.3s ease-out,
     box-shadow 0.3s ease-out,
+    border-color 0.3s ease-out,
     background 0.3s ease-out;
 }
 
@@ -75,7 +74,7 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.18)),
+    linear-gradient(180deg, rgba(23, 23, 23, 0.06), rgba(23, 23, 23, 0.18)),
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%);
   transition: background 0.35s ease;
 }
@@ -125,16 +124,16 @@
   height: 48px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid $color-border-white-medium;
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.92);
+  color: $color-text-inverse;
   box-shadow:
-    0 14px 28px rgba(0, 0, 0, 0.16),
+    0 14px 28px rgba(23, 23, 23, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
   transition:
     transform 0.3s ease,
@@ -145,10 +144,9 @@
 /* Hover состояния */
 .card:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: $color-border-medium;
+  background: $color-surface;
+  box-shadow: $shadow-lg, $highlight-soft;
 }
 
 .card:hover .image {
@@ -157,7 +155,7 @@
 
 .card:hover .overlay {
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.12)),
+    linear-gradient(180deg, rgba(23, 23, 23, 0.04), rgba(23, 23, 23, 0.12)),
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 42%);
 }
 
@@ -176,7 +174,7 @@
   transform: translate(2px, -2px);
   background: rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 20px 34px rgba(0, 0, 0, 0.2),
+    0 20px 34px rgba(23, 23, 23, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
@@ -213,6 +211,7 @@
   .card {
     min-height: 300px;
     border-radius: 22px;
+    box-shadow: $shadow-sm, $highlight-soft;
   }
 
   .playIcon {

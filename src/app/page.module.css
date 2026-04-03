@@ -1,13 +1,13 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
+  --background: #f3f0ea;
+  --foreground: #ffffff;
 
-  --text-primary: #000;
-  --text-secondary: #666;
+  --text-primary: #222222;
+  --text-secondary: #6d6a66;
 
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
+  --button-primary-hover: #4e6fae;
+  --button-secondary-hover: #ebe5db;
+  --button-secondary-border: #e3ddd2;
 
   display: flex;
   flex: 1;
@@ -86,12 +86,14 @@
 
 a.primary {
   background: var(--text-primary);
-  color: var(--background);
+  color: var(--foreground);
   gap: 8px;
 }
 
 a.secondary {
   border-color: var(--button-secondary-border);
+  color: var(--text-primary);
+  background: transparent;
 }
 
 /* Enable hover only on non-touch devices */
@@ -120,23 +122,5 @@ a.secondary {
     font-size: 32px;
     line-height: 40px;
     letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
   }
 }

@@ -1,3 +1,5 @@
+@use "@/styles/variables" as *;
+
 .header {
   position: sticky;
   top: 12px;
@@ -17,11 +19,11 @@
   height: 64px;
   padding: 0 20px;
 
-  border-radius: 28px;
-
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-radius: $radius-xl;
+  border: 1px solid $color-border-white-soft;
+  background: $glass-light-strong;
+  box-shadow: $shadow-md, $highlight-soft;
+  backdrop-filter: blur(14px);
 }
 
 /* Desktop logo */
@@ -62,14 +64,26 @@
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 0;
+  border: 1px solid rgba(110, 142, 201, 0.14);
   border-radius: 999px;
-  background: rgba(108, 136, 181, 0.1);
+  background: rgba(110, 142, 201, 0.12);
+  box-shadow: $highlight-soft;
   cursor: pointer;
 
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition:
+    background-color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.burger:hover {
+  background: rgba(110, 142, 201, 0.18);
+  border-color: rgba(110, 142, 201, 0.22);
+  box-shadow: $shadow-xs, $highlight-soft;
 }
 
 .burgerLine {
@@ -77,11 +91,12 @@
   width: 18px;
   height: 2px;
   border-radius: 999px;
-  background: #1d1f23;
+  background: $color-text-strong;
   transition:
     transform 0.22s ease,
     opacity 0.22s ease,
-    top 0.22s ease;
+    top 0.22s ease,
+    background-color 0.22s ease;
 }
 
 .burgerLine:nth-child(1) {
@@ -128,23 +143,20 @@
   align-items: center;
 }
 
-/* 🔥 ВАЖНО: добавили gap */
 .action {
   display: flex;
   align-items: center;
-  gap: 16px; /* ← чтобы телефон не прилипал к кнопке */
+  gap: 16px;
   flex-shrink: 0;
 }
 
-/* ✅ НОВОЕ: стиль телефона */
 .phone {
   font-size: 18px;
-  font-weight: 500;
-  color: #1d1f23;
+  font-weight: 600;
+  color: $color-text-strong;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-
   position: relative;
 
   transition:
@@ -152,12 +164,11 @@
     opacity 0.2s ease;
 }
 
-/* hover как у link-primary (мягкий) */
 .phone:hover {
-  opacity: 0.7;
+  opacity: 1;
+  color: $color-accent-dark;
 }
 
-/* лёгкий underline-эффект (как в студиях) */
 .phone::after {
   content: "";
   position: absolute;
@@ -182,24 +193,30 @@
   align-items: center;
   justify-content: center;
 
-  height: 36px;
+  height: 38px;
   padding: 0 20px;
 
   border-radius: 999px;
-  background: #6c88b5 !important;
-  color: #fff;
+  border: 1px solid transparent;
+  background: $color-accent !important;
+  box-shadow: $shadow-sm;
+  color: $color-text-inverse;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
 
   transition:
     transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
     opacity 0.2s ease;
 }
 
 .button:hover {
   transform: translateY(-1px);
-  opacity: 0.9;
+  opacity: 1;
+  background: $color-accent-dark !important;
+  box-shadow: $shadow-md;
 }
 
 .buttonTextDesktop {
@@ -215,7 +232,7 @@
   position: fixed;
   inset: 0;
   z-index: 98;
-  background: rgba(10, 12, 16, 0.18);
+  background: $overlay-dark-soft;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.22s ease;
@@ -234,11 +251,12 @@
 
   width: min(calc(100vw - 24px), 420px);
   padding: 12px;
-  border-radius: 24px;
+  border-radius: $radius-lg;
 
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid $color-border-white-soft;
+  background: $glass-light-strong;
+  box-shadow: $shadow-lg, $highlight-soft;
+  backdrop-filter: blur(16px);
 
   opacity: 0;
   pointer-events: none;
@@ -290,7 +308,6 @@
     margin-left: auto;
   }
 
-  /* ❗ телефон на мобиле скрываем (чтобы не ломал layout) */
   .phone {
     display: none;
   }

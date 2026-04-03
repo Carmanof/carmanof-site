@@ -1,10 +1,12 @@
+@use "@/styles/variables" as *;
+
 .page {
   min-height: 100vh;
   padding: 48px 0 96px;
 }
 
 .container {
-  width: min(1200px, calc(100vw - 32px));
+  width: min($container-width, calc(100vw - 32px));
   margin: 0 auto;
 }
 
@@ -21,20 +23,21 @@
   font-family: Manrope, sans-serif;
   font-size: 14px;
   line-height: 18px;
-  font-weight: 400;
-  color: rgba(29, 31, 35, 0.6);
+  font-weight: 500;
+  color: $color-text-muted;
 
   transition: color 160ms ease;
 }
 
 .backLink:hover {
-  color: rgba(29, 31, 35, 0.9);
+  color: $color-accent-dark;
 }
 
 .heroContent {
-  border-radius: 28px;
-  background: #fbf9f5;
-  border: 1px solid rgba(29, 31, 35, 0.04);
+  border-radius: $radius-xl;
+  border: 1px solid $color-border-soft;
+  background: $color-surface;
+  box-shadow: $shadow-sm, $highlight-soft;
   padding: 40px;
 }
 
@@ -47,7 +50,7 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(29, 31, 35, 0.5);
+  color: $color-text-faint;
 }
 
 .title {
@@ -58,7 +61,7 @@
   line-height: 44px;
   font-weight: 500;
   letter-spacing: -0.02em;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .description {
@@ -69,7 +72,7 @@
   font-size: 18px;
   line-height: 28px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.72);
+  color: $color-text-soft;
 }
 
 .contentSection {
@@ -85,9 +88,22 @@
 
 .card {
   border-radius: 24px;
-  background: #f7f4ee;
-  border: 1px solid rgba(29, 31, 35, 0.04);
+  border: 1px solid $color-border-soft;
+  background: $color-surface-strong;
+  box-shadow: $shadow-sm, $highlight-soft;
   padding: 28px;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: $color-border-medium;
+  background: $color-surface;
+  box-shadow: $shadow-md, $highlight-soft;
 }
 
 .cardTitle {
@@ -97,7 +113,7 @@
   font-size: 22px;
   line-height: 28px;
   font-weight: 500;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .cardText {
@@ -107,12 +123,14 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.72);
+  color: $color-text-soft;
 }
 
 .noteBlock {
-  border-radius: 28px;
-  background: #efeae1;
+  border-radius: $radius-xl;
+  border: 1px solid $color-border-soft;
+  background: $color-surface-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
   padding: 32px;
 }
 
@@ -123,7 +141,7 @@
   font-size: 24px;
   line-height: 30px;
   font-weight: 500;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .noteText {
@@ -134,7 +152,7 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.72);
+  color: $color-text-soft;
 }
 
 @media (max-width: 1279px) {

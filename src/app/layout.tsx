@@ -79,13 +79,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  /**
-   * Корневой layout не зависит от request-based данных.
-   * Это уменьшает связанность с cookies() и помогает общей стратегии кэша.
-   *
-   * suppressHydrationWarning оставляем, потому что часть клиентской логики
-   * может менять начальное состояние интерфейса после гидрации.
-   */
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={manrope.variable}>

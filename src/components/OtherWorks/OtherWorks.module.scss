@@ -1,5 +1,7 @@
+@use "@/styles/variables" as *;
+
 .section {
-  margin-top: 96px;
+  margin-top: $space-96;
 }
 
 .wrapper {
@@ -8,14 +10,15 @@
   align-items: center;
 
   width: 100%;
-  max-width: 1200px;
+  max-width: $container-width;
   min-height: 320px;
   margin: 0 auto;
   padding: 16px 40px 24px;
 
-  border: 1px solid rgba(221, 214, 203, 0.35);
-  border-radius: 28px;
-  background: #fbfaf7;
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-xl;
+  background: $color-surface;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .title {
@@ -28,7 +31,7 @@
   font-size: 22px;
   font-weight: 500;
   line-height: 1.3;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .cards {
@@ -50,15 +53,25 @@
   height: 190px;
   padding: 16px;
 
-  border-radius: 20px;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border-soft;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.88),
     rgba(255, 255, 255, 0.68)
   );
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: $shadow-sm, $highlight-soft;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: $color-border-medium;
+  box-shadow: $shadow-md, $highlight-soft;
 }
 
 .text {
@@ -75,7 +88,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.3;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .cardText {
@@ -85,8 +98,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  color: #1d1f23;
-  opacity: 0.85;
+  color: $color-text-soft;
 }
 
 .image {
@@ -95,12 +107,13 @@
 
   width: 240px;
   height: 158px;
-  border-radius: 14px;
+  border-radius: $radius-sm;
 
-  background-color: rgba(29, 31, 35, 0.06);
+  background-color: $color-media-bg;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  box-shadow: $shadow-sm;
 }
 
 .actions {
@@ -116,15 +129,16 @@
   height: 44px;
   padding: 0 16px;
 
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-sm;
+  background: $color-surface-soft;
+  box-shadow: $highlight-soft;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
-  color: rgba(29, 31, 35, 0.42);
+  color: $color-text-muted;
 
   cursor: not-allowed;
   pointer-events: none;
@@ -157,9 +171,7 @@
     align-items: flex-start;
     gap: 16px;
     height: auto;
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.025),
-      inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    box-shadow: $shadow-xs, $highlight-soft;
   }
 
   .image {

@@ -1,18 +1,21 @@
+@use "@/styles/variables" as *;
+
 .section {
-  margin: 96px 0;
+  margin: $space-96 0;
   scroll-margin-top: 172px;
 }
 
 .wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: $container-width;
   min-height: 420px;
   margin: 0 auto;
   padding: 24px 8px 28px;
 
-  background: #fbfaf7;
-  border: 1px solid rgba(228, 222, 211, 0.42);
-  border-radius: 28px;
+  background: $color-surface;
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .title {
@@ -25,7 +28,7 @@
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.03em;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .description {
@@ -36,8 +39,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #1d1f23;
-  opacity: 0.82;
+  color: $color-text-soft;
 }
 
 /* =========================
@@ -60,23 +62,23 @@
   flex: 0 0 378px;
   padding: 8px;
 
-  background: #fdfcf9;
-  border-radius: 20px;
-
-  box-shadow:
-    0 3px 10px rgba(17, 24, 39, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm, $highlight-soft;
 
   transition:
     transform 0.22s ease,
-    box-shadow 0.22s ease;
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background-color 0.22s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 6px 14px rgba(17, 24, 39, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  border-color: $color-border-medium;
+  background: $color-surface;
+  box-shadow: $shadow-md, $highlight-soft;
 }
 
 /* =========================
@@ -91,10 +93,10 @@
   padding: 0;
   overflow: hidden;
   border: 0;
-  border-radius: 16px;
+  border-radius: $radius-md;
   cursor: pointer;
 
-  background-color: #1f2329;
+  background-color: $color-text-strong;
 }
 
 .previewImage {
@@ -107,8 +109,8 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.65) 100%,
-    rgba(0, 0, 0, 0) 20%
+    rgba(23, 23, 23, 0.34) 100%,
+    rgba(23, 23, 23, 0) 20%
   );
 }
 
@@ -139,7 +141,7 @@
   gap: 6px;
   align-items: flex-start;
 
-  color: rgba(255, 255, 255, 0.96);
+  color: $color-text-inverse;
   text-align: left;
 }
 
@@ -189,7 +191,7 @@
   width: 100%;
   height: 203px;
   border: 0;
-  border-radius: 16px;
+  border-radius: $radius-md;
   background: #000;
 }
 
@@ -204,12 +206,12 @@
 .skeletonMedia {
   width: 100%;
   height: 203px;
-  border-radius: 16px;
+  border-radius: $radius-md;
 
   background: linear-gradient(
     180deg,
-    rgba(29, 31, 35, 0.08),
-    rgba(29, 31, 35, 0.04)
+    rgba(23, 23, 23, 0.08),
+    rgba(23, 23, 23, 0.04)
   );
 }
 
@@ -219,7 +221,7 @@
   width: 70%;
   border-radius: 6px;
 
-  background: rgba(29, 31, 35, 0.08);
+  background: rgba(23, 23, 23, 0.08);
 }
 
 /* =========================
@@ -239,16 +241,17 @@
   min-height: 46px;
   padding: 0 22px;
 
-  border-radius: 16px;
-  border: 1px solid rgba(29, 31, 35, 0.08);
+  border-radius: $radius-md;
+  border: 1px solid $color-border-soft;
 
-  background: rgba(108, 137, 189, 0.08);
-  color: rgba(29, 31, 35, 0.42);
+  background: $color-surface-soft;
+  color: $color-text-muted;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 15px;
   font-weight: 500;
 
+  box-shadow: $highlight-soft;
   pointer-events: none;
 }
 
@@ -309,9 +312,7 @@
 
   .card {
     border-radius: 18px;
-    box-shadow:
-      0 2px 8px rgba(17, 24, 39, 0.028),
-      inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    box-shadow: $shadow-xs, $highlight-soft;
   }
 
   .previewButton,

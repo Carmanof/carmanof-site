@@ -1,3 +1,5 @@
+@use "@/styles/variables" as *;
+
 .page {
   min-height: 100vh;
 }
@@ -8,12 +10,10 @@
 
 .inner {
   padding: 16px;
-  border-radius: 28px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 10px 30px rgba(0, 0, 0, 0.04);
+  border-radius: $radius-xl;
+  background: $color-surface;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .hero {
@@ -28,7 +28,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.52;
+  color: $color-text-faint;
 }
 
 .title {
@@ -39,6 +39,7 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   text-wrap: balance;
+  color: $color-text-strong;
 }
 
 .description {
@@ -46,7 +47,7 @@
   margin: 14px 0 0;
   font-size: 17px;
   line-height: 1.68;
-  opacity: 0.74;
+  color: $color-text-soft;
 }
 
 .grid {
@@ -68,11 +69,9 @@
   border-radius: 24px;
   text-decoration: none;
   color: inherit;
-  background: rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
   transition:
     transform 0.28s ease,
     box-shadow 0.28s ease,
@@ -82,11 +81,9 @@
 
 .cardLink:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.5);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 16px 34px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  background: $color-surface;
+  border-color: $color-border-medium;
+  box-shadow: $shadow-md, $highlight-soft;
 }
 
 .media {
@@ -96,11 +93,9 @@
   overflow: hidden;
   border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.04)),
-    rgba(255, 255, 255, 0.2);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 8px 20px rgba(0, 0, 0, 0.04);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(23, 23, 23, 0.04)),
+    $color-media-bg;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .image {
@@ -126,7 +121,7 @@
   font-size: 13px;
   line-height: 1.2;
   font-weight: 500;
-  opacity: 0.56;
+  color: $color-text-faint;
 }
 
 .cardTitle {
@@ -135,13 +130,14 @@
   line-height: 1.18;
   font-weight: 700;
   text-wrap: balance;
+  color: $color-text-strong;
 }
 
 .excerpt {
   margin: 12px 0 0;
   font-size: 15px;
   line-height: 1.62;
-  opacity: 0.74;
+  color: $color-text-soft;
 }
 
 .arrow {
@@ -152,39 +148,38 @@
   height: 38px;
   margin-top: 18px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: $color-surface-soft;
+  border: 1px solid $color-border-soft;
+  box-shadow: $highlight-soft;
   font-size: 18px;
   line-height: 1;
-  opacity: 0.76;
+  color: $color-text-soft;
   transition:
     transform 0.28s ease,
     background 0.28s ease,
-    opacity 0.28s ease;
+    border-color 0.28s ease;
 }
 
 .cardLink:hover .arrow {
   transform: translate(2px, -2px);
-  background: rgba(0, 0, 0, 0.06);
-  opacity: 1;
+  background: $color-surface-muted;
+  border-color: $color-border-medium;
 }
 
 .emptyState {
   max-width: 760px;
   padding: 24px;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: $color-surface-strong;
+  border: 1px solid $color-border-soft;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .emptyText {
   margin: 0;
   font-size: 16px;
   line-height: 1.65;
-  opacity: 0.76;
+  color: $color-text-soft;
 }
 
 @media (max-width: 1100px) {

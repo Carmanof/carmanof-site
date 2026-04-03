@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "@/styles/variables" as *;
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -28,25 +31,25 @@
 }
 
 .primary {
-  background: #6c88b5;
-  border-color: #6c88b5;
-  color: #ffffff;
+  background: $color-accent;
+  border-color: $color-accent;
+  color: $color-white;
 }
 
 .primary:hover {
-  background: #627da8;
-  border-color: #627da8;
+  background: $color-accent-dark;
+  border-color: $color-accent-dark;
 }
 
 .secondary {
-  background: #ece6de;
-  border-color: #e3ddd4;
-  color: #6e685f;
+  background: color.mix($color-border, $color-bg, 52%);
+  border-color: $color-border;
+  color: color.adjust($color-text, $alpha: -0.24);
 }
 
 .secondary:hover {
-  background: #e5ded5;
-  border-color: #dcd4ca;
+  background: color.mix($color-border, $color-bg, 68%);
+  border-color: color.mix($color-border, $color-text, 88%);
 }
 
 .sm {

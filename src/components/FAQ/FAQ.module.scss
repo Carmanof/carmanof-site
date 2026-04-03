@@ -1,23 +1,25 @@
+@use "@/styles/variables" as *;
+
 .section {
-  margin: 96px 0;
+  margin: $space-96 0;
 }
 
 .container {
-  width: min(1200px, calc(100vw - 32px));
+  width: min($container-width, calc(100vw - 32px));
   margin: 0 auto;
   overflow: hidden;
 
-  border-radius: 28px;
-  border: 1px solid rgba(29, 31, 35, 0.04);
-  background: #fbf9f5;
-  box-shadow: 0 1px 2px rgba(29, 31, 35, 0.02);
+  border-radius: $radius-xl;
+  border: 1px solid $color-border-soft;
+  background: $color-surface;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 32px 40px 36px;
+  gap: $space-24;
+  padding: $space-32 $space-40 $space-40;
 }
 
 .badge {
@@ -30,13 +32,14 @@
   padding: 0 14px;
 
   border-radius: 999px;
-  background: #efe6d8;
+  background: $color-surface-soft;
+  border: 1px solid $color-border-soft;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
   line-height: 18px;
-  font-weight: 400;
-  color: rgba(29, 31, 35, 0.65);
+  font-weight: 500;
+  color: $color-text-muted;
 }
 
 .list {
@@ -48,18 +51,21 @@
 .item {
   overflow: hidden;
 
-  border-radius: 18px;
-  border: 1px solid rgba(29, 31, 35, 0.045);
-  background: #f5f2ec;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  border-radius: $radius-lg;
+  border: 1px solid $color-border-soft;
+  background: $color-surface-strong;
+  box-shadow: $highlight-soft;
+  transition:
+    border-color 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
 }
 
 .itemActive {
-  border-color: rgba(29, 31, 35, 0.05);
-  background: #f0ebe2;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 1px 2px rgba(29, 31, 35, 0.02);
+  border-color: rgba(110, 142, 201, 0.18);
+  background: $color-surface-soft;
+  box-shadow: $shadow-xs, $highlight-soft;
 }
 
 .trigger {
@@ -69,8 +75,8 @@
   gap: 20px;
 
   width: 100%;
-  min-height: 48px;
-  padding: 14px 20px;
+  min-height: 52px;
+  padding: 16px 20px;
   border: 0;
 
   background: transparent;
@@ -83,8 +89,8 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 22px;
-  font-weight: 400;
-  color: #1d1f23;
+  font-weight: 500;
+  color: $color-text;
 }
 
 .icon {
@@ -96,7 +102,14 @@
   line-height: 18px;
   font-weight: 400;
   text-align: center;
-  color: rgba(29, 31, 35, 0.5);
+  color: $color-text-muted;
+  transition:
+    color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.itemActive .icon {
+  color: $color-accent-dark;
 }
 
 .panel {
@@ -118,13 +131,13 @@
 .answer {
   max-width: 920px;
   margin: 0;
-  padding: 0 20px 18px;
+  padding: 0 20px 20px;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.66);
+  color: $color-text-soft;
 }
 
 .visuallyHidden {
@@ -142,8 +155,14 @@
 
 @media (hover: hover) and (pointer: fine) {
   .item:hover {
-    border-color: rgba(29, 31, 35, 0.05);
-    background: #f3efe8;
+    border-color: $color-border-medium;
+    background: $color-surface-soft;
+    box-shadow: $shadow-xs, $highlight-soft;
+    transform: translateY(-1px);
+  }
+
+  .item:hover .icon {
+    color: $color-accent;
   }
 }
 
@@ -157,7 +176,7 @@
   }
 
   .trigger {
-    padding: 14px 18px;
+    padding: 15px 18px;
   }
 
   .answer {
@@ -178,7 +197,7 @@
 
   .content {
     gap: 20px;
-    padding: 24px 20px 24px;
+    padding: 24px 20px;
   }
 
   .badge {
@@ -197,7 +216,7 @@
   }
 
   .trigger {
-    min-height: 46px;
+    min-height: 48px;
     gap: 12px;
     padding: 14px 16px;
   }

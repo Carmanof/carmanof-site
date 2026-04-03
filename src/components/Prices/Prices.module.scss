@@ -1,14 +1,18 @@
+@use "@/styles/variables" as *;
+
 .section {
-  margin: 96px 0;
+  margin: $space-96 0;
   scroll-margin-top: 172px;
 }
 
 .container {
-  width: min(1200px, calc(100vw - 32px));
+  width: min($container-width, calc(100vw - 32px));
   margin: 0 auto;
-  border-radius: 28px;
+  border-radius: $radius-xl;
   overflow: hidden;
-  background: #fcfbf8;
+  border: 1px solid $color-border-soft;
+  background: $color-surface;
+  box-shadow: $shadow-sm, $highlight-soft;
 }
 
 .content {
@@ -28,13 +32,14 @@
   padding: 0 14px;
 
   border-radius: 999px;
-  background: #efe6d8;
+  border: 1px solid $color-border-soft;
+  background: $color-surface-soft;
 
   font-family: var(--font-manrope), sans-serif;
   font-size: 14px;
   line-height: 18px;
-  font-weight: 400;
-  color: rgba(29, 31, 35, 0.65);
+  font-weight: 500;
+  color: $color-text-muted;
 }
 
 .grid {
@@ -57,8 +62,8 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 16px;
   line-height: 22px;
-  font-weight: 400;
-  color: rgba(29, 31, 35, 0.62);
+  font-weight: 500;
+  color: $color-text-muted;
 }
 
 .itemPrice {
@@ -67,9 +72,9 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 32px;
   line-height: 36px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  color: #1d1f23;
+  color: $color-text-strong;
 }
 
 .note {
@@ -79,7 +84,7 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.62);
+  color: $color-text-soft;
 }
 
 .visuallyHidden {

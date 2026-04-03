@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "@/styles/variables" as *;
+
 .footer {
   margin-top: 64px;
   padding: 16px 0 24px;
@@ -20,7 +23,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 13px;
   line-height: 18px;
-  color: rgba(29, 31, 35, 0.45);
+  color: color.adjust($color-text, $alpha: -0.55);
 }
 
 .center {
@@ -32,7 +35,7 @@
 
 .separator {
   font-size: 13px;
-  color: rgba(29, 31, 35, 0.35);
+  color: color.adjust($color-text, $alpha: -0.65);
 }
 
 .link {
@@ -42,13 +45,15 @@
   font-size: 13px;
   line-height: 18px;
   font-weight: 400;
-  color: rgba(29, 31, 35, 0.55);
+  color: color.adjust($color-text, $alpha: -0.45);
 
-  transition: color 160ms ease;
+  transition:
+    color 160ms ease,
+    opacity 160ms ease;
 }
 
 .link:hover {
-  color: rgba(29, 31, 35, 0.85);
+  color: $color-text;
 }
 
 .designer {
@@ -57,7 +62,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: 12px;
   line-height: 18px;
-  color: rgba(29, 31, 35, 0.35);
+  color: color.adjust($color-text, $alpha: -0.65);
 }
 
 @media (max-width: 640px) {
