@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Suspense } from "react";
 
+import Analytics from "@/components/Analytics/Analytics";
+import CookieConsent from "@/components/CookieConsent/CookieConsent";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
+import { getSiteUrl } from "@/lib/site";
 import "./globals.scss";
 
 const manrope = localFont({
@@ -42,7 +46,7 @@ const manrope = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://carmanof-site.vercel.app"),
+  metadataBase: new URL(getSiteUrl()),
   applicationName: "Carmanof",
   title: {
     default: "Carmanof",
@@ -52,6 +56,10 @@ export const metadata: Metadata = {
     "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
   alternates: {
     canonical: "/",
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.YANDEX_VERIFICATION,
   },
   robots: {
     index: true,
@@ -83,6 +91,10 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body className={manrope.variable}>
         <LayoutChrome>{children}</LayoutChrome>
+        <CookieConsent />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   );

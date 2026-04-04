@@ -3,6 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { formatPhone } from "@/lib/formatPhone";
+import {
+  trackFormSubmit,
+  trackFormSuccess,
+  trackMessengerClick,
+  trackPhoneClick,
+} from "@/lib/analytics";
 import Section from "@/components/ui/Section/Section";
 import styles from "./Contact.module.scss";
 
@@ -19,7 +25,7 @@ type ContactProps = {
 };
 
 type MessengerItem = {
-  name: string;
+  name: "Telegram" | "WhatsApp" | "VK";
   href?: string;
   icon: string;
 };
@@ -66,6 +72,17 @@ function formatPhoneDigits(phoneDigits: string) {
   const part4 = phoneDigits.slice(8, 10);
 
   return [part1, part2, part3, part4].filter(Boolean).join(" ");
+}
+
+function getMessengerKey(name: MessengerItem["name"]) {
+  switch (name) {
+    case "Telegram":
+      return "telegram";
+    case "WhatsApp":
+      return "whatsapp";
+    case "VK":
+      return "vk";
+  }
 }
 
 export default function Contact({ settings }: ContactProps) {
@@ -122,6 +139,8 @@ export default function Contact({ settings }: ContactProps) {
 
     if (!isFormValid) return;
 
+    trackFormSubmit("contact_form");
+
     const fullPhone = `+7${phoneDigits}`;
     const submissionPayload = {
       subject: 'Заявка с сайта "Карманов"',
@@ -138,6 +157,16 @@ export default function Contact({ settings }: ContactProps) {
     setPhoneDigits("");
     setIsChecked(false);
     setIsSuccess(true);
+
+    trackFormSuccess("contact_form");
+  }
+
+  function handlePhoneClick() {
+    trackPhoneClick(settings?.phone);
+  }
+
+  function handleMessengerClick(name: MessengerItem["name"]) {
+    trackMessengerClick(getMessengerKey(name));
   }
 
   return (
@@ -252,6 +281,7 @@ export default function Contact({ settings }: ContactProps) {
                   <a
                     href={`tel:${settings.phone.replace(/\D/g, "")}`}
                     className={styles.workPhone}
+                    onClick={handlePhoneClick}
                   >
                     {formatPhone(settings.phone)}
                   </a>
@@ -268,6 +298,7 @@ export default function Contact({ settings }: ContactProps) {
                       aria-label={item.name}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => handleMessengerClick(item.name)}
                     >
                       <Image
                         src={item.icon}
