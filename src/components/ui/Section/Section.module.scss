@@ -9,3 +9,24 @@
   border-radius: $radius-xl;
   padding: $space-64 0;
 }
+
+@media (max-width: 960px) {
+  .section {
+    margin-top: $space-64;
+  }
+
+  .alt {
+    padding: $space-48 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    margin-top: $space-48;
+  }
+
+  .alt {
+    border-radius: 24px;
+    padding: $space-40 0;
+  }
+}

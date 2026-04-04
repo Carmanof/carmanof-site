@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Section from "@/components/ui/Section/Section";
 import styles from "./FAQ.module.scss";
 
 type FAQItem = {
@@ -41,26 +42,20 @@ const fallbackItems: FAQItem[] = [
 ];
 
 export default function FAQ({ items = fallbackItems }: FAQProps) {
-  // Первый вопрос открыт по умолчанию.
   const [activeIndex, setActiveIndex] = useState(0);
 
-  /**
-   * Если в props пришло меньше 5 элементов,
-   * подстраховываемся локальными fallback-вопросами.
-   */
   const normalizedItems = fallbackItems.map((fallbackItem, index) => ({
     question: items[index]?.question || fallbackItem.question,
     answer: items[index]?.answer || fallbackItem.answer,
   }));
 
   const handleToggle = (index: number) => {
-    // Всегда держим один пункт открытым.
     if (index === activeIndex) return;
     setActiveIndex(index);
   };
 
   return (
-    <section className={styles.section} aria-labelledby="faq-title">
+    <Section aria-labelledby="faq-title">
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.badge}>Частые вопросы</div>
@@ -109,6 +104,6 @@ export default function FAQ({ items = fallbackItems }: FAQProps) {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

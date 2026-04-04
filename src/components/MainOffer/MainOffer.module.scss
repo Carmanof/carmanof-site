@@ -1,9 +1,5 @@
 @use "@/styles/variables" as *;
 
-.section {
-  margin-top: $space-96;
-}
-
 .wrapper {
   width: 100%;
   max-width: $container-width;
@@ -130,10 +126,6 @@
    MOBILE
    ========================= */
 @media (max-width: 640px) {
-  .section {
-    margin-top: 20px;
-  }
-
   .wrapper {
     padding: 22px 18px;
     border-radius: 22px;

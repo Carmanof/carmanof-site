@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { formatPhone } from "@/lib/formatPhone";
+import Section from "@/components/ui/Section/Section";
 import styles from "./Contact.module.scss";
 
 type ContactSettings = {
@@ -140,11 +141,7 @@ export default function Contact({ settings }: ContactProps) {
   }
 
   return (
-    <section
-      id="contact"
-      className={styles.section}
-      aria-labelledby="contact-title"
-    >
+    <Section id="contact" aria-labelledby="contact-title">
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.top}>
@@ -319,6 +316,6 @@ export default function Contact({ settings }: ContactProps) {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Section from "@/components/ui/Section/Section";
 import styles from "./TrustBlock.module.scss";
 
 const trustItems = [
@@ -30,7 +31,7 @@ const trustItems = [
 
 export default function TrustBlock() {
   return (
-    <section className={styles.section} aria-labelledby="trust-title">
+    <Section aria-labelledby="trust-title">
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.textBlock}>
@@ -67,6 +68,6 @@ export default function TrustBlock() {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -1,9 +1,5 @@
 @use "@/styles/variables" as *;
 
-.section {
-  margin-top: $space-96;
-}
-
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -157,10 +153,6 @@
 }
 
 @media (max-width: 640px) {
-  .section {
-    margin-top: 64px;
-  }
-
   .wrapper {
     padding: 16px;
     border-radius: 24px;

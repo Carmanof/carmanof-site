@@ -1,6 +1,7 @@
 import styles from "./OtherWorks.module.scss";
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
+import Section from "@/components/ui/Section/Section";
 
 type OtherWorkItem = {
   title: string;
@@ -14,28 +15,25 @@ type OtherWorksProps = {
 
 const otherWorksItems: OtherWorkItem[] = [
   {
-    title: "Пересвет шкал",
-    text: "Замена штатной подсветки шкал на другой цвет или более яркий вариант.",
+    title: "Пересвет",
+    text: "Заменим штатную подсветку приборной панели на другой цвет / более яркий вариант.",
     imageSrc: "/images/other-works/other-work-01.webp",
   },
   {
-    title: "Ремонт шкал",
-    text: "Восстановление поврежденных шкал, исправление дефектов и аккуратная замена элементов.",
+    title: "Ремонт приборных панелей",
+    text: "Восстановление повреждений, диагностика электроники и замена элементов.",
     imageSrc: "/images/other-works/other-work-02.webp",
   },
 ];
 
 export default function OtherWorks({ hasCases }: OtherWorksProps) {
   return (
-    /**
-     * 🔥 КЛЮЧЕВОЕ ИЗМЕНЕНИЕ
-     * Добавили id="other-works"
-     * Теперь сюда можно вернуться по ссылке /#other-works
-     */
-    <section id="other-works" className={styles.section}>
+    <Section id="other-works" aria-labelledby="other-works-title">
       <Container>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}>Другие работы</h2>
+          <h2 id="other-works-title" className={styles.title}>
+            Другие работы
+          </h2>
 
           <div className={styles.cards}>
             {otherWorksItems.map((item) => (
@@ -70,6 +68,6 @@ export default function OtherWorks({ hasCases }: OtherWorksProps) {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

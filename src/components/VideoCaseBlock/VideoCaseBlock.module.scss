@@ -1,7 +1,6 @@
 @use "@/styles/variables" as *;
 
 .section {
-  margin: $space-96 0;
   scroll-margin-top: 172px;
 }
 
@@ -272,10 +271,6 @@
 }
 
 @media (max-width: 960px) {
-  .section {
-    margin: 72px 0;
-  }
-
   .wrapper {
     padding: 20px 12px 24px;
     border-radius: 24px;
@@ -293,10 +288,6 @@
 }
 
 @media (max-width: 640px) {
-  .section {
-    margin: 56px 0;
-  }
-
   .wrapper {
     padding: 18px 10px 20px;
     border-radius: 22px;

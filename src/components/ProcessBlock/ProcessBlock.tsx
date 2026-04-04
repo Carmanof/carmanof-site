@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Section from "@/components/ui/Section/Section";
 import styles from "./ProcessBlock.module.scss";
 import Container from "@/components/ui/Container/Container";
 
@@ -33,7 +34,7 @@ const processSteps: ProcessStep[] = [
 
 export default function ProcessBlock() {
   return (
-    <section
+    <Section
       id="process"
       className={styles.section}
       aria-labelledby="process-block-title"
@@ -73,6 +74,6 @@ export default function ProcessBlock() {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

@@ -1,9 +1,5 @@
 @use "@/styles/variables" as *;
 
-.section {
-  margin: $space-96 0;
-}
-
 .container {
   width: min($container-width, calc(100vw - 32px));
   margin: 0 auto;
@@ -53,7 +49,7 @@
 
   border-radius: $radius-lg;
   border: 1px solid $color-border-soft;
-  background: $color-surface-strong;
+  background: $color-surface-soft;
   box-shadow: $highlight-soft;
   transition:
     border-color 0.22s ease,
@@ -64,7 +60,7 @@
 
 .itemActive {
   border-color: rgba(110, 142, 201, 0.18);
-  background: $color-surface-soft;
+  background: $color-surface-strong;
   box-shadow: $shadow-xs, $highlight-soft;
 }
 
@@ -156,7 +152,7 @@
 @media (hover: hover) and (pointer: fine) {
   .item:hover {
     border-color: $color-border-medium;
-    background: $color-surface-soft;
+    background: $color-surface-strong;
     box-shadow: $shadow-xs, $highlight-soft;
     transform: translateY(-1px);
   }
@@ -186,10 +182,6 @@
 }
 
 @media (max-width: 767px) {
-  .section {
-    margin: 96px 0;
-  }
-
   .container {
     width: calc(100vw - 24px);
     border-radius: 24px;

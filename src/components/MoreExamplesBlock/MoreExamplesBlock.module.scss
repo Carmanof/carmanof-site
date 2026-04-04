@@ -1,9 +1,5 @@
 @use "@/styles/variables" as *;
 
-.section {
-  padding: 40px 0 80px;
-}
-
 .container {
   max-width: $container-width;
   margin: 0 auto;
@@ -135,10 +131,6 @@
 }
 
 @media (max-width: 1279px) {
-  .section {
-    padding: 32px 0 72px;
-  }
-
   .container {
     padding: 0 20px;
   }
@@ -170,10 +162,6 @@
 }
 
 @media (max-width: 640px) {
-  .section {
-    padding: 24px 0 56px;
-  }
-
   .container {
     padding: 0 16px;
   }

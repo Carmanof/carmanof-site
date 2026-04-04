@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
+import Section from "@/components/ui/Section/Section";
 import styles from "./VideoCaseBlock.module.scss";
 
 type VideoCaseItem = {
@@ -28,10 +29,6 @@ function truncateText(text: string, maxLength: number) {
   return `${text.slice(0, maxLength).trimEnd()}…`;
 }
 
-/**
- * Для карточек ниже первого экрана используем mqdefault:
- * картинка заметно легче, а визуально для превью-карточек этого достаточно.
- */
 function getYoutubeThumbnail(youtubeId: string) {
   return `https://i.ytimg.com/vi/${youtubeId}/mqdefault.jpg`;
 }
@@ -52,10 +49,16 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
   const hasVideoCases = videoCases.length > 0;
 
   return (
-    <section id="cases" className={styles.section}>
+    <Section
+      id="cases"
+      className={styles.section}
+      aria-labelledby="video-cases-title"
+    >
       <Container>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}>Видео примеры работ</h2>
+          <h2 id="video-cases-title" className={styles.title}>
+            Видео примеры работ
+          </h2>
 
           <p className={styles.description}>
             Несколько примеров приборных панелей, с которыми мы уже работали.
@@ -67,13 +70,6 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                   const itemId =
                     item._id || item.id || `${item.youtubeId}-${index}`;
                   const isActive = activeVideoId === itemId;
-
-                  const previewThemeClass =
-                    index % 3 === 0
-                      ? styles.themeBmw
-                      : index % 3 === 1
-                        ? styles.themeAudi
-                        : styles.themeMercedes;
 
                   return (
                     <article key={itemId} className={styles.card}>
@@ -89,7 +85,7 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                       ) : (
                         <button
                           type="button"
-                          className={`${styles.previewButton} ${previewThemeClass}`}
+                          className={styles.previewButton}
                           onClick={() => setActiveVideoId(itemId)}
                           aria-label={`Открыть видео: ${item.title}`}
                         >
@@ -120,6 +116,7 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                               width={96}
                               height={96}
                               className={styles.playIcon}
+                              aria-hidden="true"
                             />
                           </span>
                         </button>
@@ -154,6 +151,6 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

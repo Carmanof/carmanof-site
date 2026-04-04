@@ -1,9 +1,5 @@
 @use "@/styles/variables" as *;
 
-.section {
-  margin: $space-96 0;
-}
-
 .container {
   position: relative;
   width: min($container-width, calc(100vw - 32px));
@@ -527,10 +523,6 @@
 }
 
 @media (max-width: 767px) {
-  .section {
-    margin: 96px 0;
-  }
-
   .container {
     width: calc(100vw - 24px);
     border-radius: 24px;

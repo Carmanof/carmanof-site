@@ -1,17 +1,24 @@
-import styles from './Section.module.scss';
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import styles from "./Section.module.scss";
 
-type Props = {
-  children: React.ReactNode;
-  variant?: 'default' | 'alt';
+type Props = ComponentPropsWithoutRef<"section"> & {
+  children: ReactNode;
+  variant?: "default" | "alt";
 };
 
-export default function Section({ children, variant = 'default' }: Props) {
+export default function Section({
+  children,
+  variant = "default",
+  className = "",
+  ...props
+}: Props) {
+  const sectionClassName =
+    variant === "alt"
+      ? `${styles.section} ${styles.alt} ${className}`.trim()
+      : `${styles.section} ${className}`.trim();
+
   return (
-    <section
-      className={`${styles.section} ${
-        variant === 'alt' ? styles.alt : ''
-      }`}
-    >
+    <section className={sectionClassName} {...props}>
       {children}
     </section>
   );

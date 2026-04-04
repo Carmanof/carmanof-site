@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Section from "@/components/ui/Section/Section";
 import styles from "./MoreExamplesBlock.module.scss";
 
 type MoreExamplesImage = {
@@ -10,21 +11,9 @@ type MoreExamplesImage = {
 };
 
 type MoreExamplesBlockProps = {
-  /**
-   * 5 изображений для блока:
-   * - 2 сверху
-   * - 3 снизу
-   *
-   * Если по какой-то причине массив придет неполным,
-   * ниже используем безопасный fallback.
-   */
   images?: MoreExamplesImage[];
 };
 
-/**
- * Локальный fallback на случай,
- * если props не пришли или массив оказался неполным.
- */
 const fallbackImages: MoreExamplesImage[] = [
   {
     src: "/images/more-examples/example-01-v2.webp",
@@ -48,35 +37,17 @@ const fallbackImages: MoreExamplesImage[] = [
   },
 ];
 
-/**
- * Подсказки браузеру по реальным размерам карточек.
- *
- * Почему такие значения:
- * - на desktop верхние карточки примерно ~588px шириной
- * - на desktop нижние карточки примерно ~389px шириной
- * - на tablet верх идет в 1 колонку, низ в 2 колонки
- * - на mobile все карточки становятся в одну колонку
- *
- * Это точнее, чем абстрактные 50vw / 33vw,
- * поэтому браузер будет подбирать более подходящий размер изображения.
- */
 const topImageSizes =
   "(max-width: 640px) calc(100vw - 44px), (max-width: 991px) calc(100vw - 52px), 588px";
 
 const bottomImageSizes =
   "(max-width: 640px) calc(100vw - 44px), (max-width: 991px) calc((100vw - 58px) / 2), 389px";
 
-/* Фотоблок: 2 карточки сверху и 3 снизу */
 const MoreExamplesBlock = ({
   images = fallbackImages,
 }: MoreExamplesBlockProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  /**
-   * Подстраховка:
-   * даже если снаружи передали не все 5 изображений,
-   * блок все равно останется рабочим и заполнит недостающие позиции fallback-картинками.
-   */
   const normalizedImages = useMemo(() => {
     return fallbackImages.map((fallbackImage, index) => ({
       src: images[index]?.src || fallbackImage.src,
@@ -84,23 +55,19 @@ const MoreExamplesBlock = ({
     }));
   }, [images]);
 
-  /* Верхний ряд галереи: 2 крупные карточки */
   const topImages = useMemo(
     () => normalizedImages.slice(0, 2),
     [normalizedImages],
   );
 
-  /* Нижний ряд галереи: 3 карточки */
   const bottomImages = useMemo(
     () => normalizedImages.slice(2, 5),
     [normalizedImages],
   );
 
-  /* Собираем все изображения в один массив для модалки */
   const allImages = useMemo(() => normalizedImages, [normalizedImages]);
 
   useEffect(() => {
-    /* Закрытие по клавише Esc */
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setActiveIndex(null);
@@ -122,7 +89,7 @@ const MoreExamplesBlock = ({
 
   return (
     <>
-      <section className={styles.section}>
+      <Section aria-label="Дополнительные примеры работ">
         <div className={styles.container}>
           <div className={styles.galleryShell}>
             <div className={styles.gridTop}>
@@ -134,14 +101,6 @@ const MoreExamplesBlock = ({
                   aria-label={image.alt}
                   onClick={() => setActiveIndex(index)}
                 >
-                  {/* Preload images */}
-                  <link
-                    rel="preload"
-                    href={image.src}
-                    as="image"
-                    type="image/webp"
-                    imageSizes={topImageSizes}
-                  />
                   <Image
                     src={image.src}
                     alt={image.alt}
@@ -149,7 +108,7 @@ const MoreExamplesBlock = ({
                     className={styles.image}
                     sizes={topImageSizes}
                     priority={false}
-                    loading="lazy" // Lazy load
+                    loading="lazy"
                   />
                 </button>
               ))}
@@ -164,14 +123,6 @@ const MoreExamplesBlock = ({
                   aria-label={image.alt}
                   onClick={() => setActiveIndex(topImages.length + index)}
                 >
-                  {/* Preload images */}
-                  <link
-                    rel="preload"
-                    href={image.src}
-                    as="image"
-                    type="image/webp"
-                    imageSizes={bottomImageSizes}
-                  />
                   <Image
                     src={image.src}
                     alt={image.alt}
@@ -179,14 +130,14 @@ const MoreExamplesBlock = ({
                     className={styles.image}
                     sizes={bottomImageSizes}
                     priority={false}
-                    loading="lazy" // Lazy load
+                    loading="lazy"
                   />
                 </button>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </Section>
 
       {activeImage && (
         <div

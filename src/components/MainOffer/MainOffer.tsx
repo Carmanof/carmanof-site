@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Section from "@/components/ui/Section/Section";
 import styles from "./MainOffer.module.scss";
 import Container from "@/components/ui/Container/Container";
 
 export default function MainOffer() {
   return (
-    <section className={styles.section} aria-labelledby="main-offer-title">
+    <Section aria-labelledby="main-offer-title">
       <Container>
         <div className={styles.wrapper}>
           <div className={styles.content}>
@@ -34,6 +35,6 @@ export default function MainOffer() {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

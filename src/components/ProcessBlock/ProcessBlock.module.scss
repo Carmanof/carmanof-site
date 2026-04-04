@@ -1,7 +1,6 @@
 @use "@/styles/variables" as *;
 
 .section {
-  margin: $space-96 0;
   scroll-margin-top: 172px;
 }
 
@@ -138,10 +137,6 @@
 }
 
 @media (max-width: 960px) {
-  .section {
-    margin: 72px 0;
-  }
-
   .title {
     margin-bottom: 24px;
     font-size: 28px;
@@ -152,10 +147,6 @@
    MOBILE
    ========================= */
 @media (max-width: 640px) {
-  .section {
-    margin: 56px 0;
-  }
-
   .wrapper {
     padding: 0 12px;
   }

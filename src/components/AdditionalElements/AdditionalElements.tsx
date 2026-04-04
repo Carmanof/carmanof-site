@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "./AdditionalElements.module.scss";
 import Container from "@/components/ui/Container/Container";
+import Section from "@/components/ui/Section/Section";
 
 type AdditionalItem = {
   id: string;
@@ -32,10 +33,7 @@ const items: AdditionalItem[] = [
 
 export default function AdditionalElements() {
   return (
-    <section
-      className={styles.section}
-      aria-labelledby="additional-elements-title"
-    >
+    <Section aria-labelledby="additional-elements-title">
       <Container>
         <div className={styles.wrapper}>
           <h2 id="additional-elements-title" className={styles.title}>
@@ -43,7 +41,7 @@ export default function AdditionalElements() {
           </h2>
 
           <p className={styles.description}>
-            Если требуется изготовить отдельные элементы приборки — можем
+            Если требуется изготовить индивидуальные элементы приборки — можем
             сделать это отдельно от основных работ.
           </p>
 
@@ -66,6 +64,6 @@ export default function AdditionalElements() {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

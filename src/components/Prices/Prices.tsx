@@ -1,3 +1,4 @@
+import Section from "@/components/ui/Section/Section";
 import styles from "./Prices.module.scss";
 
 type PriceItem = {
@@ -31,7 +32,7 @@ export default function Prices({ items = fallbackItems }: PricesProps) {
   }));
 
   return (
-    <section
+    <Section
       id="prices"
       className={styles.section}
       aria-labelledby="prices-title"
@@ -58,6 +59,6 @@ export default function Prices({ items = fallbackItems }: PricesProps) {
           </p>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
