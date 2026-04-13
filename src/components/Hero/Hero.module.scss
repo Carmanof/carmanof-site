@@ -21,12 +21,13 @@
   background:
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.72) 0%,
-      rgba(255, 255, 255, 0) 34%
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 16%,
+      rgba(255, 255, 255, 0) 36%
     ),
     $color-surface;
 
-  box-shadow: $shadow-md, $highlight-soft;
+  box-shadow: $shadow-md;
 
   overflow: hidden;
 }
@@ -88,7 +89,7 @@
   isolation: isolate;
 
   background: $color-media-bg;
-  box-shadow: $shadow-md, $highlight-medium;
+  box-shadow: $shadow-md;
 }
 
 .imageBase,
@@ -182,7 +183,7 @@
     border-radius: 22px;
 
     background: $color-surface;
-    box-shadow: $shadow-sm, $highlight-soft;
+    box-shadow: $shadow-sm;
   }
 
   .content {
@@ -239,6 +240,6 @@
 
   .media {
     border-radius: 18px;
-    box-shadow: $shadow-sm, $highlight-medium;
+    box-shadow: $shadow-sm;
   }
 }

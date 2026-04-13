@@ -5,13 +5,13 @@
 // Меняешь только этот блок
 // =========================
 $color-bg: #fcfcfd;
-$color-surface: #f3f5fa;
+$color-surface: #e6ebf6ac;
 $color-surface-strong: #ffffff;
 $color-text: #26333a;
 $color-text-strong: #1b252b;
 $color-muted: #6e7b84;
 $color-accent: #27aae1;
-$color-border: #dde3ec;
+$color-border: #e9edf3;
 
 // =========================
 // DERIVED COLORS
@@ -66,9 +66,9 @@ $shadow-xl: 0 24px 80px rgba(27, 37, 43, 0.14);
 // =========================
 // HIGHLIGHTS
 // =========================
-$highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.58);
-$highlight-medium: inset 0 1px 0 rgba(255, 255, 255, 0.42);
-$highlight-strong: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+$highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+$highlight-medium: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+$highlight-strong: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 
 // =========================
 // OVERLAYS / GLASS
