@@ -127,12 +127,24 @@
 
 .nav {
   display: block;
+
+  /* МЕНЯТЬ ЗДЕСЬ: размер шрифта пунктов меню */
+  font-size: 18px;
+
+  /* МЕНЯТЬ ЗДЕСЬ: насыщенность шрифта меню */
+  font-weight: 500;
+
+  /* МЕНЯТЬ ЗДЕСЬ: высота строки меню */
+  line-height: 1.2;
 }
 
 .list {
   display: flex;
   align-items: center;
-  gap: 32px;
+
+  /* МЕНЯТЬ ЗДЕСЬ: расстояние между пунктами меню */
+  gap: 48px;
+
   list-style: none;
   margin: 0;
   padding: 0;
