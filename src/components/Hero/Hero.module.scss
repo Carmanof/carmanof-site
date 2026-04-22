@@ -78,7 +78,16 @@
   margin-top: 26px;
 }
 
+/* Увеличиваем ширину кнопки только в Hero, не ломая общий Button */
+.actions :global(a) {
+  min-width: 400px;
+  justify-content: center;
+}
+
 /* ---------------- MEDIA ---------------- */
+.media {
+  cursor: pointer;
+}
 
 .media {
   position: relative;

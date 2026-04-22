@@ -42,7 +42,7 @@ export default function ProcessBlock() {
       <Container>
         <div className={styles.wrapper}>
           <h2 id="process-block-title" className={styles.title}>
-            Как проходит работа
+            Как заказать
           </h2>
 
           <div className={styles.steps}>

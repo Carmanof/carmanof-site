@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./Hero.module.scss";
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
@@ -9,16 +9,7 @@ import Button from "@/components/ui/Button/Button";
 type IntroPhase = "idle" | "animating" | "done";
 
 type HeroProps = {
-  /**
-   * Картинка Hero для обычного состояния ("до").
-   * Если из Sanity ничего не пришло — используем локальный fallback.
-   */
   defaultImageSrc?: string;
-
-  /**
-   * Картинка Hero для второго состояния ("после").
-   * Если из Sanity ничего не пришло — используем локальный fallback.
-   */
   hoverImageSrc?: string;
 };
 
@@ -66,6 +57,31 @@ export default function Hero({
     };
   }, []);
 
+  const handleContactClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+      event.preventDefault();
+
+      const target = document.querySelector("#contact");
+      if (!target) return;
+
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    [],
+  );
+
+  const handleMediaClick = useCallback(() => {
+  const target = document.querySelector("#other-works");
+  if (!target) return;
+
+  const top =
+    target.getBoundingClientRect().top + window.pageYOffset - 172;
+
+  window.scrollTo({
+    top,
+    behavior: "smooth",
+  });
+}, []);
+
   function handleIntroTransitionEnd() {
     if (isDesktopHover && introPhase === "animating") {
       setIntroPhase("done");
@@ -73,18 +89,12 @@ export default function Hero({
   }
 
   function handleMouseEnter() {
-    if (!isDesktopHover) {
-      return;
-    }
-
+    if (!isDesktopHover) return;
     setIsHovered(true);
   }
 
   function handleMouseLeave() {
-    if (!isDesktopHover) {
-      return;
-    }
-
+    if (!isDesktopHover) return;
     setIsHovered(false);
   }
 
@@ -102,13 +112,6 @@ export default function Hero({
     .filter(Boolean)
     .join(" ");
 
-  /**
-   * Mobile / touch:
-   * сразу показываем финальную картинку.
-   *
-   * Desktop:
-   * первый кадр = default.
-   */
   const mainImageSrc = isDesktopHover ? defaultImageSrc : hoverImageSrc;
 
   return (
@@ -124,8 +127,13 @@ export default function Hero({
               </h1>
 
               <p className={styles.description}>
-                Кастомные шкалы, идеальная точность, <br />
-                эксклюзивный дизайн
+                Мы создаем индивидуальные шкалы
+                <br />
+                для спидометров, тахометров и других
+                <br />
+                приборов на автомобили любых марок -
+                <br />
+                от отечественных до премиум-класса.
               </p>
 
               <p className={styles.caption}>
@@ -134,12 +142,13 @@ export default function Hero({
             </div>
 
             <div className={styles.actions}>
-              <Button href="#contact" variant="primary" size="sm">
-                Узнать подробнее
-              </Button>
-
-              <Button href="#cases" variant="secondary" size="sm">
-                Смотреть работы
+              <Button
+                href="#contact"
+                variant="primary"
+                size="sm"
+                onClick={handleContactClick}
+              >
+                Оставить заявку
               </Button>
             </div>
           </div>
@@ -148,6 +157,14 @@ export default function Hero({
             className={mediaClassName}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={handleMediaClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleMediaClick();
+              }
+            }}
           >
             <div className={styles.imageBase}>
               <Image

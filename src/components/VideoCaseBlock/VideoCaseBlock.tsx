@@ -57,7 +57,7 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
       <Container>
         <div className={styles.wrapper}>
           <h2 id="video-cases-title" className={styles.title}>
-            Видео примеры работ
+            Наши работы
           </h2>
 
           <p className={styles.description}>

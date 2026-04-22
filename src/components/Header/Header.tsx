@@ -11,8 +11,8 @@ import styles from "./Header.module.scss";
 
 /* Навигация главной */
 const navItems = [
-  { label: "Работы", href: "#cases" },
-  { label: "Процесс", href: "#process" },
+  { label: "Готовые работы", href: "#cases" },
+  { label: "Как заказать", href: "#process" },
   { label: "Цены", href: "#prices" },
   { label: "Контакты", href: "#contact" },
 ];
