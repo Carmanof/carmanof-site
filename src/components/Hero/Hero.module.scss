@@ -78,13 +78,14 @@
   margin-top: 26px;
 }
 
-/* Увеличиваем ширину кнопки только в Hero, не ломая общий Button */
+/* Широкая кнопка только в Hero на десктопе */
 .actions :global(a) {
   min-width: 400px;
   justify-content: center;
 }
 
 /* ---------------- MEDIA ---------------- */
+
 .media {
   cursor: pointer;
 }
@@ -179,6 +180,12 @@
     height: auto;
     aspect-ratio: 520 / 500;
   }
+
+  .actions :global(a) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
@@ -230,21 +237,26 @@
   .actions {
     gap: 10px;
     margin-top: 16px;
-    justify-content: space-between;
+    justify-content: stretch;
   }
 
   .actions > * {
-    flex: 1 1 0;
+    flex: 1 1 100%;
     min-width: 0;
   }
 
   .actions :global(a) {
+    display: inline-flex;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     min-height: 40px;
-    padding: 0 8px;
+    padding: 0 12px;
     font-size: 12px;
     line-height: 1.1;
     text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
   .media {
