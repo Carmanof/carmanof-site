@@ -120,6 +120,7 @@ export default function Header({ phone }: HeaderProps) {
             <div className={styles.inner}>
               <Link
                 href="/"
+                id="header-logo"
                 className={styles.logo}
                 aria-label="На главную"
                 onClick={handleLogoClick}

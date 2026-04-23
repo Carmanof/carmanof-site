@@ -14,6 +14,10 @@ type IntroProps = {
   enabled?: boolean;
 };
 
+const INTRO_START_DELAY_MS = 700;
+const TARGET_RETRY_DELAY_MS = 120;
+const TARGET_RETRY_MAX_ATTEMPTS = 8;
+
 function hasPlayedIntroInSession() {
   if (typeof document === "undefined") {
     return true;
@@ -60,6 +64,7 @@ export default function Intro({ enabled }: IntroProps) {
   const hasFinishedRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const startTimerRef = useRef<number | null>(null);
+  const retryTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const introAllowedByDevice = canUseIntroAnimation();
@@ -98,12 +103,12 @@ export default function Intro({ enabled }: IntroProps) {
     document.body.classList.add("intro-lock");
 
     /**
-     * Оставляем комфортную паузу перед стартом —
-     * примерно ту же, что у тебя была и визуально нравилась.
+     * Оставляем короткую паузу перед стартом, чтобы интро успело
+     * визуально считаться и не выглядело как резкая вспышка.
      */
     startTimerRef.current = window.setTimeout(() => {
       runAnimation();
-    }, 650);
+    }, INTRO_START_DELAY_MS);
 
     return () => {
       document.body.classList.remove("intro-lock");
@@ -113,6 +118,11 @@ export default function Intro({ enabled }: IntroProps) {
         startTimerRef.current = null;
       }
 
+      if (retryTimerRef.current !== null) {
+        window.clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
+
       if (rafRef.current !== null) {
         window.cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
@@ -120,20 +130,28 @@ export default function Intro({ enabled }: IntroProps) {
     };
   }, [shouldRender, stage]);
 
-  function runAnimation() {
+  function runAnimation(attempt = 0) {
     if (hasStartedRef.current || hasFinishedRef.current) {
       return;
     }
-
-    hasStartedRef.current = true;
 
     const logo = logoRef.current;
     const target = document.getElementById("header-logo");
 
     if (!logo || !target) {
+      if (attempt < TARGET_RETRY_MAX_ATTEMPTS) {
+        retryTimerRef.current = window.setTimeout(() => {
+          runAnimation(attempt + 1);
+        }, TARGET_RETRY_DELAY_MS);
+
+        return;
+      }
+
       finishIntro();
       return;
     }
+
+    hasStartedRef.current = true;
 
     const logoRect = logo.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
