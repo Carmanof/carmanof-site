@@ -126,7 +126,7 @@ export default function CookieConsent() {
             cursor: "pointer",
           }}
         >
-          Только обязательные
+          Не принимаю
         </button>
       </div>
     </div>
