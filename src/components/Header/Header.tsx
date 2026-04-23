@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 
 import Container from "@/components/ui/Container/Container";
 import { formatPhone } from "@/lib/formatPhone";
+import { trackPhoneClick } from "@/lib/analytics";
 import styles from "./Header.module.scss";
 
 /* Навигация главной */
@@ -104,6 +105,10 @@ export default function Header({ phone }: HeaderProps) {
     [handleScroll, pathname],
   );
 
+  const handlePhoneClick = useCallback(() => {
+    trackPhoneClick(phone);
+  }, [phone]);
+
   function handleBurgerClick() {
     setIsMenuOpen((prev) => !prev);
   }
@@ -178,6 +183,7 @@ export default function Header({ phone }: HeaderProps) {
                   <a
                     href={`tel:${phone.replace(/\D/g, "")}`}
                     className={styles.phone}
+                    onClick={handlePhoneClick}
                   >
                     {formatPhone(phone)}
                   </a>
