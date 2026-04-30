@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
-import { getSiteUrl } from "@/lib/site";
 import { getBlogPostSlugs } from "@/sanity/lib/fetchers";
 
-const SITE_URL = getSiteUrl().replace(/\/$/, "");
+const SITE_URL = "https://carmanof.ru";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [

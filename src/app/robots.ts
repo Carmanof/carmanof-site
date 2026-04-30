@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getSiteUrl } from "@/lib/site";
 
-const SITE_URL = getSiteUrl().replace(/\/$/, "");
+const SITE_URL = "https://carmanof.ru";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -10,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/studio/", "/api/"],
     },
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`, // теперь корректно
     host: SITE_URL,
   };
 }
