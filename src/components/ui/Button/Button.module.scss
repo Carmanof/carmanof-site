@@ -42,7 +42,7 @@
 }
 
 .secondary {
-  background: color.mix($color-border, $color-bg, 52%);
+  background: color.mix($color-border, $color-bg, 30%);
   border-color: $color-border;
   color: color.adjust($color-text, $alpha: -0.24);
 }
