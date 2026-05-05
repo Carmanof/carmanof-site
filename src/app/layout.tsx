@@ -5,10 +5,8 @@ import { Suspense } from "react";
 import Analytics from "@/components/Analytics/Analytics";
 import CookieConsent from "@/components/CookieConsent/CookieConsent";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
+import { SEO_CONFIG } from "@/config/seo";
 import "./globals.scss";
-
-// ===== FIXED CANONICAL DOMAIN =====
-const siteUrl = "https://www.carmanof.ru";
 
 // ===== Fonts =====
 const manrope = localFont({
@@ -25,21 +23,22 @@ const manrope = localFont({
 });
 
 // ===== Metadata =====
+const siteUrl = SEO_CONFIG.siteUrl;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
-  applicationName: "Carmanof",
+  applicationName: SEO_CONFIG.siteName,
 
   title: {
-    default: "Carmanof",
-    template: "%s | Carmanof",
+    default: SEO_CONFIG.defaultTitle,
+    template: SEO_CONFIG.titleTemplate,
   },
 
-  description:
-    "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
+  description: SEO_CONFIG.description,
 
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
   },
 
   icons: {
@@ -67,29 +66,27 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Carmanof",
-    description:
-      "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
+    title: SEO_CONFIG.defaultTitle,
+    description: SEO_CONFIG.description,
     url: siteUrl,
-    siteName: "Carmanof",
-    locale: "ru_RU",
+    siteName: SEO_CONFIG.siteName,
+    locale: SEO_CONFIG.locale,
     type: "website",
     images: [
       {
-        url: `${siteUrl}/og-image.jpg`,
+        url: `${siteUrl}${SEO_CONFIG.openGraphImage}`,
         width: 1200,
         height: 630,
-        alt: "Carmanof",
+        alt: SEO_CONFIG.siteName,
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Carmanof",
-    description:
-      "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
-    images: [`${siteUrl}/og-image.jpg`],
+    title: SEO_CONFIG.defaultTitle,
+    description: SEO_CONFIG.description,
+    images: [`${siteUrl}${SEO_CONFIG.openGraphImage}`],
   },
 
   formatDetection: {

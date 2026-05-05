@@ -1,15 +1,15 @@
 import type { MetadataRoute } from "next";
-
-const SITE_URL = "https://www.carmanof.ru";
+import { SEO_CONFIG } from "@/config/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/studio/", "/api/"],
-    },
-    sitemap: `${SITE_URL}/sitemap.xml`, // теперь корректно
-    host: SITE_URL,
+    rules: [
+      {
+        userAgent: "*",
+        allow: SEO_CONFIG.robots.allow,
+        disallow: SEO_CONFIG.robots.disallow,
+      },
+    ],
+    sitemap: `${SEO_CONFIG.siteUrl}/sitemap.xml`,
   };
 }
