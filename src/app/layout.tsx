@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
 
   alternates: {
-    canonical: siteUrl,
+    canonical: "/",
   },
 
   icons: {
