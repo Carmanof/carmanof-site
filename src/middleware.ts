@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
 
   const isWrongDomain =
     host.includes("vercel.app") ||
-    host.startsWith("www.") ||
+    host.includes("www.") ||
     host !== MAIN_DOMAIN;
 
   if (isWrongDomain) {
@@ -25,3 +25,5 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: "/:path*",
 };
+
+console.log("EDGE FILE ACTIVE");
