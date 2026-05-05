@@ -5,10 +5,10 @@ import { Suspense } from "react";
 import Analytics from "@/components/Analytics/Analytics";
 import CookieConsent from "@/components/CookieConsent/CookieConsent";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
-import { getSiteUrl } from "@/lib/site";
 import "./globals.scss";
 
-const siteUrl = getSiteUrl();
+// ===== FIXED CANONICAL DOMAIN =====
+const siteUrl = "https://www.carmanof.ru";
 
 // ===== Fonts =====
 const manrope = localFont({
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
   },
 };
 
-// ===== Viewport (важно для SEO и mobile) =====
+// ===== Viewport =====
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
