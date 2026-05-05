@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 
@@ -10,6 +10,7 @@ import "./globals.scss";
 
 const siteUrl = getSiteUrl();
 
+// ===== Fonts =====
 const manrope = localFont({
   src: [
     { path: "./fonts/Manrope-Light.ttf", weight: "300", style: "normal" },
@@ -23,6 +24,7 @@ const manrope = localFont({
   variable: "--font-manrope",
 });
 
+// ===== Metadata =====
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
@@ -50,6 +52,10 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 
+  manifest: "/manifest.json",
+
+  themeColor: "#ffffff",
+
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
     yandex: process.env.YANDEX_VERIFICATION,
@@ -68,16 +74,37 @@ export const metadata: Metadata = {
     siteName: "Carmanof",
     locale: "ru_RU",
     type: "website",
+    images: [
+      {
+        url: `${siteUrl}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "Carmanof",
+      },
+    ],
   },
 
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Carmanof",
     description:
       "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
+    images: [`${siteUrl}/og-image.jpg`],
+  },
+
+  formatDetection: {
+    telephone: false,
   },
 };
 
+// ===== Viewport (важно для SEO и mobile) =====
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ffffff",
+};
+
+// ===== Layout =====
 export default function RootLayout({
   children,
 }: {
@@ -87,7 +114,9 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body className={manrope.variable}>
         <LayoutChrome>{children}</LayoutChrome>
+
         <CookieConsent />
+
         <Suspense fallback={null}>
           <Analytics />
         </Suspense>
