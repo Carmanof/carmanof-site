@@ -7,6 +7,8 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const host = request.headers.get("host") || "";
 
+  console.log("MIDDLEWARE HIT:", host); // важно для проверки
+
   const isWrongDomain =
     host.includes("vercel.app") ||
     host.includes("www.") ||
@@ -25,5 +27,3 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: "/:path*",
 };
-
-console.log("EDGE FILE ACTIVE");
