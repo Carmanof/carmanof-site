@@ -89,7 +89,7 @@ export const metadata: Metadata = {
     title: "Carmanof",
     description:
       "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
-    images: ["https://carmanof.ru/og-image.jpg"],
+    images: [`${siteUrl}/og-image.jpg`],
   },
 
   formatDetection: {
