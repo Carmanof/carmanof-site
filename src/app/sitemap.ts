@@ -7,37 +7,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: new Date(),
+      lastModified: new Date("2024-01-01"),
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${SITE_URL}/blog`,
-      lastModified: new Date(),
+      lastModified: new Date("2024-01-01"),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/cases`,
-      lastModified: new Date(),
+      lastModified: new Date("2024-01-01"),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/cases/video`,
-      lastModified: new Date(),
+      lastModified: new Date("2024-01-01"),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/cases/photo`,
-      lastModified: new Date(),
+      lastModified: new Date("2024-01-01"),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/privacy`,
-      lastModified: new Date(),
+      lastModified: new Date("2024-01-01"),
       changeFrequency: "monthly",
       priority: 0.3,
     },
@@ -47,10 +47,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const blogPages: MetadataRoute.Sitemap = blogSlugs.map((item) => ({
     url: `${SITE_URL}/blog/${item.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(), // можно заменить на дату из Sanity
     changeFrequency: "monthly",
     priority: 0.6,
   }));
 
   return [...staticPages, ...blogPages];
 }
+
+const blogSlugs = await getBlogPostSlugs();
+
+console.log("BLOG SLUGS:", blogSlugs);
