@@ -16,26 +16,26 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // Vercel preview → основной домен
+      // 1. ВСЕ vercel preview → основной домен
       {
         source: "/:path*",
         has: [
           {
             type: "host",
-            value: "(.*)\\.vercel\\.app",
+            value: ".*vercel\\.app",
           },
         ],
         destination: `https://${MAIN_DOMAIN}/:path*`,
         permanent: true,
       },
 
-      // www → без www
+      // 2. www → без www
       {
         source: "/:path*",
         has: [
           {
             type: "host",
-            value: `www.${MAIN_DOMAIN}`,
+            value: `www\\.${MAIN_DOMAIN}`,
           },
         ],
         destination: `https://${MAIN_DOMAIN}/:path*`,
