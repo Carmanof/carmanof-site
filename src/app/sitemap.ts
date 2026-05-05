@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getBlogPostSlugs } from "@/sanity/lib/fetchers";
 
-const SITE_URL = "https://carmanof.ru";
+const SITE_URL = "https://www.carmanof.ru";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
