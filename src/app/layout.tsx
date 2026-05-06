@@ -2,9 +2,8 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 
-import Analytics from "@/components/Analytics/Analytics";
-import CookieConsent from "@/components/CookieConsent/CookieConsent";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
+import DeferredScripts from "@/components/DeferredScripts";
 import { SEO_CONFIG } from "@/config/seo";
 import "./globals.scss";
 
@@ -112,10 +111,9 @@ export default function RootLayout({
       <body className={manrope.variable}>
         <LayoutChrome>{children}</LayoutChrome>
 
-        <CookieConsent />
-
+        {/* Отложенные скрипты (не блокируют рендер) */}
         <Suspense fallback={null}>
-          <Analytics />
+          <DeferredScripts />
         </Suspense>
       </body>
     </html>
