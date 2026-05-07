@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
@@ -89,15 +88,13 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                           onClick={() => setActiveVideoId(itemId)}
                           aria-label={`Открыть видео: ${item.title}`}
                         >
-                          <Image
+                          {/* 🔴 FIX: replaced next/image with native img */}
+                          <img
                             src={getYoutubeThumbnail(item.youtubeId)}
                             alt={item.title}
-                            fill
-                            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
-                            className={styles.previewImage}
                             loading="lazy"
-                            fetchPriority="low"
                             decoding="async"
+                            className={styles.previewImage}
                           />
 
                           <span className={styles.previewOverlay} />
@@ -110,11 +107,9 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                           </span>
 
                           <span className={styles.playButton}>
-                            <Image
+                            <img
                               src="/icons/video-case-block/play.svg"
                               alt=""
-                              width={96}
-                              height={96}
                               className={styles.playIcon}
                               aria-hidden="true"
                             />
