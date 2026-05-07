@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "https://www.carmanof.ru/:path*",
+      "destination": "https://carmanof.ru/:path*",
+      "permanent": true
+    }
+  ]
+}
