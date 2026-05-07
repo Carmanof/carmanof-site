@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
 
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
-import DeferredScripts from "@/components/DeferredScripts";
 import { SEO_CONFIG } from "@/config/seo";
 import "./globals.scss";
 
@@ -95,9 +93,7 @@ export default function RootLayout({
         <LayoutChrome>{children}</LayoutChrome>
 
         {/* Отложенные скрипты (не блокируют рендер) */}
-        <Suspense fallback={null}>
-          <DeferredScripts />
-        </Suspense>
+        {/* DeferredScripts temporarily disabled */}
       </body>
     </html>
   );
