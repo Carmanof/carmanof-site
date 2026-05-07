@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const MAIN_DOMAIN = "carmanof.ru";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+
   images: {
     unoptimized: true,
 
@@ -18,28 +20,15 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // 1. ВСЕ vercel preview → основной домен
       {
         source: "/:path*",
-        has: [
-          {
-            type: "host",
-            value: ".*vercel\\.app",
-          },
-        ],
+        has: [{ type: "host", value: ".*vercel\\.app" }],
         destination: `https://${MAIN_DOMAIN}/:path*`,
         permanent: true,
       },
-
-      // 2. www → без www
       {
         source: "/:path*",
-        has: [
-          {
-            type: "host",
-            value: `www\\.${MAIN_DOMAIN}`,
-          },
-        ],
+        has: [{ type: "host", value: `www\\.${MAIN_DOMAIN}` }],
         destination: `https://${MAIN_DOMAIN}/:path*`,
         permanent: true,
       },
