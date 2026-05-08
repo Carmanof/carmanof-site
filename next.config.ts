@@ -10,14 +10,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },
-
-  // КЛЮЧЕВО: фикс static routing
-  assetPrefix: "",
-
-  // важно для Vercel edge static handling
-  trailingSlash: false,
-
-  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;
