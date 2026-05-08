@@ -7,16 +7,17 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const host = req.headers.get("host") || "";
 
-  // игнор системных путей
-  if (
+  const isAsset =
     url.pathname.startsWith("/_next") ||
     url.pathname.startsWith("/api") ||
-    url.pathname.includes(".")
-  ) {
+    url.pathname.startsWith("/favicon") ||
+    url.pathname.startsWith("/manifest.json") ||
+    url.pathname.match(/\.(.*)$/);
+
+  if (isAsset) {
     return NextResponse.next();
   }
 
-  // enforce canonical domain (www → non-www + vercel preview → main)
   if (host !== MAIN_DOMAIN) {
     url.hostname = MAIN_DOMAIN;
     url.protocol = "https";
