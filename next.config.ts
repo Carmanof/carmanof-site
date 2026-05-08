@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // важно: НЕ добавляем redirects/rewrites здесь пока
+  // важно: никаких redirects / rewrites
 };
 
 export default nextConfig;

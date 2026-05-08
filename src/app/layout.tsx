@@ -4,13 +4,11 @@ import type { Metadata, Viewport } from "next";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
 import "./globals.scss";
 
-// ЖЁСТКО фиксируем базовый домен
+// ЖЁСТКО фиксированный домен (без функций, без env)
 const SITE_URL = "https://carmanof.ru";
 
 // ===== Metadata =====
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-
   applicationName: "Carmanof",
 
   title: {
