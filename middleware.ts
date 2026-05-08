@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const url = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
-  // ЖЁСТКО убираем trailing slash ТОЛЬКО для static
-  if (url.pathname.startsWith("/_next/static/")) {
-    url.pathname = url.pathname.replace(/\/$/, "");
-    return NextResponse.rewrite(url);
+  // ❗ КРИТИЧНО: не трогаем Next.js runtime assets
+  if (pathname.startsWith("/_next/")) {
+    return NextResponse.next();
   }
 
+  // здесь уже можно делать свои правила (если нужны)
   return NextResponse.next();
 }
