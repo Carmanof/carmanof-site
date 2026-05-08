@@ -1,5 +1,3 @@
-// next.config.ts
-
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -13,7 +11,13 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // КЛЮЧЕВО: фикс static routing
+  assetPrefix: "",
+
+  // важно для Vercel edge static handling
   trailingSlash: false,
+
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;
