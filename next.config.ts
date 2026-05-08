@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // важно: никаких redirects / rewrites
+  trailingSlash: false,
 };
 
 export default nextConfig;

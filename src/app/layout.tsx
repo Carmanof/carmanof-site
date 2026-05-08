@@ -3,12 +3,11 @@
 import type { Metadata, Viewport } from "next";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
 import "./globals.scss";
+import { SITE_URL } from "@/lib/site";
 
-// ЖЁСТКО фиксированный домен (без функций, без env)
-const SITE_URL = "https://carmanof.ru";
-
-// ===== Metadata =====
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+
   applicationName: "Carmanof",
 
   title: {
@@ -67,14 +66,12 @@ export const metadata: Metadata = {
   },
 };
 
-// ===== Viewport =====
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#ffffff",
 };
 
-// ===== Layout =====
 export default function RootLayout({
   children,
 }: {
