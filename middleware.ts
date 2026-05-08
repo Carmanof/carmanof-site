@@ -7,17 +7,21 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const host = req.headers.get("host") || "";
 
-  const isAsset =
-    url.pathname.startsWith("/_next") ||
-    url.pathname.startsWith("/api") ||
-    url.pathname.startsWith("/favicon") ||
-    url.pathname.startsWith("/manifest.json") ||
-    url.pathname.match(/\.(.*)$/);
+  const pathname = url.pathname;
 
-  if (isAsset) {
+  // 1. ЖЁСТКИЕ исключения Next.js runtime assets
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/manifest") ||
+    pathname.startsWith("/icons") ||
+    pathname.startsWith("/images")
+  ) {
     return NextResponse.next();
   }
 
+  // 2. canonical domain enforcement
   if (host !== MAIN_DOMAIN) {
     url.hostname = MAIN_DOMAIN;
     url.protocol = "https";
