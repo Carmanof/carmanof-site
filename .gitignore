@@ -44,3 +44,4 @@ next-env.d.ts
 Инструкции.txt
 
 Commands.txt
+.env*.local

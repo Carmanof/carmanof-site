@@ -1,4 +1,8 @@
-const nextConfig = {
+// next.config.ts
+
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   images: {
@@ -8,6 +12,8 @@ const nextConfig = {
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },
+
+  // важно: НЕ добавляем redirects/rewrites здесь пока
 };
 
 export default nextConfig;

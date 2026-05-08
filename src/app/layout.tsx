@@ -1,26 +1,27 @@
-import type { Metadata, Viewport } from "next";
+// app/layout.tsx
 
+import type { Metadata, Viewport } from "next";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
-import { SEO_CONFIG } from "@/config/seo";
 import "./globals.scss";
 
+// ЖЁСТКО фиксируем базовый домен
+const SITE_URL = "https://carmanof.ru";
+
 // ===== Metadata =====
-const siteUrl = SEO_CONFIG.siteUrl;
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
 
-  applicationName: SEO_CONFIG.siteName,
+  applicationName: "Carmanof",
 
   title: {
-    default: SEO_CONFIG.defaultTitle,
-    template: SEO_CONFIG.titleTemplate,
+    default: "Carmanof",
+    template: "%s | Carmanof",
   },
 
-  description: SEO_CONFIG.description,
+  description: "Carmanof",
 
   alternates: {
-    canonical: siteUrl,
+    canonical: SITE_URL,
   },
 
   icons: {
@@ -35,38 +36,32 @@ export const metadata: Metadata = {
 
   manifest: "/manifest.json",
 
-  verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
-    yandex: process.env.YANDEX_VERIFICATION,
-  },
-
   robots: {
     index: true,
     follow: true,
   },
 
   openGraph: {
-    title: SEO_CONFIG.defaultTitle,
-    description: SEO_CONFIG.description,
-    url: siteUrl,
-    siteName: SEO_CONFIG.siteName,
-    locale: SEO_CONFIG.locale,
+    title: "Carmanof",
+    description: "Carmanof",
+    url: SITE_URL,
+    siteName: "Carmanof",
     type: "website",
     images: [
       {
-        url: `${siteUrl}${SEO_CONFIG.openGraphImage}`,
+        url: `${SITE_URL}/og.png`,
         width: 1200,
         height: 630,
-        alt: SEO_CONFIG.siteName,
+        alt: "Carmanof",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: SEO_CONFIG.defaultTitle,
-    description: SEO_CONFIG.description,
-    images: [`${siteUrl}${SEO_CONFIG.openGraphImage}`],
+    title: "Carmanof",
+    description: "Carmanof",
+    images: [`${SITE_URL}/og.png`],
   },
 
   formatDetection: {
@@ -91,9 +86,6 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body>
         <LayoutChrome>{children}</LayoutChrome>
-
-        {/* Отложенные скрипты (не блокируют рендер) */}
-        {/* DeferredScripts temporarily disabled */}
       </body>
     </html>
   );
