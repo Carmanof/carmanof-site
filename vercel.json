@@ -1,4 +1,11 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/_next/static/:path*/",
+      "destination": "/_next/static/:path*",
+      "permanent": true
+    }
+  ]
 }
