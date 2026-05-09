@@ -21,7 +21,7 @@ const manrope = localFont({
   variable: "--font-manrope",
 });
 
-// ===== Metadata =====
+// ===== Metadata (SEO only) =====
 const siteUrl = SEO_CONFIG.siteUrl;
 
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 
   manifest: "/manifest.json",
 
-  themeColor: "#ffffff",
+  // ❗ themeColor УБРАН отсюда
 
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
   },
 };
 
-// ===== Viewport =====
+// ===== Viewport (UI / browser-level settings) =====
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -111,7 +111,6 @@ export default function RootLayout({
       <body className={manrope.variable}>
         <LayoutChrome>{children}</LayoutChrome>
 
-        {/* Отложенные скрипты (не блокируют рендер) */}
         <Suspense fallback={null}>
           <DeferredScripts />
         </Suspense>

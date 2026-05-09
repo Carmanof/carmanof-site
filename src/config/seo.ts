@@ -1,7 +1,6 @@
-// config/seo.ts
-
 export const SEO_CONFIG = {
-  siteUrl: "https://carmanof.ru",
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL || "https://carmanof.ru",
 
   siteName: "Carmanof",
 
@@ -26,5 +25,8 @@ export function getSiteUrl() {
 }
 
 export function getAbsoluteUrl(path: string = "") {
-  return `${SEO_CONFIG.siteUrl}${path}`;
+  const base =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://carmanof.ru";
+
+  return `${base}${path}`;
 }
