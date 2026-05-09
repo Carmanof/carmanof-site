@@ -1,6 +1,7 @@
+const DEFAULT_SITE_URL = "https://carmanof.ru";
+
 export const SEO_CONFIG = {
-  siteUrl:
-    process.env.NEXT_PUBLIC_SITE_URL || "https://carmanof.ru",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL,
 
   siteName: "Carmanof",
 
@@ -20,13 +21,23 @@ export const SEO_CONFIG = {
   openGraphImage: "/og-image.jpg",
 };
 
+// =========================
+// SINGLE SOURCE OF TRUTH HELPERS
+// =========================
+
 export function getSiteUrl() {
   return SEO_CONFIG.siteUrl;
 }
 
 export function getAbsoluteUrl(path: string = "") {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://carmanof.ru";
+  const base = SEO_CONFIG.siteUrl;
 
-  return `${base}${path}`;
+  if (!path) return base;
+
+  // защита от двойных слэшей
+  if (path.startsWith("/")) {
+    return `${base}${path}`;
+  }
+
+  return `${base}/${path}`;
 }

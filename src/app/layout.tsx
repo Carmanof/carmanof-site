@@ -7,7 +7,9 @@ import DeferredScripts from "@/components/DeferredScripts";
 import { SEO_CONFIG } from "@/config/seo";
 import "./globals.scss";
 
-// ===== Fonts =====
+// =========================
+// Fonts (изолированные, без runtime логики)
+// =========================
 const manrope = localFont({
   src: [
     { path: "./fonts/Manrope-Light.ttf", weight: "300", style: "normal" },
@@ -21,11 +23,30 @@ const manrope = localFont({
   variable: "--font-manrope",
 });
 
-// ===== Metadata (SEO only) =====
-const siteUrl = SEO_CONFIG.siteUrl;
+// =========================
+// SAFE SITE URL (единственный источник истины)
+// =========================
+const SITE_URL =
+  typeof SEO_CONFIG.siteUrl === "string" &&
+  SEO_CONFIG.siteUrl.startsWith("http")
+    ? SEO_CONFIG.siteUrl
+    : "http://localhost:3000";
 
+// =========================
+// SAFE URL builder (защита от broken OG)
+// =========================
+function toAbsoluteUrl(path?: string): string | undefined {
+  if (!path) return undefined;
+
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${SITE_URL}${cleanPath}`;
+}
+
+// =========================
+// METADATA (строго статический слой)
+// =========================
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
 
   applicationName: SEO_CONFIG.siteName,
 
@@ -37,7 +58,7 @@ export const metadata: Metadata = {
   description: SEO_CONFIG.description,
 
   alternates: {
-    canonical: siteUrl,
+    canonical: SITE_URL,
   },
 
   icons: {
@@ -52,11 +73,10 @@ export const metadata: Metadata = {
 
   manifest: "/manifest.json",
 
-  // ❗ themeColor УБРАН отсюда
-
+  // env-safe (не ломает билд при undefined)
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
-    yandex: process.env.YANDEX_VERIFICATION,
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    yandex: process.env.YANDEX_VERIFICATION || undefined,
   },
 
   robots: {
@@ -67,13 +87,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: SEO_CONFIG.defaultTitle,
     description: SEO_CONFIG.description,
-    url: siteUrl,
+    url: SITE_URL,
     siteName: SEO_CONFIG.siteName,
     locale: SEO_CONFIG.locale,
     type: "website",
     images: [
       {
-        url: `${siteUrl}${SEO_CONFIG.openGraphImage}`,
+        url: toAbsoluteUrl(SEO_CONFIG.openGraphImage) ?? "",
         width: 1200,
         height: 630,
         alt: SEO_CONFIG.siteName,
@@ -85,7 +105,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SEO_CONFIG.defaultTitle,
     description: SEO_CONFIG.description,
-    images: [`${siteUrl}${SEO_CONFIG.openGraphImage}`],
+    images: [toAbsoluteUrl(SEO_CONFIG.openGraphImage) ?? ""],
   },
 
   formatDetection: {
@@ -93,14 +113,18 @@ export const metadata: Metadata = {
   },
 };
 
-// ===== Viewport (UI / browser-level settings) =====
+// =========================
+// VIEWPORT (Next 16 requirement)
+// =========================
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#ffffff",
 };
 
-// ===== Layout =====
+// =========================
+// ROOT LAYOUT
+// =========================
 export default function RootLayout({
   children,
 }: {
