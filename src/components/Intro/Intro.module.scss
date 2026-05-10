@@ -1,110 +1,41 @@
 .overlay {
   position: fixed;
   inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #0b1b3a;
   z-index: 9999;
-  overflow: hidden;
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.035) 0%,
-      rgba(255, 255, 255, 0) 24%
-    ),
-    linear-gradient(135deg, #31446d 0%, #2c4068 52%, #26395f 100%);
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transition:
-    opacity 0.42s ease,
-    visibility 0.42s ease;
-}
-
-.overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background: radial-gradient(
-    circle at 50% 18%,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.025) 18%,
-    rgba(255, 255, 255, 0) 40%
-  );
-}
-
-.overlay::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background: linear-gradient(
-    180deg,
-    rgba(14, 18, 28, 0) 0%,
-    rgba(14, 18, 28, 0.035) 72%,
-    rgba(14, 18, 28, 0.07) 100%
-  );
-}
-
-.overlayVisible {
   opacity: 1;
-  visibility: visible;
-  pointer-events: all;
 }
 
-.overlayFading {
+/* просто стартовое состояние */
+.visible {
+  opacity: 1;
+}
+
+/* плавное исчезновение всего интро */
+.playing {
   opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  transition: opacity 300ms ease;
 }
 
+/*
+  КЛЮЧЕВОЕ:
+  одна непрерывная трансформация без смены стадий
+  масштаб может быть хоть на весь экран
+*/
 .logoWrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1);
-  transform-origin: center center;
-  will-change: transform;
+  transform: scale(1);
+  opacity: 1;
 
-  filter: drop-shadow(0 8px 20px rgba(9, 12, 20, 0.12));
+  will-change: transform, opacity;
+
+  transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.logoMoving {
-  transition: transform 1.15s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.logo {
-  display: block;
-  width: 1200px;
-  height: auto;
-
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-:global(body.intro-lock) {
-  overflow: hidden;
-}
-
-@media (max-width: 768px) {
-  .overlay {
-    background:
-      linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.04) 0%,
-        rgba(255, 255, 255, 0) 22%
-      ),
-      linear-gradient(135deg, #31446d 0%, #2b3d62 100%);
-  }
-
-  .logo {
-    width: 240px;
-  }
-
-  .logoWrap {
-    filter: drop-shadow(0 6px 16px rgba(9, 12, 20, 0.1));
-  }
+.playingLogo {
+  transform: scale(6); /* можно 8–12, ограничений нет */
 }

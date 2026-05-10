@@ -4,24 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Intro.module.scss";
 
-type IntroStage = "visible" | "moving" | "fading" | "hidden";
-
 type IntroProps = {
-  /**
-   * Если enabled передан явно, используем его как входной флаг.
-   * Если не передан, решение о показе принимаем на клиенте.
-   */
   enabled?: boolean;
 };
 
-const INTRO_START_DELAY_MS = 700;
-const TARGET_RETRY_DELAY_MS = 120;
-const TARGET_RETRY_MAX_ATTEMPTS = 8;
+/**
+ * =========================
+ * НАСТРОЙКИ АНИМАЦИИ
+ * =========================
+ */
+
+// задержка перед стартом интро (после монтирования)
+const INTRO_START_DELAY_MS = 500;
+
+// длительность основной анимации (зум + уход)
+const INTRO_DURATION_MS = 1800;
 
 function hasPlayedIntroInSession() {
-  if (typeof document === "undefined") {
-    return true;
-  }
+  if (typeof document === "undefined") return true;
 
   return document.cookie
     .split("; ")
@@ -29,225 +29,89 @@ function hasPlayedIntroInSession() {
 }
 
 /**
- * Интро показываем только там, где оно реально даёт UX-эффект:
- * - есть hover
- * - точный указатель
- * - нет reduced motion
- * - ширина больше мобильной/планшетной
+ * Минимальные ограничения для показа интро
+ * (без device-логики — только UX safety)
  */
-function canUseIntroAnimation() {
-  if (typeof window === "undefined") {
-    return false;
-  }
+function canUseIntro() {
+  if (typeof window === "undefined") return false;
 
-  const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-  const reducedMotionQuery = window.matchMedia(
+  const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
-  );
+  ).matches;
 
-  return (
-    hoverQuery.matches &&
-    !reducedMotionQuery.matches &&
-    window.innerWidth > 1024
-  );
+  return !reducedMotion;
 }
 
 export default function Intro({ enabled }: IntroProps) {
   const [shouldRender, setShouldRender] = useState(false);
-  const [stage, setStage] = useState<IntroStage>("hidden");
-  const [transformValue, setTransformValue] = useState(
-    "translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1)",
-  );
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const logoRef = useRef<HTMLDivElement | null>(null);
-  const hasStartedRef = useRef(false);
-  const hasFinishedRef = useRef(false);
-  const rafRef = useRef<number | null>(null);
   const startTimerRef = useRef<number | null>(null);
-  const retryTimerRef = useRef<number | null>(null);
+  const endTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const introAllowedByDevice = canUseIntroAnimation();
-    const introAlreadyPlayed = hasPlayedIntroInSession();
+    const allowed = canUseIntro();
+    const alreadyPlayed = hasPlayedIntroInSession();
 
-    /**
-     * Если enabled не передан, принимаем решение полностью на клиенте.
-     */
-    if (typeof enabled !== "boolean") {
-      const shouldShow = introAllowedByDevice && !introAlreadyPlayed;
-
-      setShouldRender(shouldShow);
-      setStage(shouldShow ? "visible" : "hidden");
-      return;
-    }
-
-    /**
-     * Если enabled передан, он задаёт базовое поведение,
-     * но mobile / touch / reduced-motion всё равно принудительно отключают интро.
-     */
-    const shouldShow = enabled && introAllowedByDevice && !introAlreadyPlayed;
+    const shouldShow =
+      typeof enabled !== "boolean"
+        ? allowed && !alreadyPlayed
+        : enabled && allowed && !alreadyPlayed;
 
     setShouldRender(shouldShow);
-    setStage(shouldShow ? "visible" : "hidden");
-
-    if (!shouldShow) {
-      document.body.classList.remove("intro-lock");
-    }
   }, [enabled]);
 
   useEffect(() => {
-    if (!shouldRender || stage === "hidden") {
-      return;
-    }
+    if (!shouldRender) return;
 
     document.body.classList.add("intro-lock");
 
-    /**
-     * Оставляем короткую паузу перед стартом, чтобы интро успело
-     * визуально считаться и не выглядело как резкая вспышка.
-     */
     startTimerRef.current = window.setTimeout(() => {
-      runAnimation();
+      setIsPlaying(true);
+
+      endTimerRef.current = window.setTimeout(() => {
+        finishIntro();
+      }, INTRO_DURATION_MS);
     }, INTRO_START_DELAY_MS);
 
     return () => {
       document.body.classList.remove("intro-lock");
 
-      if (startTimerRef.current !== null) {
-        window.clearTimeout(startTimerRef.current);
-        startTimerRef.current = null;
-      }
-
-      if (retryTimerRef.current !== null) {
-        window.clearTimeout(retryTimerRef.current);
-        retryTimerRef.current = null;
-      }
-
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
+      if (startTimerRef.current) clearTimeout(startTimerRef.current);
+      if (endTimerRef.current) clearTimeout(endTimerRef.current);
     };
-  }, [shouldRender, stage]);
-
-  function runAnimation(attempt = 0) {
-    if (hasStartedRef.current || hasFinishedRef.current) {
-      return;
-    }
-
-    const logo = logoRef.current;
-    const target = document.getElementById("header-logo");
-
-    if (!logo || !target) {
-      if (attempt < TARGET_RETRY_MAX_ATTEMPTS) {
-        retryTimerRef.current = window.setTimeout(() => {
-          runAnimation(attempt + 1);
-        }, TARGET_RETRY_DELAY_MS);
-
-        return;
-      }
-
-      finishIntro();
-      return;
-    }
-
-    hasStartedRef.current = true;
-
-    const logoRect = logo.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-
-    const logoCenterX = logoRect.left + logoRect.width / 2;
-    const logoCenterY = logoRect.top + logoRect.height / 2;
-
-    const targetCenterX = targetRect.left + targetRect.width / 2;
-    const targetCenterY = targetRect.top + targetRect.height / 2;
-
-    const deltaX = targetCenterX - logoCenterX;
-    const deltaY = targetCenterY - logoCenterY;
-
-    setTransformValue(
-      `translate(-50%, -50%) translate3d(${deltaX}px, ${deltaY}px, 0) scale(0.05)`,
-    );
-
-    rafRef.current = window.requestAnimationFrame(() => {
-      setStage("moving");
-      rafRef.current = null;
-    });
-  }
-
-  function handleLogoTransitionEnd(
-    event: React.TransitionEvent<HTMLDivElement>,
-  ) {
-    if (event.propertyName !== "transform") {
-      return;
-    }
-
-    if (stage !== "moving" || hasFinishedRef.current) {
-      return;
-    }
-
-    setStage("fading");
-  }
-
-  function handleOverlayTransitionEnd(
-    event: React.TransitionEvent<HTMLDivElement>,
-  ) {
-    if (event.propertyName !== "opacity") {
-      return;
-    }
-
-    if (stage !== "fading" || hasFinishedRef.current) {
-      return;
-    }
-
-    finishIntro();
-  }
+  }, [shouldRender]);
 
   function finishIntro() {
-    if (hasFinishedRef.current) {
-      return;
-    }
-
-    hasFinishedRef.current = true;
-
     document.cookie = "intro-played=1; path=/; SameSite=Lax";
     document.body.classList.remove("intro-lock");
-    setStage("hidden");
     setShouldRender(false);
   }
 
-  if (!shouldRender) {
-    return null;
-  }
+  if (!shouldRender) return null;
 
-  const overlayClassName = [
+  /**
+   * =========================
+   * СТЕЙТЫ АНИМАЦИИ
+   * =========================
+   *
+   * isPlaying = старт анимации (зум + уход)
+   */
+
+  const overlayClass = [
     styles.overlay,
-    stage === "visible" ? styles.overlayVisible : "",
-    stage === "moving" ? styles.overlayVisible : "",
-    stage === "fading" ? styles.overlayFading : "",
+    isPlaying ? styles.playing : styles.visible,
   ]
     .filter(Boolean)
     .join(" ");
 
-  const logoClassName = [
-    styles.logoWrap,
-    stage === "moving" ? styles.logoMoving : "",
-  ]
+  const logoClass = [styles.logoWrap, isPlaying ? styles.playingLogo : ""]
     .filter(Boolean)
     .join(" ");
 
   return (
-    <div
-      className={overlayClassName}
-      aria-hidden="true"
-      onTransitionEnd={handleOverlayTransitionEnd}
-    >
-      <div
-        ref={logoRef}
-        className={logoClassName}
-        style={stage === "moving" ? { transform: transformValue } : undefined}
-        onTransitionEnd={handleLogoTransitionEnd}
-      >
+    <div className={overlayClass} aria-hidden="true">
+      <div className={logoClass}>
         <Image
           src="/images/Intro/Logo-white.svg"
           alt=""
