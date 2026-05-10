@@ -23,6 +23,7 @@ export default function Hero({
   const [introPhase, setIntroPhase] = useState<IntroPhase>("done");
   const [isHovered, setIsHovered] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const introTimerRef = useRef<number | null>(null);
 
@@ -32,14 +33,21 @@ export default function Hero({
       "(prefers-reduced-motion: reduce)",
     );
 
+    const mobile = window.innerWidth <= 1024;
+    setIsMobile(mobile);
+
     const canInteract =
-      hoverQuery.matches &&
-      !reducedMotionQuery.matches &&
-      window.innerWidth > 1024;
+      hoverQuery.matches && !reducedMotionQuery.matches && !mobile;
 
     setIsInteractive(canInteract);
 
-    // ВАЖНО: интро не зависит от интерактива
+    // MOBILE: сразу финальное состояние
+    if (mobile) {
+      setIntroPhase("done");
+      return;
+    }
+
+    // DESKTOP: запускаем интро
     setIntroPhase("idle");
 
     introTimerRef.current = window.setTimeout(() => {
@@ -84,24 +92,32 @@ export default function Hero({
   }
 
   function handleMouseEnter() {
-    if (!isInteractive) return;
+    if (!isInteractive || isMobile) return;
     setIsHovered(true);
   }
 
   function handleMouseLeave() {
-    if (!isInteractive) return;
+    if (!isInteractive || isMobile) return;
     setIsHovered(false);
   }
 
-  const mediaClassName = [
-    styles.media,
-    introPhase === "idle" ? styles.stateDefault : "",
-    introPhase === "animating" ? styles.toHover : "",
-    introPhase === "done" && isHovered ? styles.showDefaultOnHover : "",
-    introPhase === "done" && !isHovered ? styles.showHoverIdle : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  /**
+   * MOBILE:
+   * - нет интро классов
+   * - нет hover логики
+   * - всегда финальное состояние
+   */
+  const mediaClassName = isMobile
+    ? styles.media
+    : [
+        styles.media,
+        introPhase === "idle" ? styles.stateDefault : "",
+        introPhase === "animating" ? styles.toHover : "",
+        introPhase === "done" && isHovered ? styles.showDefaultOnHover : "",
+        introPhase === "done" && !isHovered ? styles.showHoverIdle : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
 
   return (
     <section className={styles.hero} id="home">
@@ -147,32 +163,47 @@ export default function Hero({
             role="button"
             tabIndex={0}
           >
-            {/* BASE (до) — всегда есть */}
-            <div className={styles.imageBase}>
-              <Image
-                src={defaultImageSrc}
-                alt="Пример тюнинга приборной панели Carmanof"
-                fill
-                priority
-                fetchPriority="high"
-                sizes={HERO_IMAGE_SIZES}
-                className={styles.imageElement}
-              />
-            </div>
+            {/* MOBILE: только финальная картинка */}
+            {isMobile ? (
+              <div className={styles.imageBase}>
+                <Image
+                  src={hoverImageSrc}
+                  alt="Пример тюнинга приборной панели Carmanof"
+                  fill
+                  priority
+                  fetchPriority="high"
+                  sizes={HERO_IMAGE_SIZES}
+                  className={styles.imageElement}
+                />
+              </div>
+            ) : (
+              <>
+                <div className={styles.imageBase}>
+                  <Image
+                    src={defaultImageSrc}
+                    alt="Пример тюнинга приборной панели Carmanof"
+                    fill
+                    priority
+                    fetchPriority="high"
+                    sizes={HERO_IMAGE_SIZES}
+                    className={styles.imageElement}
+                  />
+                </div>
 
-            {/* HOVER (после) — всегда есть, но управление только классами */}
-            <div
-              className={styles.imageHover}
-              onTransitionEnd={handleIntroTransitionEnd}
-            >
-              <Image
-                src={hoverImageSrc}
-                alt=""
-                fill
-                sizes={HERO_IMAGE_SIZES}
-                className={styles.imageElement}
-              />
-            </div>
+                <div
+                  className={styles.imageHover}
+                  onTransitionEnd={handleIntroTransitionEnd}
+                >
+                  <Image
+                    src={hoverImageSrc}
+                    alt=""
+                    fill
+                    sizes={HERO_IMAGE_SIZES}
+                    className={styles.imageElement}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </Container>
