@@ -20,6 +20,8 @@ const INTRO_START_DELAY_MS = 500;
 // длительность основной анимации (зум + уход)
 const INTRO_DURATION_MS = 1800;
 
+const INTRO_VERSION = "v2.1-debug";
+
 function hasPlayedIntroInSession() {
   if (typeof document === "undefined") return true;
 
@@ -48,6 +50,19 @@ export default function Intro({ enabled }: IntroProps) {
 
   const startTimerRef = useRef<number | null>(null);
   const endTimerRef = useRef<number | null>(null);
+
+  /**
+   * =========================
+   * DEBUG HOOK (НЕ ВЛИЯЕТ НА UI)
+   * =========================
+   */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    console.log("[INTRO]", INTRO_VERSION, "ACTIVE");
+
+    document.documentElement.setAttribute("intro-version", INTRO_VERSION);
+  }, []);
 
   useEffect(() => {
     const allowed = canUseIntro();
@@ -94,8 +109,6 @@ export default function Intro({ enabled }: IntroProps) {
    * =========================
    * СТЕЙТЫ АНИМАЦИИ
    * =========================
-   *
-   * isPlaying = старт анимации (зум + уход)
    */
 
   const overlayClass = [
