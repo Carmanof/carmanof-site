@@ -22,7 +22,7 @@ export default function Hero({
 }: HeroProps) {
   const [introPhase, setIntroPhase] = useState<IntroPhase>("done");
   const [isHovered, setIsHovered] = useState(false);
-  const [isDesktopHover, setIsDesktopHover] = useState(false);
+  const [isInteractive, setIsInteractive] = useState(false);
 
   const introTimerRef = useRef<number | null>(null);
 
@@ -32,18 +32,14 @@ export default function Hero({
       "(prefers-reduced-motion: reduce)",
     );
 
-    const shouldUseDesktopAnimation =
+    const canInteract =
       hoverQuery.matches &&
       !reducedMotionQuery.matches &&
       window.innerWidth > 1024;
 
-    if (!shouldUseDesktopAnimation) {
-      setIsDesktopHover(false);
-      setIntroPhase("done");
-      return;
-    }
+    setIsInteractive(canInteract);
 
-    setIsDesktopHover(true);
+    // ВАЖНО: интро не зависит от интерактива
     setIntroPhase("idle");
 
     introTimerRef.current = window.setTimeout(() => {
@@ -82,36 +78,30 @@ export default function Hero({
   }, []);
 
   function handleIntroTransitionEnd() {
-    if (isDesktopHover && introPhase === "animating") {
+    if (introPhase === "animating") {
       setIntroPhase("done");
     }
   }
 
   function handleMouseEnter() {
-    if (!isDesktopHover) return;
+    if (!isInteractive) return;
     setIsHovered(true);
   }
 
   function handleMouseLeave() {
-    if (!isDesktopHover) return;
+    if (!isInteractive) return;
     setIsHovered(false);
   }
 
   const mediaClassName = [
     styles.media,
-    isDesktopHover && introPhase === "idle" ? styles.stateDefault : "",
-    isDesktopHover && introPhase === "animating" ? styles.toHover : "",
-    isDesktopHover && introPhase === "done" && isHovered
-      ? styles.showDefaultOnHover
-      : "",
-    isDesktopHover && introPhase === "done" && !isHovered
-      ? styles.showHoverIdle
-      : "",
+    introPhase === "idle" ? styles.stateDefault : "",
+    introPhase === "animating" ? styles.toHover : "",
+    introPhase === "done" && isHovered ? styles.showDefaultOnHover : "",
+    introPhase === "done" && !isHovered ? styles.showHoverIdle : "",
   ]
     .filter(Boolean)
     .join(" ");
-
-  const mainImageSrc = isDesktopHover ? defaultImageSrc : hoverImageSrc;
 
   return (
     <section className={styles.hero} id="home">
@@ -126,13 +116,10 @@ export default function Hero({
               </h1>
 
               <p className={styles.description}>
-                Мы создаем индивидуальные шкалы{" "}
-                <br />
-                {" "}для спидометров, тахометров и других{" "}
-                <br />
-                {" "}приборов на автомобили любых марок -{" "}
-                <br />
-                {" "}от отечественных до премиум-класса.
+                Мы создаем индивидуальные шкалы <br />
+                для спидометров, тахометров и других <br />
+                приборов на автомобили любых марок - <br />
+                от отечественных до премиум-класса.
               </p>
 
               <p className={styles.caption}>
@@ -159,15 +146,11 @@ export default function Hero({
             onClick={handleMediaClick}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                handleMediaClick();
-              }
-            }}
           >
+            {/* BASE (до) — всегда есть */}
             <div className={styles.imageBase}>
               <Image
-                src={mainImageSrc}
+                src={defaultImageSrc}
                 alt="Пример тюнинга приборной панели Carmanof"
                 fill
                 priority
@@ -177,20 +160,19 @@ export default function Hero({
               />
             </div>
 
-            {isDesktopHover ? (
-              <div
-                className={styles.imageHover}
-                onTransitionEnd={handleIntroTransitionEnd}
-              >
-                <Image
-                  src={hoverImageSrc}
-                  alt=""
-                  fill
-                  sizes={HERO_IMAGE_SIZES}
-                  className={styles.imageElement}
-                />
-              </div>
-            ) : null}
+            {/* HOVER (после) — всегда есть, но управление только классами */}
+            <div
+              className={styles.imageHover}
+              onTransitionEnd={handleIntroTransitionEnd}
+            >
+              <Image
+                src={hoverImageSrc}
+                alt=""
+                fill
+                sizes={HERO_IMAGE_SIZES}
+                className={styles.imageElement}
+              />
+            </div>
           </div>
         </div>
       </Container>
