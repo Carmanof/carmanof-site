@@ -6,82 +6,53 @@ import styles from "./Hero.module.scss";
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 
-type HeroProps = {
-  defaultImageSrc?: string;
-  hoverImageSrc?: string;
-};
+type HeroProps = { defaultImageSrc?: string; hoverImageSrc?: string };
 
-const HERO_IMAGE_SIZES =
-  "(max-width: 640px) calc(100vw - 28px), (max-width: 1024px) calc(100vw - 64px), (max-width: 1240px) 480px, 540px";
-
-export default function Hero({
-  defaultImageSrc = "/images/hero/hero-default.webp",
-}: HeroProps) {
-  const handleContactClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-      event.preventDefault();
-      document.querySelector("#contact")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    },
-    [],
-  );
-
-  const handleMediaClick = useCallback(() => {
-    const target = document.querySelector("#other-works");
-    if (!target) return;
-    window.scrollTo({
-      top: target.getBoundingClientRect().top + window.pageYOffset - 172,
-      behavior: "smooth",
-    });
+export default function Hero({ defaultImageSrc = "/images/hero/hero-default.webp" }: HeroProps) {
+  const scrollTo = useCallback((selector: string) => {
+    document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   return (
     <section className={styles.hero} id="home">
+      <Image
+        src={defaultImageSrc}
+        alt="Индивидуальная приборная панель Carmanof"
+        fill
+        priority
+        fetchPriority="high"
+        sizes="100vw"
+        className={styles.backgroundImage}
+      />
+      <div className={styles.overlay} />
       <Container>
-        <div className={styles.card}>
-          <div className={styles.content}>
-            <p className={styles.eyebrow}>Мастерская Carmanof · Краснодар</p>
-            <div className={styles.textBlock}>
-              <h1 className={styles.title}>
-                Шкалы приборов<br />
-                на заказ для вашего<br />
-                автомобиля
-              </h1>
-              <p className={styles.description}>
-                Проектируем и изготавливаем индивидуальные шкалы, накладки и
-                подсветку приборных панелей. Подбираем графику, цвет и детали
-                под конкретную модель автомобиля.
-              </p>
-              <p className={styles.caption}>
-                Работаем по всей России · отправка СДЭК
-              </p>
-            </div>
-            <div className={styles.actions}>
-              <Button href="#contact" variant="primary" size="sm" onClick={handleContactClick}>
-                Обсудить свой проект
-              </Button>
-            </div>
+        <div className={styles.content}>
+          <p className={styles.eyebrow}>Мастерская Carmanof · Краснодар</p>
+          <h1 className={styles.title}>
+            Шкалы<br />
+            приборов<br />
+            <span>на заказ</span>
+          </h1>
+          <p className={styles.description}>
+            Изготавливаем шкалы, накладки и подсветку приборных панелей
+            под конкретную модель автомобиля.
+          </p>
+          <p className={styles.caption}>Работаем по всей России · отправка СДЭК</p>
+          <div className={styles.actions}>
+            <Button href="#contact" variant="primary" size="sm" onClick={(event) => { event.preventDefault(); scrollTo("#contact"); }}>
+              Рассчитать проект
+            </Button>
+            <button type="button" className={styles.secondaryAction} onClick={() => scrollTo("#cases")}>
+              Смотреть работы
+            </button>
           </div>
-
-          <button
-            className={styles.media}
-            type="button"
-            onClick={handleMediaClick}
-            aria-label="Посмотреть примеры работ"
-          >
-            <Image
-              src={defaultImageSrc}
-              alt="Индивидуальная приборная панель Carmanof"
-              fill
-              priority
-              fetchPriority="high"
-              sizes={HERO_IMAGE_SIZES}
-              className={styles.imageElement}
-            />
-            <span className={styles.mediaHint}>Смотреть работы ↓</span>
-          </button>
+        </div>
+      </Container>
+      <Container>
+        <div className={styles.advantages} aria-label="Преимущества мастерской">
+          <p><b>01</b> СДЭК по России</p>
+          <p><b>02</b> Индивидуальный макет</p>
+          <p><b>03</b> Проверка перед отправкой</p>
         </div>
       </Container>
     </section>
