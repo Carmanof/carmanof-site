@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button/Button";
 
 type HeroProps = { defaultImageSrc?: string; hoverImageSrc?: string };
 
-export default function Hero() {
+export default function Hero(_: HeroProps) {
   const scrollTo = useCallback((selector: string) => {
     document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
