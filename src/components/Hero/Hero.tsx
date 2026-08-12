@@ -16,7 +16,7 @@ export default function Hero({ defaultImageSrc = "/images/hero/hero-default.webp
   return (
     <section className={styles.hero} id="home">
       <Image
-        src={defaultImageSrc}
+        src="/images/hero/hero-premium-generated-v1.png"
         alt="Индивидуальная приборная панель Carmanof"
         fill
         priority
