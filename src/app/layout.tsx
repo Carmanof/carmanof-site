@@ -11,11 +11,12 @@ export const metadata: Metadata = {
   applicationName: "Carmanof",
 
   title: {
-    default: "Carmanof",
+    default: "Шкалы приборов на заказ | Carmanof",
     template: "%s | Carmanof",
   },
 
-  description: "Carmanof",
+  description:
+    "Индивидуальные шкалы, накладки и тюнинг приборных панелей. Мастерская в Краснодаре, отправка по всей России.",
 
   alternates: {
     canonical: SITE_URL,
@@ -39,8 +40,8 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Carmanof",
-    description: "Carmanof",
+    title: "Шкалы приборов на заказ | Carmanof",
+    description: "Индивидуальные шкалы и тюнинг приборных панелей для автомобилей по всей России.",
     url: SITE_URL,
     siteName: "Carmanof",
     type: "website",
@@ -56,8 +57,8 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Carmanof",
-    description: "Carmanof",
+    title: "Шкалы приборов на заказ | Carmanof",
+    description: "Индивидуальные шкалы и тюнинг приборных панелей для автомобилей по всей России.",
     images: [`${SITE_URL}/og.png`],
   },
 
@@ -69,7 +70,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#ffffff",
+  themeColor: "#0b0d10",
 };
 
 export default function RootLayout({

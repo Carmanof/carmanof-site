@@ -1,266 +1,35 @@
 @use "@/styles/variables" as *;
 
-.hero {
-  margin-top: 72px;
-}
+.hero { margin-top: 52px; }
 
 .card {
-  position: relative;
-
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 520px;
-  column-gap: 44px;
+  grid-template-columns: minmax(0, 1fr) 540px;
+  gap: 30px;
   align-items: center;
-
-  min-height: 600px;
-  padding: 0 38px;
-
+  min-height: 620px;
+  padding: 34px 42px;
+  overflow: hidden;
   border: 1px solid $color-border-soft;
   border-radius: $radius-xl;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.28) 0%,
-      rgba(255, 255, 255, 0.08) 16%,
-      rgba(255, 255, 255, 0) 36%
-    ),
-    $color-surface;
-
-  box-shadow: $shadow-md;
-
-  overflow: hidden;
+  background: radial-gradient(circle at 8% 0%, rgba(227, 77, 46, .18), transparent 34%), linear-gradient(135deg, rgba(255,255,255,.035), transparent 45%), $color-surface;
+  box-shadow: $shadow-lg;
 }
 
-/* ---------------- TEXT ---------------- */
+.content { min-width: 0; }
+.eyebrow { margin: 0 0 18px; color: $color-accent; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.textBlock { max-width: 610px; }
+.title { margin: 0; color: $color-text-strong; font-size: clamp(38px, 4vw, 58px); line-height: 1.04; font-weight: 800; letter-spacing: -.045em; text-transform: uppercase; }
+.description { max-width: 530px; margin: 24px 0 0; color: $color-text-soft; font-size: 18px; line-height: 1.45; font-weight: 500; }
+.caption { margin: 18px 0 0; color: $color-text-inverse-soft; font-size: 12px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; }
+.actions { display: flex; margin-top: 30px; }
+.actions :global(a) { min-width: 300px; justify-content: center; }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-}
+.media { position: relative; width: 540px; height: 550px; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.10); border-radius: 18px; background: $color-media-bg; box-shadow: $shadow-lg; cursor: pointer; }
+.imageElement { object-fit: cover; object-position: center; transition: transform .45s ease; }
+.media:hover .imageElement { transform: scale(1.035); }
+.mediaHint { position: absolute; right: 16px; bottom: 16px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; background: rgba(9,11,14,.74); color: #fff; font-size: 12px; font-weight: 600; }
 
-.textBlock {
-  max-width: 560px;
-}
-
-.title {
-  margin: 0;
-  font-size: 36px;
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  color: $color-text-strong;
-}
-
-.description {
-  margin: 20px 0 0;
-  font-size: 22px;
-  line-height: 1.12;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: $color-text-soft;
-}
-
-.caption {
-  margin: 16px 0 0;
-  font-size: 13px;
-  line-height: 1.25;
-  color: $color-text-muted;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-top: 26px;
-}
-
-/* Широкая кнопка только в Hero на десктопе */
-.actions :global(a) {
-  min-width: 400px;
-  justify-content: center;
-}
-
-/* ---------------- MEDIA ---------------- */
-
-.media {
-  cursor: pointer;
-}
-
-.media {
-  position: relative;
-  width: 520px;
-  height: 500px;
-  overflow: hidden;
-  border-radius: 24px;
-  isolation: isolate;
-
-  background: $color-media-bg;
-  box-shadow: $shadow-md;
-}
-
-.imageBase,
-.imageHover {
-  position: absolute;
-  inset: 0;
-}
-
-.imageElement {
-  object-fit: cover;
-  object-position: center;
-}
-
-.imageBase {
-  z-index: 1;
-}
-
-.imageHover {
-  z-index: 2;
-  opacity: 0;
-  transform: translateX(12px);
-}
-
-/* ---------------- СОСТОЯНИЯ ---------------- */
-
-.stateDefault .imageHover {
-  opacity: 0;
-  transform: translateX(12px);
-}
-
-.toHover .imageHover {
-  opacity: 1;
-  transform: translateX(0);
-
-  transition:
-    opacity 0.45s ease,
-    transform 0.45s ease;
-}
-
-.showHoverIdle .imageHover {
-  opacity: 1;
-  transform: translateX(0);
-
-  transition: opacity 0.22s ease;
-}
-
-.showDefaultOnHover .imageHover {
-  opacity: 0;
-  transform: translateX(0);
-
-  transition: opacity 0.22s ease;
-}
-
-/* ---------------- RESPONSIVE ---------------- */
-
-@media (max-width: 1240px) {
-  .card {
-    grid-template-columns: minmax(0, 1fr) 480px;
-    column-gap: 32px;
-    padding: 0 30px;
-  }
-
-  .media {
-    width: 480px;
-    height: 462px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .card {
-    grid-template-columns: 1fr;
-    row-gap: 28px;
-    padding: 32px;
-  }
-
-  .media {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 520 / 500;
-  }
-
-  .actions :global(a) {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 640px) {
-  .hero {
-    margin-top: 14px;
-  }
-
-  .card {
-    row-gap: 18px;
-    padding: 18px 14px 14px;
-    border-radius: 22px;
-
-    background: $color-surface;
-    box-shadow: $shadow-sm;
-  }
-
-  .content {
-    gap: 0;
-  }
-
-  .textBlock {
-    max-width: 100%;
-  }
-
-  .title {
-    font-size: 22px;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-  }
-
-  .title br,
-  .description br {
-    display: none;
-  }
-
-  .description {
-    margin: 12px 0 0;
-    font-size: 14px;
-    line-height: 1.14;
-    letter-spacing: -0.01em;
-  }
-
-  .caption {
-    margin-top: 10px;
-    font-size: 12px;
-    line-height: 1.3;
-  }
-
-  .actions {
-    gap: 10px;
-    margin-top: 16px;
-    justify-content: stretch;
-  }
-
-  .actions > * {
-    flex: 1 1 100%;
-    min-width: 0;
-  }
-
-  .actions :global(a) {
-    display: inline-flex;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    min-height: 40px;
-    padding: 0 12px;
-    font-size: 12px;
-    line-height: 1.1;
-    text-align: center;
-    justify-content: center;
-    box-sizing: border-box;
-  }
-
-  .media {
-    border-radius: 18px;
-    box-shadow: $shadow-sm;
-  }
-}
+@media (max-width: 1240px) { .card { grid-template-columns: minmax(0, 1fr) 480px; padding: 30px; } .media { width: 480px; height: 490px; } }
+@media (max-width: 1024px) { .card { grid-template-columns: 1fr; padding: 32px; } .media { width: 100%; height: auto; aspect-ratio: 1.04; } }
+@media (max-width: 640px) { .hero { margin-top: 14px; } .card { gap: 22px; min-height: 0; padding: 24px 16px 16px; border-radius: 22px; } .eyebrow { margin-bottom: 12px; font-size: 10px; } .title { font-size: 31px; line-height: 1.06; } .title br { display: none; } .description { margin-top: 16px; font-size: 15px; line-height: 1.42; } .caption { margin-top: 13px; font-size: 10px; letter-spacing: .07em; } .actions { margin-top: 20px; } .actions :global(a) { width: 100%; min-width: 0; } .media { border-radius: 15px; } .mediaHint { right: 10px; bottom: 10px; font-size: 11px; } }

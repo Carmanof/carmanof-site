@@ -23,7 +23,7 @@
   border: 1px solid $color-border-white-soft;
   background: $glass-light-strong;
   box-shadow: $shadow-md, $highlight-soft;
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(18px);
 }
 
 /* Desktop logo */
@@ -129,7 +129,7 @@
   display: block;
 
   /* МЕНЯТЬ ЗДЕСЬ: размер шрифта пунктов меню */
-  font-size: 18px;
+  font-size: 14px;
 
   /* МЕНЯТЬ ЗДЕСЬ: насыщенность шрифта меню */
   font-weight: 500;
@@ -143,7 +143,7 @@
   align-items: center;
 
   /* МЕНЯТЬ ЗДЕСЬ: расстояние между пунктами меню */
-  gap: 86px;
+  gap: 42px;
 
   list-style: none;
   margin: 0;
@@ -163,7 +163,7 @@
 }
 
 .phone {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: $color-text-strong;
   text-decoration: none;
@@ -205,10 +205,10 @@
   align-items: center;
   justify-content: center;
 
-  height: 38px;
+  height: 40px;
   padding: 0 20px;
 
-  border-radius: 999px;
+  border-radius: 10px;
   border: 1px solid transparent;
   background: $color-accent !important;
   box-shadow: $shadow-sm;
