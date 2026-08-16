@@ -1,206 +1,64 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-import Container from "@/components/ui/Container/Container";
+import { MapPin, Menu, Phone, X } from "lucide-react";
 import { formatPhone } from "@/lib/formatPhone";
 import { trackPhoneClick } from "@/lib/analytics";
 import styles from "./Header.module.scss";
 
-/* Навигация главной */
 const navItems = [
-  { label: "Готовые работы", href: "#cases" },
-  { label: "Как заказать", href: "#process" },
-  { label: "Цены", href: "#prices" },
-  { label: "Контакты", href: "#contact" },
+  { label: "Работы", href: "/#works" },
+  { label: "Услуги", href: "/services" },
+  { label: "Как работаем", href: "/#process" },
+  { label: "О мастерской", href: "/about" },
+  { label: "Контакты", href: "/contacts" },
 ];
 
-const SCROLL_OFFSET = 172;
-
-type HeaderProps = {
-  phone?: string;
-};
-
-export default function Header({ phone }: HeaderProps) {
-  const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const isMinimalVariant =
-    pathname?.startsWith("/cases") ||
-    pathname?.startsWith("/blog") ||
-    pathname?.startsWith("/privacy") ||
-    false;
-
-  const isMainVariant = !isMinimalVariant;
+export default function Header({ phone }: { phone?: string }) {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
-
+    const onScroll = () => setScrolled(window.scrollY > 18);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   useEffect(() => {
-    if (!isMainVariant || !isMenuOpen) return;
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMainVariant, isMenuOpen]);
-
-  useEffect(() => {
-    if (!isMainVariant || !isMenuOpen) return;
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setIsMenuOpen(false);
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isMainVariant, isMenuOpen]);
-
-  const handleScroll = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-      if (!href.startsWith("#")) return;
-
-      event.preventDefault();
-
-      const target = document.querySelector(href);
-      if (!target) return;
-
-      const top =
-        target.getBoundingClientRect().top + window.pageYOffset - SCROLL_OFFSET;
-
-      window.scrollTo({ top, behavior: "smooth" });
-
-      setIsMenuOpen(false);
-    },
-    [],
-  );
-
-  const handleLogoClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      if (pathname !== "/") return;
-
-      event.preventDefault();
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    },
-    [pathname],
-  );
-
-  const handleContactClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      if (pathname !== "/") return;
-
-      handleScroll(event, "#contact");
-    },
-    [handleScroll, pathname],
-  );
-
-  const handlePhoneClick = useCallback(() => {
-    trackPhoneClick(phone);
-  }, [phone]);
-
-  function handleBurgerClick() {
-    setIsMenuOpen((prev) => !prev);
-  }
+  const displayPhone = phone || "+7 918 240-21-80";
 
   return (
-    <>
-      <header
-        className={`${styles.header} ${
-          isMinimalVariant ? styles.headerMinimal : ""
-        }`}
-      >
-        <Container>
-          <div className={styles.wrapper}>
-            <div className={styles.inner}>
-              <Link
-                href="/"
-                id="header-logo"
-                className={styles.logo}
-                aria-label="На главную"
-                onClick={handleLogoClick}
-              >
-                <Image
-                  src="/images/logo.svg"
-                  alt="Карманов"
-                  width={64}
-                  height={64}
-                  className={styles.logoImage}
-                />
-              </Link>
-
-              {isMainVariant ? (
-                <button
-                  type="button"
-                  className={styles.burger}
-                  onClick={handleBurgerClick}
-                >
-                  <span className={styles.burgerLine} />
-                  <span className={styles.burgerLine} />
-                  <span className={styles.burgerLine} />
-                </button>
-              ) : (
-                <Link href="/" className={styles.mobileLogo}>
-                  <Image
-                    src="/images/logo.svg"
-                    alt="Карманов"
-                    width={48}
-                    height={48}
-                  />
-                </Link>
-              )}
-
-              {isMainVariant && (
-                <nav className={styles.nav}>
-                  <ul className={styles.list}>
-                    {navItems.map((item) => (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          className="link-primary"
-                          onClick={(e) => handleScroll(e, item.href)}
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              )}
-
-              <div className={styles.action}>
-                {phone && (
-                  <a
-                    href={`tel:${phone.replace(/\D/g, "")}`}
-                    className={styles.phone}
-                    onClick={handlePhoneClick}
-                  >
-                    {formatPhone(phone)}
-                  </a>
-                )}
-
-                <Link
-                  href={pathname === "/" ? "#contact" : "/#contact"}
-                  className={styles.button}
-                  onClick={handleContactClick}
-                >
-                  Оставить заявку
-                </Link>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </header>
-    </>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
+      <div className={styles.inner}>
+        <Link href="/" className={styles.brand} id="header-logo" aria-label="Carmanof — на главную">
+          Carmanof<span>.</span>
+        </Link>
+        <nav className={styles.nav} aria-label="Основная навигация">
+          {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
+        </nav>
+        <div className={styles.actions}>
+          <span className={styles.location}><MapPin size={16} /> Краснодар</span>
+          <a className={styles.phone} href={`tel:${displayPhone.replace(/\D/g, "")}`} onClick={() => trackPhoneClick(displayPhone)}>
+            <Phone size={16} /><span>{formatPhone(displayPhone)}</span>
+          </a>
+          <Link className={styles.request} href="/#contact">Обсудить проект</Link>
+        </div>
+        <button className={styles.menuButton} type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? "Закрыть меню" : "Открыть меню"}>
+          {open ? <X /> : <Menu />}
+        </button>
+      </div>
+      <div className={`${styles.mobileMenu} ${open ? styles.mobileMenuOpen : ""}`}>
+        <nav aria-label="Мобильная навигация">
+          {navItems.map((item, index) => <Link key={item.href} href={item.href} onClick={() => setOpen(false)}><span>0{index + 1}</span>{item.label}</Link>)}
+        </nav>
+        <a className={styles.mobilePhone} href={`tel:${displayPhone.replace(/\D/g, "")}`}>{formatPhone(displayPhone)}</a>
+        <Link className={styles.mobileRequest} href="/#contact" onClick={() => setOpen(false)}>Рассчитать проект</Link>
+      </div>
+    </header>
   );
 }

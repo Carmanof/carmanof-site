@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import Container from "@/components/ui/Container/Container";
-import BackToFlow from "@/components/ui/BackToFlow/BackToFlow";
+import Footer from "@/components/Footer/Footer";
 import styles from "./cases.module.scss";
 
 export const metadata: Metadata = {
-  title: "Примеры наших работ | Carmanof",
+  title: "Примеры работ",
   description:
     "Видео и фото примеры выполненных работ Carmanof. Выберите удобный формат просмотра кейсов.",
   alternates: {
@@ -41,25 +40,26 @@ const caseDirections = [
     ariaLabel: "Перейти к видео кейсам",
     previewType: "video" as const,
     imageSrc: getYoutubeThumbnail(VIDEO_PREVIEW_YOUTUBE_ID),
+    label: "Видео работ",
   },
   {
     href: "/cases/photo",
     ariaLabel: "Перейти к фото кейсам",
     previewType: "photo" as const,
     imageSrc: PHOTO_PREVIEW_SRC,
+    label: "Фотографии работ",
   },
 ];
 
 export default function CasesPage() {
   return (
-    <main className={styles.page}>
+    <><main className={styles.page}>
       <section className={styles.section}>
-        <Container>
           <div className={styles.inner}>
             <div className={styles.hero}>
-              <BackToFlow />
-
-              <h1 className={styles.title}>Примеры наших работ</h1>
+              <p className={styles.kicker}>Портфолио Carmanof</p>
+              <h1 className={styles.title}>Работы, которые лучше увидеть</h1>
+              <p className={styles.description}>Смотрите готовые приборные панели в фото и видео — детали подсветки, графику шкал и итоговый вид после сборки.</p>
             </div>
 
             <div className={styles.grid}>
@@ -97,12 +97,12 @@ export default function CasesPage() {
                   ) : null}
 
                   <span className={styles.arrow}>↗</span>
+                  <span className={styles.label}>{item.label}</span>
                 </Link>
               ))}
             </div>
           </div>
-        </Container>
       </section>
-    </main>
+    </main><Footer /></>
   );
 }

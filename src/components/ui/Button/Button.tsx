@@ -2,6 +2,16 @@
 
 import styles from "./Button.module.scss";
 import Link from "next/link";
+import { cva } from "class-variance-authority";
+import { clsx } from "clsx";
+
+const buttonStyles = cva(styles.button, {
+  variants: {
+    variant: { primary: styles.primary, secondary: styles.secondary },
+    size: { sm: styles.sm, md: styles.md },
+  },
+  defaultVariants: { variant: "primary", size: "md" },
+});
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -26,8 +36,7 @@ export default function Button({
   type = "button",
   onClick,
 }: ButtonProps) {
-  const classes =
-    `${styles.button} ${styles[variant]} ${styles[size]} ${className}`.trim();
+  const classes = clsx(buttonStyles({ variant, size }), className);
 
   if (href) {
     return (

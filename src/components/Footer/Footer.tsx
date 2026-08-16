@@ -1,30 +1,6 @@
+import Link from "next/link";
 import styles from "./Footer.module.scss";
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-
-  return (
-    <footer className={styles.footer}>
-      <div className={styles.container}>
-        <div className={styles.bottom}>
-          {/* Лево */}
-          <div className={styles.copy}>Карманов © {year}</div>
-
-          {/* Центр */}
-          <div className={styles.center}>
-            <a href="/blog" className={styles.link}>
-              Блог
-            </a>
-            <span className={styles.separator}>·</span>
-            <a href="/privacy" className={styles.link}>
-              Политика конфиденциальности
-            </a>
-          </div>
-
-          {/* Право */}
-          <div className={styles.designer}>design by @lm_design</div>
-        </div>
-      </div>
-    </footer>
-  );
+  return <footer className={styles.footer}><div className={styles.top}><Link href="/" className={styles.brand}>Carmanof<span>.</span></Link><p>Индивидуальные шкалы и приборные панели<br />в Краснодаре с доставкой по России.</p><nav><Link href="/services">Услуги</Link><Link href="/cases">Работы</Link><Link href="/about">О мастерской</Link><Link href="/contacts">Контакты</Link><Link href="/blog">Блог</Link></nav></div><div className={styles.bottom}><span>© {new Date().getFullYear()} Carmanof</span><div><Link href="/privacy">Политика конфиденциальности</Link><Link href="/consent">Согласие на обработку данных</Link></div><span>Краснодар · Россия</span></div></footer>;
 }

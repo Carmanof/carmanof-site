@@ -1,239 +1,57 @@
+import type { Metadata } from "next";
 import Hero from "@/components/Hero/Hero";
-import MainOffer from "@/components/MainOffer/MainOffer";
-import OtherWorks from "@/components/OtherWorks/OtherWorks";
-import AdditionalElements from "@/components/AdditionalElements/AdditionalElements";
-import VideoCaseBlock from "@/components/VideoCaseBlock/VideoCaseBlock";
-import MoreExamplesBlock from "@/components/MoreExamplesBlock/MoreExamplesBlock";
-import ProcessBlock from "@/components/ProcessBlock/ProcessBlock";
-import TrustBlock from "@/components/TrustBlock/TrustBlock";
-import Prices from "@/components/Prices/Prices";
+import HomeExperience from "@/components/HomeExperience/HomeExperience";
 import FAQ from "@/components/FAQ/FAQ";
 import Contact from "@/components/Contact/Contact";
 import Footer from "@/components/Footer/Footer";
-
-import {
-  getHomeVideoCases,
-  getSiteSettings,
-  hasPhotoCases,
-  type SiteSettings,
-  type VideoCase,
-  type SanityImage,
-  type FAQItem,
-} from "@/sanity/lib/fetchers";
-import {
-  getHeroImageUrl,
-  getMoreExamplesTopImageUrl,
-  getMoreExamplesBottomImageUrl,
-} from "@/sanity/lib/image";
+import { getSiteSettings, type FAQItem, type SiteSettings } from "@/sanity/lib/fetchers";
 
 export const revalidate = 120;
 
-type MoreExamplesImageItem = {
-  src: string;
-  alt: string;
+export const metadata: Metadata = {
+  title: "Шкалы приборов на заказ по России | Carmanof",
+  description: "Изготовление индивидуальных шкал приборов, пересвет и ремонт приборных панелей в мастерской Carmanof. Краснодар, доставка СДЭК по всей России.",
+  alternates: { canonical: "/" },
 };
 
-type PriceItem = {
-  title: string;
-  value: string;
-};
-
-function buildHeroImage(params: {
-  image?: SanityImage;
-  fallbackSrc: string;
-}): string {
-  const { image, fallbackSrc } = params;
-
-  // ✅ фикс: проверяем реальную валидность картинки
-  const hasValidImage = Boolean(image?.asset?.url);
-
-  return hasValidImage ? getHeroImageUrl(image) : fallbackSrc;
-}
-
-function buildMoreExamplesImage(params: {
-  image?: SanityImage;
-  fallbackSrc: string;
-  fallbackAlt: string;
-  row: "top" | "bottom";
-}): MoreExamplesImageItem {
-  const { image, fallbackSrc, fallbackAlt, row } = params;
-
-  const hasValidImage = Boolean(image?.asset?.url);
-
-  const optimizedSrc = hasValidImage
-    ? row === "top"
-      ? getMoreExamplesTopImageUrl(image)
-      : getMoreExamplesBottomImageUrl(image)
-    : fallbackSrc;
-
-  return {
-    src: optimizedSrc,
-    alt: image?.alt || fallbackAlt,
-  };
-}
-
-function buildPriceItem(params: {
-  title?: string;
-  value?: string;
-  fallbackTitle: string;
-  fallbackValue: string;
-}): PriceItem {
-  const { title, value, fallbackTitle, fallbackValue } = params;
-
-  return {
-    title: title || fallbackTitle,
-    value: value || fallbackValue,
-  };
-}
-
-function buildFaqItem(params: {
-  item?: FAQItem;
-  fallbackQuestion: string;
-  fallbackAnswer: string;
-}): FAQItem {
-  const { item, fallbackQuestion, fallbackAnswer } = params;
-
-  return {
-    question: item?.question || fallbackQuestion,
-    answer: item?.answer || fallbackAnswer,
-  };
-}
+const fallbackFaq: FAQItem[] = [
+  { question: "Как заказать шкалы, если я нахожусь не в Краснодаре?", answer: "Напишите нам и пришлите фото приборной панели, модель и год автомобиля. Мы оценим задачу, подскажем, как безопасно снять и упаковать панель, после чего вы сможете отправить её СДЭК. Готовую работу отправим обратно в ваш город." },
+  { question: "Можно ли сделать полностью индивидуальный дизайн?", answer: "Да. Можно изменить графику, цвет, шрифты, логотип, отдельные обозначения и характер подсветки. Перед изготовлением согласуем внешний вид и технические ограничения конкретной панели." },
+  { question: "Сколько времени занимает изготовление?", answer: "Срок зависит от модели панели и объёма работ. После первичной оценки сообщим ориентир, а точный срок зафиксируем до начала изготовления. Макет и ключевые детали обязательно согласовываем заранее." },
+  { question: "Обязательно ли отправлять оригинальную приборную панель?", answer: "Для части популярных моделей достаточно исходных данных и хороших фотографий, но индивидуальный или редкий проект часто требует оригинала для точного снятия размеров и проверки. Скажем это сразу после оценки." },
+  { question: "Какая гарантия, что всё будет работать после установки?", answer: "Перед отправкой проверяем изготовленные элементы, равномерность подсветки и работу панели в доступном объёме. Рекомендации по установке и условия по конкретному проекту обсуждаем до старта." },
+];
 
 export default async function HomePage() {
-  const [settingsResult, videoCasesResult, hasPhotoCasesResult] =
-    await Promise.allSettled([
-      getSiteSettings(),
-      getHomeVideoCases(),
-      hasPhotoCases(),
-    ]);
-
-  const settings: SiteSettings =
-    settingsResult.status === "fulfilled" ? settingsResult.value : null;
-
-  const videoCases: VideoCase[] =
-    videoCasesResult.status === "fulfilled" ? videoCasesResult.value : [];
-
-  const photoCasesAvailable =
-    hasPhotoCasesResult.status === "fulfilled"
-      ? hasPhotoCasesResult.value
-      : false;
-
-  const hasCases = videoCases.length > 0 || photoCasesAvailable;
-
-  const heroDefaultImageSrc = buildHeroImage({
-    image: settings?.heroDefaultImage,
-    fallbackSrc: "/images/hero/hero-default.webp",
-  });
-
-  const heroHoverImageSrc = buildHeroImage({
-    image: settings?.heroHoverImage,
-    fallbackSrc: "/images/hero/hero-hover.webp",
-  });
-
-  const moreExamplesImages = [
-    buildMoreExamplesImage({
-      image: settings?.moreExamplesImage01,
-      fallbackSrc: "/images/more-examples/example-01-v2.webp",
-      fallbackAlt: "Пример работы 1",
-      row: "top",
-    }),
-    buildMoreExamplesImage({
-      image: settings?.moreExamplesImage02,
-      fallbackSrc: "/images/more-examples/example-02-v2.webp",
-      fallbackAlt: "Пример работы 2",
-      row: "top",
-    }),
-    buildMoreExamplesImage({
-      image: settings?.moreExamplesImage03,
-      fallbackSrc: "/images/more-examples/example-03-v2.webp",
-      fallbackAlt: "Пример работы 3",
-      row: "bottom",
-    }),
-    buildMoreExamplesImage({
-      image: settings?.moreExamplesImage04,
-      fallbackSrc: "/images/more-examples/example-04-v2.webp",
-      fallbackAlt: "Пример работы 4",
-      row: "bottom",
-    }),
-    buildMoreExamplesImage({
-      image: settings?.moreExamplesImage05,
-      fallbackSrc: "/images/more-examples/example-05-v2.webp",
-      fallbackAlt: "Пример работы 5",
-      row: "bottom",
-    }),
+  const settings: SiteSettings = await getSiteSettings();
+  const prices = [
+    { title: settings?.pricesItem01Title || "Шкалы и накладки", value: settings?.pricesItem01Value || "7 000" },
+    { title: settings?.pricesItem02Title || "Пересвет приборной панели", value: settings?.pricesItem02Value || "3 500" },
+    { title: settings?.pricesItem03Title || "Ремонт приборной панели", value: settings?.pricesItem03Value || "2 500" },
   ];
-
-  const priceItems = [
-    buildPriceItem({
-      title: settings?.pricesItem01Title,
-      value: settings?.pricesItem01Value,
-      fallbackTitle: "Накладки",
-      fallbackValue: "7 000",
-    }),
-    buildPriceItem({
-      title: settings?.pricesItem02Title,
-      value: settings?.pricesItem02Value,
-      fallbackTitle: "Пересвет",
-      fallbackValue: "3 500",
-    }),
-    buildPriceItem({
-      title: settings?.pricesItem03Title,
-      value: settings?.pricesItem03Value,
-      fallbackTitle: "Ремонт",
-      fallbackValue: "2 500",
-    }),
-  ];
-
-  const faqItems = [
-    buildFaqItem({
-      item: settings?.faqItems?.[0],
-      fallbackQuestion:
-        "Как отправить приборную панель и что нужно подготовить?",
-      fallbackAnswer:
-        "Перед отправкой свяжитесь с нами, уточните модель панели и аккуратно упакуйте её. После согласования подскажем, что приложить и куда отправлять.",
-    }),
-    buildFaqItem({
-      item: settings?.faqItems?.[1],
-      fallbackQuestion:
-        "Можно ли изготовить шкалы по фото без отправки оригинала?",
-      fallbackAnswer:
-        "В некоторых случаях макет можно подготовить по фото, если хорошо видны детали. Но для точного совпадения по размерам иногда нужен оригинал.",
-    }),
-    buildFaqItem({
-      item: settings?.faqItems?.[2],
-      fallbackQuestion: "Сколько занимает работа и как согласовывается макет?",
-      fallbackAnswer:
-        "Срок зависит от задачи и состояния панели. Перед запуском мы согласовываем детали, чтобы вы понимали этапы работы и ожидаемый результат.",
-    }),
-    buildFaqItem({
-      item: settings?.faqItems?.[3],
-      fallbackQuestion:
-        "Работаете ли вы по всей России и как происходит отправка?",
-      fallbackAnswer:
-        "Да, работаем по всей России. Отправка и возврат выполняются через СДЭК после согласования деталей и подтверждения работ.",
-    }),
-    buildFaqItem({
-      item: settings?.faqItems?.[4],
-      fallbackQuestion: "Можно ли сделать шкалы по индивидуальному дизайну?",
-      fallbackAnswer:
-        "Да, можем подготовить шкалы под конкретную модель, нужную графику и желаемый внешний вид. Перед запуском согласовываем макет, чтобы результат был ожидаемым.",
-    }),
-  ];
+  const faqItems = fallbackFaq.map((fallback, index) => ({
+    question: settings?.faqItems?.[index]?.question || fallback.question,
+    answer: settings?.faqItems?.[index]?.answer || fallback.answer,
+  }));
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "AutoRepair",
+    name: "Carmanof",
+    url: "https://carmanof.ru",
+    image: "https://carmanof.ru/og-carmanof-v2-1200x630.png",
+    telephone: settings?.phone || "+7 918 240-21-80",
+    address: { "@type": "PostalAddress", addressLocality: "Краснодар", addressCountry: "RU" },
+    areaServed: { "@type": "Country", name: "Россия" },
+    description: "Изготовление индивидуальных шкал приборов, пересвет и ремонт приборных панелей.",
+    priceRange: "₽₽",
+    openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], opens: "10:00", closes: "19:00" }],
+  };
 
   return (
     <>
-      <Hero
-        defaultImageSrc={heroDefaultImageSrc}
-        hoverImageSrc={heroHoverImageSrc}
-      />
-      <VideoCaseBlock videoCases={videoCases} />
-      <MainOffer />
-      <OtherWorks hasCases={hasCases} />
-      <AdditionalElements />
-      <ProcessBlock />
-      <MoreExamplesBlock images={moreExamplesImages} />
-      <TrustBlock />
-      <Prices items={priceItems} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <Hero />
+      <HomeExperience prices={prices} />
       <FAQ items={faqItems} />
       <Contact settings={settings} />
       <Footer />

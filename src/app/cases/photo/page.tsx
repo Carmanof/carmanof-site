@@ -3,7 +3,7 @@ import PhotoCasesClient from "./PhotoCasesClient";
 import { getPhotoCases } from "@/sanity/lib/fetchers";
 
 export const metadata: Metadata = {
-  title: "Фото примеры работ | Carmanof",
+  title: "Фото примеры работ",
   description:
     "Фото кейсы Carmanof: примеры выполненных работ с приборными панелями и визуальный результат.",
   alternates: {

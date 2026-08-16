@@ -3,7 +3,7 @@ import VideoCasesClient from "./VideoCasesClient";
 import { getVideoCases } from "@/sanity/lib/fetchers";
 
 export const metadata: Metadata = {
-  title: "Видео примеры работ | Carmanof",
+  title: "Видео примеры работ",
   description:
     "Видео кейсы Carmanof: примеры работ с приборными панелями, процесс и итоговый результат.",
   alternates: {

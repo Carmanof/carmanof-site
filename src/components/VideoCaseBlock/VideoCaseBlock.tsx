@@ -89,6 +89,8 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                           aria-label={`Открыть видео: ${item.title}`}
                         >
                           {/* 🔴 FIX: replaced next/image with native img */}
+                          {/* Dynamic YouTube preview stays unoptimized to avoid proxying. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={getYoutubeThumbnail(item.youtubeId)}
                             alt={item.title}
@@ -107,6 +109,8 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                           </span>
 
                           <span className={styles.playButton}>
+                            {/* Static play asset is intentionally rendered inside a button. */}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src="/icons/video-case-block/play.svg"
                               alt=""

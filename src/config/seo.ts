@@ -5,11 +5,11 @@ export const SEO_CONFIG = {
 
   siteName: "Carmanof",
 
-  defaultTitle: "Carmanof",
+  defaultTitle: "Шкалы приборов на заказ | Carmanof",
   titleTemplate: "%s | Carmanof",
 
   description:
-    "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
+    "Шкалы приборов на заказ, пересвет и ремонт приборных панелей. Краснодар, доставка по всей России.",
 
   locale: "ru_RU",
 
@@ -18,7 +18,7 @@ export const SEO_CONFIG = {
     disallow: ["/studio/", "/api/"],
   },
 
-  openGraphImage: "/og-image.jpg",
+  openGraphImage: "/og-carmanof-v2-1200x630.png",
 };
 
 export function getSiteUrl() {

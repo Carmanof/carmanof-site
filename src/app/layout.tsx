@@ -1,9 +1,22 @@
 // app/layout.tsx
 
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
 import "./globals.scss";
 import { SITE_URL } from "@/lib/site";
+
+const manrope = localFont({
+  src: [
+    { path: "./fonts/Manrope-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Manrope-Medium.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/Manrope-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/Manrope-Bold.ttf", weight: "700", style: "normal" },
+    { path: "./fonts/Manrope-ExtraBold.ttf", weight: "800", style: "normal" },
+  ],
+  variable: "--font-manrope",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -16,7 +29,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Индивидуальные шкалы, накладки и тюнинг приборных панелей. Мастерская в Краснодаре, отправка по всей России.",
+    "Изготовление шкал приборов на заказ для автомобилей любых марок. Индивидуальный макет, пересвет и ремонт приборных панелей в Краснодаре с доставкой по всей России.",
 
   alternates: {
     canonical: SITE_URL,
@@ -47,7 +60,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${SITE_URL}/og.png`,
+        url: `${SITE_URL}/og-carmanof-v2-1200x630.png`,
         width: 1200,
         height: 630,
         alt: "Carmanof",
@@ -59,7 +72,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Шкалы приборов на заказ | Carmanof",
     description: "Индивидуальные шкалы и тюнинг приборных панелей для автомобилей по всей России.",
-    images: [`${SITE_URL}/og.png`],
+    images: [`${SITE_URL}/og-carmanof-v2-1200x630.png`],
   },
 
   formatDetection: {
@@ -80,7 +93,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body>
+      <body className={manrope.variable}>
         <LayoutChrome>{children}</LayoutChrome>
       </body>
     </html>

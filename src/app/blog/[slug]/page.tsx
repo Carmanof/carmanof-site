@@ -8,7 +8,6 @@ import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 import {
   getBlogCoverImageUrl,
-  getCardImageUrl,
   urlFor,
 } from "@/sanity/lib/image";
 import { getBlogPostBySlug, getBlogPostSlugs } from "@/sanity/lib/fetchers";

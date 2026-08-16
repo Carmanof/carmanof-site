@@ -42,6 +42,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    ...["services", "about", "contacts"].map((path) => ({
+      url: `${SEO_CONFIG.siteUrl}/${path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    {
+      url: `${SEO_CONFIG.siteUrl}/consent`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 
   const blogSlugs = await getBlogPostSlugs();

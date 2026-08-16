@@ -7,9 +7,10 @@ import { getBlogPosts } from "@/sanity/lib/fetchers";
 import { getCardImageUrl } from "@/sanity/lib/image";
 
 import styles from "./blog.module.scss";
+import Footer from "@/components/Footer/Footer";
 
 export const metadata: Metadata = {
-  title: "Полезные материалы | Carmanof",
+  title: "Полезные материалы",
   description:
     "Материалы Carmanof по приборным панелям, ремонту, восстановлению и типовым вопросам автоэлектроники.",
   alternates: {
@@ -44,7 +45,7 @@ export default async function BlogPage() {
   const hasPosts = blogPosts.length > 0;
 
   return (
-    <main className={styles.page}>
+    <><main className={styles.page}>
       <section className={styles.section}>
         <Container>
           <div className={styles.inner}>
@@ -120,6 +121,6 @@ export default async function BlogPage() {
           </div>
         </Container>
       </section>
-    </main>
+    </main><Footer /></>
   );
 }

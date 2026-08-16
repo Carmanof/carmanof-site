@@ -21,8 +21,11 @@ export default function CookieConsent() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setConsent(readConsent());
-    setIsReady(true);
+    const frameId = window.requestAnimationFrame(() => {
+      setConsent(readConsent());
+      setIsReady(true);
+    });
+    return () => window.cancelAnimationFrame(frameId);
   }, []);
 
   function updateConsent(nextValue: Exclude<ConsentState, null>) {
@@ -59,24 +62,24 @@ export default function CookieConsent() {
         right: 16,
         bottom: 16,
         zIndex: 200,
-        maxWidth: 720,
+        maxWidth: 760,
         margin: "0 auto",
         padding: "16px",
-        borderRadius: 20,
-        border: "1px solid rgba(0, 0, 0, 0.08)",
-        background: "rgba(255, 255, 255, 0.96)",
-        boxShadow: "0 16px 40px rgba(0, 0, 0, 0.12)",
+        borderRadius: 12,
+        border: "1px solid rgba(255, 255, 255, 0.12)",
+        background: "rgba(8, 10, 13, 0.94)",
+        boxShadow: "0 18px 55px rgba(0, 0, 0, 0.34)",
         backdropFilter: "blur(12px)",
       }}
     >
-      <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "#1b252b" }}>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,.68)" }}>
         Мы используем cookie для корректной работы сайта и анализа посещаемости.
         Продолжая использовать сайт, вы соглашаетесь с применением cookie в
         соответствии с{" "}
         <a
           href="/privacy"
           style={{
-            color: "#1b252b",
+            color: "#fff",
             fontWeight: 600,
             textDecoration: "underline",
             textUnderlineOffset: 2,
@@ -101,10 +104,10 @@ export default function CookieConsent() {
           style={{
             height: 40,
             padding: "0 16px",
-            borderRadius: 999,
+            borderRadius: 8,
             border: "1px solid transparent",
-            background: "#27aae1",
-            color: "#fff",
+            background: "#ff9d18",
+            color: "#08090b",
             fontWeight: 600,
             cursor: "pointer",
           }}
@@ -118,10 +121,10 @@ export default function CookieConsent() {
           style={{
             height: 40,
             padding: "0 16px",
-            borderRadius: 999,
-            border: "1px solid rgba(0, 0, 0, 0.1)",
-            background: "#fff",
-            color: "#1b252b",
+            borderRadius: 8,
+            border: "1px solid rgba(255, 255, 255, 0.16)",
+            background: "transparent",
+            color: "#fff",
             fontWeight: 500,
             cursor: "pointer",
           }}
