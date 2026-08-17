@@ -9,7 +9,7 @@ import { getSiteSettings, type FAQItem, type SiteSettings } from "@/sanity/lib/f
 export const revalidate = 120;
 
 export const metadata: Metadata = {
-  title: "Шкалы приборов на заказ по России | Carmanof",
+  title: "Шкалы приборов на заказ по России",
   description: "Изготовление индивидуальных шкал приборов, пересвет и ремонт приборных панелей в мастерской Carmanof. Краснодар, доставка СДЭК по всей России.",
   alternates: { canonical: "/" },
 };
@@ -33,23 +33,29 @@ export default async function HomePage() {
     question: settings?.faqItems?.[index]?.question || fallback.question,
     answer: settings?.faqItems?.[index]?.answer || fallback.answer,
   }));
-  const structuredData = {
+  const businessSchema = {
     "@context": "https://schema.org",
-    "@type": "AutoRepair",
+    "@type": "AutomotiveBusiness",
     name: "Carmanof",
+    legalName: "ИП Карманов Алексей Олегович",
     url: "https://carmanof.ru",
     image: "https://carmanof.ru/og-carmanof-v2-1200x630.png",
     telephone: settings?.phone || "+7 918 240-21-80",
     address: { "@type": "PostalAddress", addressLocality: "Краснодар", addressCountry: "RU" },
     areaServed: { "@type": "Country", name: "Россия" },
     description: "Изготовление индивидуальных шкал приборов, пересвет и ремонт приборных панелей.",
+    taxID: "590610034700",
+    identifier: "ОГРНИП 323595800112271",
     priceRange: "₽₽",
+    sameAs: ["https://t.me/Carmanof_MANAGER", "https://vk.com/carmanof"],
+    hasOfferCatalog: { "@type": "OfferCatalog", name: "Услуги Carmanof", itemListElement: ["Шкалы приборов на заказ", "Пересвет приборной панели", "Ремонт приборной панели"].map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })) },
     openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], opens: "10:00", closes: "19:00" }],
   };
+  const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqItems.map((item) => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) };
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([businessSchema, faqSchema]) }} />
       <Hero />
       <HomeExperience prices={prices} />
       <FAQ items={faqItems} />

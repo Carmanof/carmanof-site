@@ -10,7 +10,7 @@ import styles from "./Header.module.scss";
 const navItems = [
   { label: "Работы", href: "/#works" },
   { label: "Услуги", href: "/services" },
-  { label: "Как работаем", href: "/#process" },
+  { label: "Доставка и оплата", href: "/delivery" },
   { label: "О мастерской", href: "/about" },
   { label: "Контакты", href: "/contacts" },
 ];

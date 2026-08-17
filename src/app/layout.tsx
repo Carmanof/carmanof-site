@@ -47,10 +47,7 @@ export const metadata: Metadata = {
 
   manifest: "/manifest.json",
 
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: process.env.VERCEL_ENV === "production" ? { index: true, follow: true } : { index: false, follow: false, noarchive: true },
 
   openGraph: {
     title: "Шкалы приборов на заказ | Carmanof",
@@ -91,9 +88,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const websiteSchema = { "@context": "https://schema.org", "@type": "WebSite", name: "Carmanof", alternateName: "Карманоф", url: SITE_URL, inLanguage: "ru-RU" };
+  const organizationSchema = { "@context": "https://schema.org", "@type": "Organization", name: "Carmanof", legalName: "ИП Карманов Алексей Олегович", url: SITE_URL, taxID: "590610034700", identifier: "ОГРНИП 323595800112271", sameAs: ["https://t.me/Carmanof_MANAGER", "https://vk.com/carmanof"] };
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={manrope.variable}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteSchema, organizationSchema]) }} />
         <LayoutChrome>{children}</LayoutChrome>
       </body>
     </html>

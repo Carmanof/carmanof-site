@@ -1,4 +1,4 @@
-.section { padding: clamp(100px, 12vw, 180px) 0; background: #f2f0ea; color: #0b0d10; }
+.section { padding: clamp(100px, 12vw, 180px) 0; background: #d9dad6; color: #0b0d10; }
 .shell { width: min(1340px, calc(100% - 64px)); margin: 0 auto; display: grid; grid-template-columns: .8fr 1.3fr; gap: clamp(60px, 10vw, 160px); }
 .heading { position: sticky; top: 120px; align-self: start; }
 .heading > p { margin: 0; color: #b46f15; font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }

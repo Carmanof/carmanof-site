@@ -1,265 +1,64 @@
 import type { Metadata } from "next";
 import type { Image as SanityImage } from "sanity";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
-
-import Container from "@/components/ui/Container/Container";
-import Button from "@/components/ui/Button/Button";
-import {
-  getBlogCoverImageUrl,
-  urlFor,
-} from "@/sanity/lib/image";
+import Footer from "@/components/Footer/Footer";
+import { blogArticles, getBlogArticleBySlug, getRelatedBlogArticles } from "@/data/blog";
+import { getBlogCoverImageUrl, urlFor } from "@/sanity/lib/image";
 import { getBlogPostBySlug, getBlogPostSlugs } from "@/sanity/lib/fetchers";
-
 import styles from "./article.module.scss";
 
-/**
- * Тип для image-блока внутри PortableText.
- * Это локальный тип только для редакторского контента.
- */
-type PortableTextImageValue = SanityImage & {
-  alt?: string;
-  caption?: string;
-};
-
-type BlogSlugItem = Awaited<ReturnType<typeof getBlogPostSlugs>>[number];
-
-type ArticlePageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
-
-/**
- * Разрешаем открывать новые slug, даже если они не попали
- * в generateStaticParams на этапе предыдущей сборки.
- * Это важно для связки ISR + revalidate.
- */
+type PortableTextImageValue = SanityImage & { alt?: string; caption?: string };
+type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = true;
 
-function formatDate(dateString: string) {
-  return new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(dateString));
-}
+function formatDate(date: string) { return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" }).format(new Date(date)); }
 
-const portableTextComponents: PortableTextComponents = {
-  block: {
-    normal: ({ children }) => <p className={styles.paragraph}>{children}</p>,
-    h2: ({ children }) => <h2 className={styles.sectionTitle}>{children}</h2>,
-    h3: ({ children }) => (
-      <h3 className={styles.sectionSubtitle}>{children}</h3>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote className={styles.blockquote}>{children}</blockquote>
-    ),
-  },
-  list: {
-    bullet: ({ children }) => <ul className={styles.list}>{children}</ul>,
-    number: ({ children }) => <ol className={styles.list}>{children}</ol>,
-  },
-  listItem: {
-    bullet: ({ children }) => <li className={styles.listItem}>{children}</li>,
-    number: ({ children }) => <li className={styles.listItem}>{children}</li>,
-  },
-  types: {
-    image: ({ value }) => {
-      const imageValue = value as PortableTextImageValue;
-
-      /**
-       * Для inline-контента статьи используем Sanity CDN
-       * с контролируемым размером и авто-форматом.
-       */
-      const imageUrl = urlFor(imageValue)
-        .width(1400)
-        .fit("crop")
-        .auto("format")
-        .quality(80)
-        .url();
-
-      if (!imageUrl) {
-        return null;
-      }
-
-      return (
-        <figure className={styles.contentFigure}>
-          <div className={styles.contentFigureMedia}>
-            <Image
-              src={imageUrl}
-              alt={imageValue.alt || "Изображение в статье"}
-              fill
-              sizes="(max-width: 768px) 100vw, 760px"
-              className={styles.contentFigureImage}
-            />
-          </div>
-
-          {imageValue.caption ? (
-            <figcaption className={styles.contentFigureCaption}>
-              {imageValue.caption}
-            </figcaption>
-          ) : null}
-        </figure>
-      );
-    },
-  },
+const components: PortableTextComponents = {
+  block: { normal: ({ children }) => <p>{children}</p>, h2: ({ children }) => <h2>{children}</h2>, h3: ({ children }) => <h3>{children}</h3>, blockquote: ({ children }) => <blockquote>{children}</blockquote> },
+  list: { bullet: ({ children }) => <ul>{children}</ul>, number: ({ children }) => <ol>{children}</ol> },
+  types: { image: ({ value }) => { const image = value as PortableTextImageValue; const src = urlFor(image).width(1400).auto("format").quality(82).url(); return <figure><div className={styles.inlineImage}><Image src={src} alt={image.alt || "Приборная панель"} fill sizes="(max-width: 760px) 100vw, 760px" /></div>{image.caption && <figcaption>{image.caption}</figcaption>}</figure>; } },
 };
 
-/**
- * Предварительно собираем известные slug'и для статических страниц.
- * Список берём через общий fetch-слой Sanity.
- */
 export async function generateStaticParams() {
-  const slugs = await getBlogPostSlugs();
-
-  return slugs.map((item: BlogSlugItem) => ({
-    slug: item.slug,
-  }));
+  const cmsSlugs = await getBlogPostSlugs();
+  return [...new Set([...cmsSlugs.map((item) => item.slug), ...blogArticles.map((item) => item.slug)])].map((slug) => ({ slug }));
 }
 
-/**
- * Metadata берём из Sanity через тот же fetch-слой,
- * чтобы кэш и revalidation вели себя одинаково
- * для страницы и SEO-данных.
- */
-export async function generateMetadata({
-  params,
-}: ArticlePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getBlogPostBySlug(slug);
-
-  if (!article) {
-    return {
-      title: "Материал не найден | Carmanof",
-      description:
-        "Запрошенный материал не найден. Перейдите на главную страницу и посмотрите основные услуги и примеры работ.",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
-  }
-
-  const title = article.seoTitle || `${article.title} | Carmanof`;
-  const description = article.seoDescription || article.excerpt;
-  const canonicalPath = `/blog/${article.slug}`;
-  const ogImage = article.coverImage
-    ? getBlogCoverImageUrl(article.coverImage)
-    : "";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalPath,
-    },
-    openGraph: {
-      title,
-      description,
-      type: "article",
-      locale: "ru_RU",
-      url: canonicalPath,
-      publishedTime: article.publishedAt,
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-              alt: article.coverImage?.alt || article.title,
-            },
-          ]
-        : [],
-    },
-    twitter: {
-      card: ogImage ? "summary_large_image" : "summary",
-      title,
-      description,
-      images: ogImage ? [ogImage] : [],
-    },
-  };
+  const cms = await getBlogPostBySlug(slug);
+  const local = getBlogArticleBySlug(slug);
+  const article = cms || local;
+  if (!article) return { title: "Материал не найден", robots: { index: false, follow: false } };
+  const description = ("seoDescription" in article && article.seoDescription) || article.excerpt;
+  const title = ("seoTitle" in article && article.seoTitle) || article.title;
+  const image = cms?.coverImage ? getBlogCoverImageUrl(cms.coverImage) : local?.coverImage;
+  return { title, description, alternates: { canonical: `/blog/${slug}` }, openGraph: { title: `${title} | Carmanof`, description, type: "article", locale: "ru_RU", url: `/blog/${slug}`, publishedTime: article.publishedAt, images: image ? [{ url: image, alt: article.title }] : [] }, twitter: { card: "summary_large_image", title, description, images: image ? [image] : [] } };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
+  const cms = await getBlogPostBySlug(slug);
+  const local = getBlogArticleBySlug(slug);
+  if (!cms && !local) notFound();
+  const title = cms?.title || local!.title;
+  const excerpt = cms?.excerpt || local!.excerpt;
+  const publishedAt = cms?.publishedAt || local!.publishedAt;
+  const cover = cms?.coverImage ? getBlogCoverImageUrl(cms.coverImage) : local!.coverImage;
+  const readingTime = local?.readingTime || "5 минут";
+  const related = getRelatedBlogArticles(slug, 2);
+  const schema = { "@context": "https://schema.org", "@type": "BlogPosting", headline: title, description: excerpt, image: cover.startsWith("http") ? cover : `https://carmanof.ru${cover}`, datePublished: publishedAt, dateModified: publishedAt, inLanguage: "ru-RU", mainEntityOfPage: `https://carmanof.ru/blog/${slug}`, author: { "@type": "Organization", name: "Carmanof" }, publisher: { "@type": "Organization", name: "Carmanof", url: "https://carmanof.ru" } };
 
-  /**
-   * Основной контент статьи также идёт через общий fetch-слой.
-   * Это важно, чтобы route не жил отдельно
-   * от общей стратегии кэша Sanity.
-   */
-  const article = await getBlogPostBySlug(slug);
-
-  if (!article) {
-    notFound();
-  }
-
-  const coverImageUrl = article.coverImage
-    ? getBlogCoverImageUrl(article.coverImage)
-    : "";
-
-  return (
-    <main className={styles.page}>
-      <article className={styles.article}>
-        <Container>
-          <div className={styles.inner}>
-            <header className={styles.hero}>
-              <p className={styles.kicker}>Полезный материал по теме</p>
-
-              <div className={styles.meta}>
-                <time dateTime={article.publishedAt}>
-                  {formatDate(article.publishedAt)}
-                </time>
-              </div>
-
-              <h1 className={styles.title}>{article.title}</h1>
-
-              <p className={styles.excerpt}>{article.excerpt}</p>
-
-              {coverImageUrl ? (
-                <div className={styles.cover}>
-                  <Image
-                    src={coverImageUrl}
-                    alt={article.coverImage?.alt || article.title}
-                    fill
-                    className={styles.coverImage}
-                    sizes="(max-width: 768px) 100vw, 1200px"
-                    priority
-                  />
-                  <span className={styles.coverOverlay} />
-                </div>
-              ) : null}
-            </header>
-
-            <div className={styles.contentWrap}>
-              <div className={styles.content}>
-                {article.content?.length ? (
-                  <PortableText
-                    value={article.content}
-                    components={portableTextComponents}
-                  />
-                ) : null}
-              </div>
-
-              <aside className={styles.ctaBox}>
-                <div className={styles.ctaInner}>
-                  <p className={styles.ctaEyebrow}>Нужен не просто ответ</p>
-
-                  <p className={styles.ctaText}>
-                    Если вам нужен не только общий материал по теме, а понятное
-                    практическое решение под задачу, посмотрите основной подход,
-                    услуги и формат работы.
-                  </p>
-
-                  <Button href="/" variant="secondary" size="sm">
-                    Посмотреть решение
-                  </Button>
-                </div>
-              </aside>
-            </div>
-          </div>
-        </Container>
-      </article>
-    </main>
-  );
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} /><main className={styles.page}><article>
+    <header className={styles.hero}><Link href="/blog">← Все статьи</Link><div className={styles.meta}><time dateTime={publishedAt}>{formatDate(publishedAt)}</time><span>{readingTime} чтения</span></div><h1>{title}</h1><p>{excerpt}</p></header>
+    <div className={styles.cover}><Image src={cover} alt={`Иллюстрация к статье «${title}»`} fill priority sizes="(max-width: 760px) 100vw, 1180px" /></div>
+    <div className={styles.reading}>
+      <div className={styles.content}>{cms?.content?.length ? <PortableText value={cms.content} components={components} /> : local && <><p className={styles.lead}>{local.content.intro}</p>{local.content.sections.map((section) => <section key={section.heading}><h2>{section.heading}</h2>{section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.list && <ul>{section.list.map((item) => <li key={item}>{item}</li>)}</ul>}</section>)}</>}</div>
+      <aside><p>Нужна оценка вашей панели?</p><span>Пришлите модель автомобиля и фотографии — мастер ответит, что можно сделать.</span><Link href="/#contact">Написать мастеру ↗</Link></aside>
+    </div>
+    <footer className={styles.related}><p>Читать дальше</p><div>{related.map((item) => <Link href={`/blog/${item.slug}`} key={item.slug}><span>{item.readingTime}</span><b>{item.title}</b></Link>)}</div></footer>
+  </article></main><Footer /></>;
 }

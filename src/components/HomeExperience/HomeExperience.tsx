@@ -58,15 +58,11 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
         </div>
       </section>
 
-      <section className={styles.nationwide} aria-label="Работа по всей России">
+      <section className={styles.delivery} id="delivery" aria-labelledby="delivery-title">
         <div className={styles.shell}>
-          <Reveal className={styles.nationwideInner}><p className={styles.kicker}>Краснодар → вся Россия</p><h2>Расстояние не мешает сделать <span>индивидуально.</span></h2><p>Принимаем приборные панели из других городов через СДЭК. До отправки подскажем, как снять и упаковать панель; после получения проверим её и согласуем все работы.</p><div className={styles.route}><span>Ваш город</span><i /><Truck /><i /><span>Мастерская Carmanof</span></div></Reveal>
-        </div>
-      </section>
-
-      <section className={styles.processSection} id="process" aria-labelledby="process-title">
-        <div className={styles.shell}>
-          <div className={styles.sectionHead}><p className={styles.kicker}>Как заказать</p><h2 id="process-title">Понятный процесс без сюрпризов</h2></div>
+          <Reveal className={styles.deliveryIntro}><p className={styles.kicker}>Краснодар → вся Россия</p><h2 id="delivery-title">Доставка и <span>оплата</span></h2><p>Работаем с автомобилями в Краснодаре и принимаем приборные панели из других городов через СДЭК. До старта фиксируем состав работ, стоимость и порядок оплаты — без неожиданных доплат после изготовления.</p><div className={styles.route}><span>Ваш город</span><i /><Truck /><i /><span>Мастерская Carmanof</span></div></Reveal>
+          <div className={styles.deliveryDetails}><div><b>Доставка</b><p>Подскажем, как снять и безопасно упаковать панель. После получения осмотрим её, а готовую работу проверим, упакуем и отправим обратно.</p></div><div><b>Оплата</b><p>Сначала оцениваем фото и задачу. Точную стоимость, этапы и удобный способ оплаты согласовываем лично до начала работ.</p></div><Link href="/delivery">Все условия <ArrowUpRight size={18} /></Link></div>
+          <div className={styles.processHead}><p className={styles.kicker}>Порядок работы</p><h3>Четыре понятных шага</h3></div>
           <div className={styles.process}>{process.map((item, index) => { const Icon = item.icon; return <Reveal className={styles.processItem} key={item.title}><span>0{index + 1}</span><Icon /><h3>{item.title}</h3><p>{item.text}</p></Reveal>; })}</div>
         </div>
       </section>

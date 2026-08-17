@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, Send } from "lucide-react";
+import { ArrowUpRight, Clock3, MapPin, Phone, Send } from "lucide-react";
 import { formatPhone } from "@/lib/formatPhone";
 import { trackFormSubmit, trackFormSuccess, trackMessengerClick, trackPhoneClick } from "@/lib/analytics";
 import styles from "./Contact.module.scss";
@@ -15,7 +16,7 @@ function normalizePhone(raw: string) {
   return digits.slice(0, 10);
 }
 
-export default function Contact({ settings }: { settings?: ContactSettings | null }) {
+export default function Contact({ settings, isPage = false }: { settings?: ContactSettings | null; isPage?: boolean }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
@@ -36,34 +37,29 @@ export default function Contact({ settings }: { settings?: ContactSettings | nul
   }
 
   const messengers = [
-    { label: "Telegram", href: settings?.telegram, key: "telegram" as const },
-    { label: "WhatsApp", href: settings?.whatsapp, key: "whatsapp" as const },
-    { label: "ВКонтакте", href: settings?.vk, key: "vk" as const },
-  ].filter((item) => item.href);
+    { label: "Telegram", href: settings?.telegram || "https://t.me/Carmanof_MANAGER", icon: "/icons/contact/tg.svg", key: "telegram" as const },
+    { label: "WhatsApp", href: settings?.whatsapp || "https://wa.me/79182402180", icon: "/icons/contact/wa.svg", key: "whatsapp" as const },
+    { label: "ВКонтакте", href: settings?.vk || "https://vk.com/carmanof", icon: "/icons/contact/vk.svg", key: "vk" as const },
+  ];
 
-  return (
-    <section className={styles.section} id="contact" aria-labelledby="contact-title">
-      <div className={styles.shell}>
-        <div className={styles.head}><p>Начать проект</p><h2 id="contact-title">Покажите приборку.<br /><span>Предложим решение.</span></h2></div>
-        <div className={styles.grid}>
-          <div className={styles.info}>
-            <p>Пришлите модель автомобиля, год выпуска, фото панели и кратко опишите, что хотите изменить. Ответим по существу: что можно сделать, сколько это стоит и нужна ли отправка панели.</p>
-            <a className={styles.bigPhone} href={`tel:${displayPhone.replace(/\D/g, "")}`} onClick={() => trackPhoneClick(displayPhone)}>{formatPhone(displayPhone)} <ArrowUpRight /></a>
-            {settings?.email && <a className={styles.email} href={`mailto:${settings.email}`}>{settings.email}</a>}
-            <div className={styles.messengers}>{messengers.map((item) => <a href={item.href} key={item.label} target="_blank" rel="noreferrer" onClick={() => trackMessengerClick(item.key)}>{item.label}<ArrowUpRight size={15} /></a>)}</div>
-            <div className={styles.meta}><span><MapPin size={17} /> Краснодар</span><span>Пн—Сб · 10:00—19:00</span><span>Заказы по всей России</span></div>
-          </div>
-          <form className={styles.form} onSubmit={submit}>
-            <label><span>Ваше имя</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться" autoComplete="name" maxLength={80} /></label>
-            <label><span>Телефон</span><div className={styles.phoneField}><b>+7</b><input value={phone} onChange={(event) => setPhone(normalizePhone(event.target.value))} placeholder="999 123 45 67" inputMode="numeric" autoComplete="tel" /></div></label>
-            <input className={styles.honey} name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-            <label className={styles.consent}><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>Согласен с <Link href="/privacy">политикой обработки персональных данных</Link></span></label>
-            <button type="submit" disabled={!valid || status === "sending"}>{status === "sending" ? "Отправляем…" : status === "success" ? "Заявка отправлена" : "Отправить заявку"}<Send size={18} /></button>
-            {status === "error" && <p className={styles.error}>Не удалось отправить. Позвоните или напишите нам в мессенджер.</p>}
-            {status === "success" && <p className={styles.success}>Спасибо! Свяжемся с вами в рабочее время.</p>}
-          </form>
-        </div>
+  return <section className={styles.section} id="contact" aria-labelledby="contact-title"><div className={styles.shell}>
+    <header className={styles.head}><p>Связаться с мастером</p>{isPage ? <h1 id="contact-title">Начнём с одного <span>сообщения</span></h1> : <h2 id="contact-title">Начнём с одного <span>сообщения</span></h2>}<div className={styles.headCopy}><p>Оставьте номер — мастер уточнит модель автомобиля и попросит нужные фотографии. Длинную анкету заполнять не нужно.</p></div></header>
+    <div className={styles.contactGrid}>
+      <div className={styles.direct}>
+        <a className={styles.phone} href={`tel:${displayPhone.replace(/\D/g, "")}`} onClick={() => trackPhoneClick(displayPhone)}><span><Phone /> Позвонить</span><strong>{formatPhone(displayPhone)}</strong><ArrowUpRight /></a>
+        <div className={styles.messengers}>{messengers.map((item) => <a href={item.href} key={item.label} target="_blank" rel="noreferrer" onClick={() => trackMessengerClick(item.key)}><Image src={item.icon} width={28} height={28} alt="" /><span>{item.label}</span><ArrowUpRight size={16} /></a>)}</div>
+        <div className={styles.schedule}><span><MapPin />Мастерская в Краснодаре</span><span><Clock3 />Пн – Сб<br />10:00–19:00</span><span>Отправка заказов<br />по всей России</span></div>
       </div>
-    </section>
-  );
+      <form className={styles.form} onSubmit={submit}>
+        <div className={styles.formTitle}><p>Заказать обратный звонок</p><span>Обычно достаточно 30 секунд</span></div>
+        <label><span>Имя <i>необязательно</i></span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться" autoComplete="name" maxLength={80} /></label>
+        <label><span>Номер телефона</span><div className={styles.phoneField}><b>+7</b><input value={phone} onChange={(event) => setPhone(normalizePhone(event.target.value))} placeholder="999 123 45 67" inputMode="numeric" autoComplete="tel" aria-required="true" /></div></label>
+        <input className={styles.honey} name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+        <label className={styles.consent}><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span>Согласен с <Link href="/privacy">политикой обработки персональных данных</Link></span></label>
+        <button type="submit" disabled={!valid || status === "sending"}>{status === "sending" ? "Отправляем…" : status === "success" ? "Заявка отправлена" : "Перезвоните мне"}<Send size={18} /></button>
+        {status === "error" && <p className={styles.error}>Не удалось отправить. Позвоните или напишите в мессенджер.</p>}{status === "success" && <p className={styles.success}>Готово. Свяжемся с вами в рабочее время.</p>}
+      </form>
+    </div>
+    <div className={styles.legal}><p>Реквизиты</p><div><strong>ИП Карманов Алексей Олегович</strong><span>ИНН 590610034700</span><span>ОГРНИП 323595800112271</span></div></div>
+  </div></section>;
 }
