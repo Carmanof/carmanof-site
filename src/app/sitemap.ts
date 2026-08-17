@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getBlogPostSlugs } from "@/sanity/lib/fetchers";
 import { SEO_CONFIG } from "@/config/seo";
 import { blogArticles } from "@/data/blog";
+import { brandPages } from "@/data/realCases";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -67,5 +68,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...blogPages];
+  const brandCasePages: MetadataRoute.Sitemap = brandPages.map((brand) => ({
+    url: `${SEO_CONFIG.siteUrl}/cases/${brand.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
+  return [...staticPages, ...brandCasePages, ...blogPages];
 }

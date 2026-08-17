@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check, PackageCheck, PenTool, ShieldCheck, Truck } from "lucide-react";
+import { ArrowUpRight, Check, PackageCheck, PenTool, PlayCircle, ShieldCheck, Truck } from "lucide-react";
 import styles from "./HomeExperience.module.scss";
 
 type PriceItem = { title: string; value: string };
@@ -43,10 +43,10 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
         <div className={styles.shell}>
           <div className={styles.sectionHead}><p className={styles.kicker}>Выбранные работы / 2024—2026</p><h2 id="works-title">Приборные панели, которые обрели характер</h2><Link href="/cases">Все работы <ArrowUpRight size={18} /></Link></div>
           <div className={styles.gallery}>
-            <Reveal className={styles.workLarge}><Link href="/cases"><Image src="/images/more-examples/example-01-v2.webp" alt="Индивидуальная шкала приборной панели — работа Carmanof" fill sizes="(max-width: 760px) 100vw, 66vw" /><span><b>Индивидуальная шкала</b><small>точная разметка · новый характер</small></span></Link></Reveal>
-            <Reveal className={styles.workSide}><Link href="/cases"><Image src="/images/more-examples/example-02-v2.webp" alt="Пересвет приборной панели — работа Carmanof" fill sizes="(max-width: 760px) 100vw, 34vw" /><span><b>Пересвет</b><small>ровный свет без слепящих зон</small></span></Link></Reveal>
-            <Reveal className={styles.workHalf}><Link href="/cases"><Image src="/images/more-examples/example-04-v2.webp" alt="Кастомная приборная панель Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>OEM+ дизайн</b><small>как с завода, только выразительнее</small></span></Link></Reveal>
-            <Reveal className={styles.workHalf}><Link href="/cases"><Image src="/images/more-examples/example-05-v2.webp" alt="Ремонт и тюнинг приборной панели Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Комплексная работа</b><small>дизайн · пересвет · проверка</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><Link href="/cases/hyundai"><Image src="https://i.ytimg.com/vi/iq0fddIiLIM/hqdefault.jpg" alt="Обновление приборной панели Hyundai Solaris — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Hyundai Solaris — новые шкалы</b><small>реальный видеокейс · смотреть результат</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><Link href="/cases/chevrolet"><Image src="https://i.ytimg.com/vi/kzHdRZxFJH0/hqdefault.jpg" alt="Новые шкалы Chevrolet Aveo — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Chevrolet Aveo — тюнинг щитка</b><small>реальный видеокейс · индивидуальная графика</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-04-v2.webp" alt="Кастомная приборная панель Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы в стиле OEM+</b><small>заводская логика · новый характер</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-05-v2.webp" alt="Комплексная доработка приборной панели Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы и пересвет панели</b><small>единый дизайн · проверка после сборки</small></span></Link></Reveal>
           </div>
         </div>
       </section>

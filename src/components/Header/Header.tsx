@@ -8,7 +8,7 @@ import { trackPhoneClick } from "@/lib/analytics";
 import styles from "./Header.module.scss";
 
 const navItems = [
-  { label: "Работы", href: "/#works" },
+  { label: "Работы", href: "/cases" },
   { label: "Услуги", href: "/services" },
   { label: "Доставка и оплата", href: "/delivery" },
   { label: "О мастерской", href: "/about" },

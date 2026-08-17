@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, CreditCard, MessageSquareText, PackageCheck, Truck } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { ChatCircleTextIcon, CreditCardIcon, PackageIcon, TruckIcon } from "@phosphor-icons/react/dist/ssr";
 import Footer from "@/components/Footer/Footer";
+import DeliveryJourney from "./DeliveryJourney";
 import styles from "./delivery.module.scss";
 
 export const metadata: Metadata = {
@@ -18,10 +20,10 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { icon: MessageSquareText, title: "Первичная оценка", text: "Напишите модель и год автомобиля, приложите фотографии приборной панели и коротко опишите желаемый результат." },
-  { icon: CreditCard, title: "Стоимость и оплата", text: "Мастер уточнит детали, назовёт стоимость и согласует порядок оплаты до начала изготовления." },
-  { icon: PackageCheck, title: "Работа и проверка", text: "После получения панели создаём и согласовываем решение, выполняем работу и проверяем результат перед отправкой." },
-  { icon: Truck, title: "Доставка обратно", text: "Надёжно упаковываем готовую приборную панель и отправляем СДЭК в согласованный пункт или по адресу." },
+  { icon: ChatCircleTextIcon, title: "Первичная оценка", text: "Напишите модель и год автомобиля, приложите фотографии приборной панели и коротко опишите желаемый результат." },
+  { icon: CreditCardIcon, title: "Стоимость и оплата", text: "Мастер уточнит детали, назовёт стоимость и согласует порядок оплаты до начала изготовления." },
+  { icon: PackageIcon, title: "Работа и проверка", text: "После получения панели создаём и согласовываем решение, выполняем работу и проверяем результат перед отправкой." },
+  { icon: TruckIcon, title: "Доставка обратно", text: "Надёжно упаковываем готовую приборную панель и отправляем СДЭК в согласованный пункт или по адресу." },
 ];
 
 export default function DeliveryPage() {
@@ -38,9 +40,8 @@ export default function DeliveryPage() {
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
     <main className={styles.page}>
       <header className={styles.hero}>
-        <p>Краснодар · заказы по всей России</p>
-        <h1>Доставка<br />и <span>оплата</span></h1>
-        <div><b>Расстояние не усложняет заказ.</b><p>Большинство вопросов решаем по фотографиям и в переписке. Если для точной работы нужна сама приборная панель, объясним, как её подготовить и отправить.</p></div>
+        <div className={styles.heroCopy}><p>Краснодар · заказы по всей России</p><h1>Доставка<br />и <span>оплата</span></h1><div className={styles.heroLead}><b>Расстояние не усложняет заказ.</b><p>Большинство вопросов решаем по фотографиям и в переписке. Если нужна сама панель, объясним, как её снять, упаковать и отправить.</p></div><div className={styles.heroFacts}><span>СДЭК по России</span><span>Цена до начала</span><span>Проверка перед отправкой</span></div></div>
+        <DeliveryJourney />
       </header>
       <section className={styles.content} aria-labelledby="delivery-steps">
         <div className={styles.intro}><p>Порядок заказа</p><h2 id="delivery-steps">От первого сообщения до готовой панели</h2></div>
