@@ -9,7 +9,7 @@ import { getSiteSettings, type FAQItem, type SiteSettings } from "@/sanity/lib/f
 export const revalidate = 120;
 
 export const metadata: Metadata = {
-  title: "Шкалы приборов на заказ по России",
+  title: { absolute: "Шкалы приборов на заказ по России | Carmanof" },
   description: "Изготовление индивидуальных шкал приборов, пересвет и ремонт приборных панелей в мастерской Carmanof. Краснодар, доставка СДЭК по всей России.",
   alternates: { canonical: "/" },
 };

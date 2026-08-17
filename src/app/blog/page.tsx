@@ -20,7 +20,10 @@ function formatDate(date: string) {
 
 export default async function BlogPage() {
   const cmsPosts = await getBlogPosts();
-  const posts = cmsPosts.length ? cmsPosts.map((post) => ({ id: post._id, slug: post.slug, title: post.title, excerpt: post.excerpt, publishedAt: post.publishedAt, readingTime: "", image: post.coverImage ? getCardImageUrl(post.coverImage) : "/images/cases/photo-preview.webp" })) : blogArticles.map((post) => ({ id: post.id, slug: post.slug, title: post.title, excerpt: post.excerpt, publishedAt: post.publishedAt, readingTime: post.readingTime, image: post.coverImage }));
+  const cmsMapped = cmsPosts.map((post) => ({ id: post._id, slug: post.slug, title: post.title, excerpt: post.excerpt, publishedAt: post.publishedAt, readingTime: "", image: post.coverImage ? getCardImageUrl(post.coverImage) : "/images/cases/photo-preview.webp" }));
+  const cmsSlugSet = new Set(cmsMapped.map((post) => post.slug));
+  const localMapped = blogArticles.filter((post) => !cmsSlugSet.has(post.slug)).map((post) => ({ id: post.id, slug: post.slug, title: post.title, excerpt: post.excerpt, publishedAt: post.publishedAt, readingTime: post.readingTime, image: post.coverImage }));
+  const posts = [...cmsMapped, ...localMapped].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
   const schema = { "@context": "https://schema.org", "@type": "Blog", name: "Блог Carmanof", url: "https://carmanof.ru/blog", inLanguage: "ru-RU", blogPost: posts.map((post) => ({ "@type": "BlogPosting", headline: post.title, datePublished: post.publishedAt, url: `https://carmanof.ru/blog/${post.slug}` })) };
 
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} /><main className={styles.page}>
