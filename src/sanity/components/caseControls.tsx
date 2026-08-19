@@ -78,9 +78,9 @@ function getStatusConfig(params: {
       badgeBackground: "#ffedd5",
       badgeColor: "#b45309",
       helperColor: "#b45309",
-      borderColor: "#f59e0b",
+      borderColor: "#2dd4df",
       backgroundColor: "#fff7ed",
-      progressColor: "#f59e0b",
+      progressColor: "#2dd4df",
     };
   }
 

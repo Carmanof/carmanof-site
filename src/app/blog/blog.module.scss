@@ -1,19 +1,19 @@
 .page { min-height: 100vh; padding: 170px max(32px,calc((100% - 1240px)/2)) 130px; background: #d9dad6; color: #111315; }
 .hero { display: grid; grid-template-columns: 1.65fr .75fr; gap: clamp(50px,10vw,150px); align-items: end; margin-bottom: 85px; }
-.hero div > p { margin: 0 0 25px; color: #9a5b09; font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+.hero div > p { margin: 0 0 25px; color: var(--accent-dark); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
 .hero h1 { max-width: 900px; margin: 0; font-size: clamp(56px,7.3vw,105px); line-height: .9; letter-spacing: -.078em; }
 .hero > p { margin: 0; color: #555753; font-size: 16px; line-height: 1.75; }
 .list { border-top: 1px solid rgba(17,19,21,.28); }
 .article { border-bottom: 1px solid rgba(17,19,21,.22); }
 .article a { display: grid; grid-template-columns: 55px 280px 1fr auto; gap: 30px; align-items: center; padding: 30px 0; }
-.number { align-self: start; padding-top: 4px; color: #9a5b09; font-size: 10px; letter-spacing: .13em; }
+.number { align-self: start; padding-top: 4px; color: var(--accent-dark); font-size: 10px; letter-spacing: .13em; }
 .media { position: relative; aspect-ratio: 16/10; overflow: hidden; background: #c7c8c4; }
 .media img { object-fit: cover; transition: transform .45s ease; }
 .copy { max-width: 650px; }
 .meta { display: flex; gap: 18px; color: #777973; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
 .copy h2 { margin: 12px 0 10px; font-size: clamp(23px,2.5vw,35px); line-height: 1.15; letter-spacing: -.045em; }
 .copy p { margin: 0; color: #5e605b; font-size: 14px; line-height: 1.65; }
-.arrow { align-self: end; padding-bottom: 3px; color: #8d5308; font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
-.article a:hover .media img { transform: scale(1.035); }.article a:hover h2{color:#8d5308}
+.arrow { align-self: end; padding-bottom: 3px; color: var(--accent-dark); font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
+.article a:hover .media img { transform: scale(1.035); }.article a:hover h2{color:var(--accent-dark)}
 @media(max-width:900px){.hero{grid-template-columns:1fr}.hero>p{max-width:650px}.article a{grid-template-columns:35px 210px 1fr}.arrow{grid-column:3}}
 @media(max-width:650px){.page{padding:135px 16px 90px}.hero{margin-bottom:55px}.hero h1{font-size:55px}.article a{grid-template-columns:28px 1fr;gap:14px;padding:24px 0}.media{grid-column:2}.copy{grid-column:2}.arrow{grid-column:2}.copy h2{font-size:25px}}

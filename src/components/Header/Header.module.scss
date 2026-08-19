@@ -2,17 +2,17 @@
 .scrolled { background: rgba(5, 7, 10, .92); border-color: rgba(255,255,255,.1); backdrop-filter: blur(20px); }
 .inner { width: min(1420px, calc(100% - 64px)); height: 84px; margin: 0 auto; display: flex; align-items: center; gap: 42px; }
 .brand { font-size: 28px; font-weight: 800; letter-spacing: -.06em; line-height: 1; }
-.brand span { color: #ff9d18; }
+.brand span { color: var(--accent); }
 .nav { display: flex; align-items: center; gap: clamp(20px, 2.4vw, 40px); margin-left: auto; }
 .nav a { position: relative; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.72); transition: color .2s ease; }
-.nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -9px; height: 1px; background: #ff9d18; transition: right .25s ease; }
+.nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -9px; height: 1px; background: var(--accent); transition: right .25s ease; }
 .nav a:hover { color: #fff; }
 .nav a:hover::after { right: 0; }
 .actions { display: flex; align-items: center; gap: 20px; }
-.location { display: inline-flex; align-items: center; gap: 7px; padding: 10px 13px; border: 1px solid rgba(255,157,24,.35); border-radius: 10px; font-size: 13px; color: rgba(255,255,255,.76); }
-.location svg { color: #ff9d18; }
+.location { display: inline-flex; align-items: center; gap: 7px; padding: 10px 13px; border: 1px solid rgba(var(--accent-rgb),.35); border-radius: 10px; font-size: 13px; color: rgba(255,255,255,.76); }
+.location svg { color: var(--accent); }
 .phone { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; }
-.phone svg { color: #ff9d18; }
+.phone svg { color: var(--accent); }
 .request { padding: 12px 17px; border: 1px solid rgba(255,255,255,.22); border-radius: 10px; font-size: 13px; font-weight: 600; transition: background .2s, color .2s; }
 .request:hover { background: #fff; color: #08090b; }
 .menuButton, .mobileMenu { display: none; }
@@ -26,12 +26,15 @@
   .inner { width: calc(100% - 32px); height: 70px; }
   .brand { font-size: 24px; }
   .nav, .actions { display: none; }
-  .menuButton { margin-left: auto; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; }
-  .mobileMenu { display: flex; position: fixed; inset: 70px 0 0; flex-direction: column; padding: 34px 24px 28px; background: rgba(5,7,10,.98); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: .25s ease; }
+  .menuButton { position: relative; z-index: 3; margin-left: auto; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; color: #fff; background: #0c1116; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; }
+  .mobileMenu { isolation: isolate; display: flex; position: fixed; z-index: 2; inset: 70px 0 0; flex-direction: column; padding: 28px 24px 28px; overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(180deg,#0b1117 0%,#05080c 100%); border-top: 1px solid rgba(var(--accent-rgb),.4); box-shadow: 0 30px 80px rgba(0,0,0,.7); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity .25s ease, visibility .25s ease, transform .25s ease; }
+  .mobileMenu::before { content: ""; position: absolute; z-index: -1; inset: 0; pointer-events: none; background: radial-gradient(circle at 88% 3%,rgba(var(--accent-rgb),.13),transparent 38%); }
   .mobileMenuOpen { opacity: 1; visibility: visible; transform: none; }
   .mobileMenu nav { display: flex; flex-direction: column; }
   .mobileMenu nav a { display: flex; align-items: center; gap: 18px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.12); font-size: clamp(25px, 8vw, 38px); font-weight: 600; letter-spacing: -.045em; }
-  .mobileMenu nav span { font-size: 11px; color: #ff9d18; letter-spacing: .1em; }
-  .mobilePhone { margin-top: auto; font-size: 18px; font-weight: 700; }
-  .mobileRequest { margin-top: 18px; display: grid; place-items: center; min-height: 54px; border-radius: 10px; background: #ff9d18; color: #07090b; font-weight: 700; }
+  .mobileMenu nav span { font-size: 11px; color: var(--accent); letter-spacing: .1em; }
+  .mobileAddress { display: flex; align-items: flex-start; gap: 10px; margin-top: 24px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.65); font-size: 12px; line-height: 1.55; }
+  .mobileAddress svg { flex: 0 0 auto; width: 17px; color: var(--accent); }
+  .mobilePhone { margin-top: auto; padding-top: 24px; font-size: 18px; font-weight: 700; }
+  .mobileRequest { margin-top: 18px; display: grid; place-items: center; min-height: 54px; border-radius: 10px; background: var(--accent); color: #07090b; font-weight: 800; }
 }

@@ -5,6 +5,7 @@ import FAQ from "@/components/FAQ/FAQ";
 import Contact from "@/components/Contact/Contact";
 import Footer from "@/components/Footer/Footer";
 import { getSiteSettings, type FAQItem, type SiteSettings } from "@/sanity/lib/fetchers";
+import { businessAddress, businessMapUrl } from "@/config/business";
 
 export const revalidate = 120;
 
@@ -41,7 +42,8 @@ export default async function HomePage() {
     url: "https://carmanof.ru",
     image: "https://carmanof.ru/og-carmanof-v2-1200x630.png",
     telephone: settings?.phone || "+7 918 240-21-80",
-    address: { "@type": "PostalAddress", addressLocality: "Краснодар", addressCountry: "RU" },
+    address: { "@type": "PostalAddress", ...businessAddress },
+    hasMap: businessMapUrl,
     areaServed: { "@type": "Country", name: "Россия" },
     description: "Изготовление индивидуальных шкал приборов, пересвет и ремонт приборных панелей.",
     taxID: "590610034700",

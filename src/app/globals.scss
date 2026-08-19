@@ -1,6 +1,14 @@
 @use "../styles/ui/links";
 @use "../styles/variables" as *;
 
+:root {
+  --accent: #2dd4df;
+  --accent-rgb: 45, 212, 223;
+  --accent-hover: #70e7ee;
+  --accent-dark: #006f7a;
+  --accent-soft: #a6f3f6;
+}
+
 *,
 *::before,
 *::after {
@@ -28,7 +36,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: rgba(255, 157, 24, 0.9); color: #08090b; }
+::selection { background: rgba(var(--accent-rgb), .9); color: #08090b; }
 
 img {
   display: block;
@@ -49,5 +57,5 @@ select {
 }
 
 button, a { -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 2px solid #ff9d18; outline-offset: 4px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 body.intro-lock { overflow: auto !important; }

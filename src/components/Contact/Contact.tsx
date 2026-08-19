@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight, Clock3, MapPin, Phone, Send } from "lucide-react";
 import { formatPhone } from "@/lib/formatPhone";
 import { trackFormSubmit, trackFormSuccess, trackMessengerClick, trackPhoneClick } from "@/lib/analytics";
+import { businessAddressLabel, businessMapUrl } from "@/config/business";
 import styles from "./Contact.module.scss";
 
 type ContactSettings = { phone?: string; email?: string; telegram?: string; whatsapp?: string; vk?: string };
@@ -48,7 +49,7 @@ export default function Contact({ settings, isPage = false }: { settings?: Conta
       <div className={styles.direct}>
         <a className={styles.phone} href={`tel:${displayPhone.replace(/\D/g, "")}`} onClick={() => trackPhoneClick(displayPhone)}><span><Phone /> Позвонить</span><strong>{formatPhone(displayPhone)}</strong><ArrowUpRight /></a>
         <div className={styles.messengers}>{messengers.map((item) => <a href={item.href} key={item.label} target="_blank" rel="noreferrer" onClick={() => trackMessengerClick(item.key)}><Image src={item.icon} width={28} height={28} alt="" /><span>{item.label}</span><ArrowUpRight size={16} /></a>)}</div>
-        <div className={styles.schedule}><span><MapPin />Мастерская в Краснодаре</span><span><Clock3 />Пн – Сб<br />10:00–19:00</span><span>Отправка заказов<br />по всей России</span></div>
+        <div className={styles.schedule}><a className={styles.address} href={businessMapUrl} target="_blank" rel="noreferrer"><MapPin /><span><b>Адрес мастерской</b>{businessAddressLabel}</span><ArrowUpRight /></a><span><Clock3 />Пн – Сб<br />10:00–19:00</span><span>Отправка заказов<br />по всей России</span></div>
       </div>
       <form className={styles.form} onSubmit={submit}>
         <div className={styles.formTitle}><p>Заказать обратный звонок</p><span>Обычно достаточно 30 секунд</span></div>

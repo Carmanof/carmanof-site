@@ -1,14 +1,14 @@
 .section { padding: clamp(100px, 12vw, 180px) 0; background: #d9dad6; color: #0b0d10; }
 .shell { width: min(1340px, calc(100% - 64px)); margin: 0 auto; display: grid; grid-template-columns: .8fr 1.3fr; gap: clamp(60px, 10vw, 160px); }
 .heading { position: sticky; top: 120px; align-self: start; }
-.heading > p { margin: 0; color: #b46f15; font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.heading > p { margin: 0; color: var(--accent-dark); font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .heading h2 { margin: 28px 0 24px; font-size: clamp(44px, 5vw, 74px); line-height: 1; letter-spacing: -.065em; }
 .heading > span { display: block; max-width: 440px; color: #666761; font-size: 14px; line-height: 1.65; }
 .list { border-top: 1px solid rgba(11,13,16,.28); }
 .item { border-bottom: 1px solid rgba(11,13,16,.22); }
 .item h3 { margin: 0; }
 .trigger { width: 100%; display: grid; grid-template-columns: 45px 1fr 24px; gap: 18px; align-items: start; padding: 28px 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
-.number { padding-top: 5px; color: #b46f15; font-size: 10px; letter-spacing: .14em; }
+.number { padding-top: 5px; color: var(--accent-dark); font-size: 10px; letter-spacing: .14em; }
 .question { font-size: clamp(18px, 1.75vw, 25px); line-height: 1.3; font-weight: 600; letter-spacing: -.025em; }
 .trigger svg { margin-top: 4px; transition: transform .25s ease; }
 .trigger[data-state="open"] svg { transform: rotate(180deg); }

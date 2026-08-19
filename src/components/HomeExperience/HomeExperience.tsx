@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check, PackageCheck, PenTool, PlayCircle, ShieldCheck, Truck } from "lucide-react";
+import { ArrowUpRight, Check, Gauge, Layers3, PackageCheck, PenTool, PlayCircle, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import styles from "./HomeExperience.module.scss";
 
 type PriceItem = { title: string; value: string };
@@ -47,6 +47,32 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
             <Reveal className={styles.workCard}><Link href="/cases/chevrolet"><Image src="https://i.ytimg.com/vi/kzHdRZxFJH0/hqdefault.jpg" alt="Новые шкалы Chevrolet Aveo — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Chevrolet Aveo — тюнинг щитка</b><small>реальный видеокейс · индивидуальная графика</small></span></Link></Reveal>
             <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-04-v2.webp" alt="Кастомная приборная панель Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы в стиле OEM+</b><small>заводская логика · новый характер</small></span></Link></Reveal>
             <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-05-v2.webp" alt="Комплексная доработка приборной панели Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы и пересвет панели</b><small>единый дизайн · проверка после сборки</small></span></Link></Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.expertise} aria-labelledby="expertise-title">
+        <div className={styles.shell}>
+          <header className={styles.expertHead}>
+            <p className={styles.kicker}>Разбираем реальную работу</p>
+            <h2 id="expertise-title">Не говорим «умеем». <span>Показываем.</span></h2>
+            <p>Конкретный автомобиль, понятная задача и живой результат из мастерской — без рендера и каталожной картинки.</p>
+          </header>
+          <div className={styles.expertGrid}>
+            <Reveal className={styles.expertMedia}>
+              <div className={styles.videoFrame}><iframe src="https://www.youtube-nocookie.com/embed/iq0fddIiLIM?rel=0" title="Обновление приборной панели Hyundai Solaris — реальная работа Carmanof" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div>
+              <div className={styles.videoCaption}><PlayCircle /><span><b>Живое видео из мастерской</b><small>Hyundai Solaris · Carmanof</small></span></div>
+            </Reveal>
+            <Reveal className={styles.expertStory}>
+              <p className={styles.expertModel}>Hyundai / Solaris</p>
+              <h3>Новые шкалы вместо устаревшей штатной графики</h3>
+              <div className={styles.expertFacts}>
+                <article><Gauge /><div><span>Задача</span><p>Сделать щиток ярче и выразительнее, сохранив привычное считывание скорости и оборотов.</p></div></article>
+                <article><Layers3 /><div><span>Что сделали</span><p>Подготовили индивидуальную графику шкал под геометрию конкретной панели Hyundai Solaris.</p></div></article>
+                <article><Sparkles /><div><span>Результат</span><p>Панель получила новый характер, а разметка и основные показания остались понятными водителю.</p></div></article>
+              </div>
+              <Link href="/cases/hyundai">Посмотреть все работы Hyundai <ArrowUpRight /></Link>
+            </Reveal>
           </div>
         </div>
       </section>

@@ -106,7 +106,7 @@ export default function CookieConsent() {
             padding: "0 16px",
             borderRadius: 8,
             border: "1px solid transparent",
-            background: "#ff9d18",
+            background: "#2dd4df",
             color: "#08090b",
             fontWeight: 600,
             cursor: "pointer",
