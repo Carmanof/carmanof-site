@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { MapPin, Menu, Phone, X } from "lucide-react";
 import { formatPhone } from "@/lib/formatPhone";
@@ -19,6 +19,15 @@ const navItems = [
 export default function Header({ phone }: { phone?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  const closeMenu = useCallback(() => {
+    if (mobileMenuRef.current?.contains(document.activeElement)) {
+      menuButtonRef.current?.focus();
+    }
+    setOpen(false);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 18);
@@ -28,8 +37,8 @@ export default function Header({ phone }: { phone?: string }) {
   }, []);
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
-    const closeOnDesktop = () => { if (window.innerWidth > 820) setOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") closeMenu(); };
+    const closeOnDesktop = () => { if (window.innerWidth > 820) closeMenu(); };
     if (open) {
       window.addEventListener("keydown", closeOnEscape);
       window.addEventListener("resize", closeOnDesktop);
@@ -39,7 +48,7 @@ export default function Header({ phone }: { phone?: string }) {
       window.removeEventListener("keydown", closeOnEscape);
       window.removeEventListener("resize", closeOnDesktop);
     };
-  }, [open]);
+  }, [open, closeMenu]);
 
   const displayPhone = phone || "+7 918 240-21-80";
 
@@ -59,17 +68,17 @@ export default function Header({ phone }: { phone?: string }) {
           </a>
           <Link className={styles.request} href="/#contact">Обсудить проект</Link>
         </div>
-        <button className={styles.menuButton} type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? "Закрыть меню" : "Открыть меню"}>
+        <button ref={menuButtonRef} className={styles.menuButton} type="button" onClick={() => open ? closeMenu() : setOpen(true)} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? "Закрыть меню" : "Открыть меню"}>
           {open ? <X /> : <Menu />}
         </button>
       </div>
-      <div className={`${styles.mobileMenu} ${open ? styles.mobileMenuOpen : ""}`} id="mobile-navigation" aria-hidden={!open}>
+      <div ref={mobileMenuRef} className={`${styles.mobileMenu} ${open ? styles.mobileMenuOpen : ""}`} id="mobile-navigation" inert={!open}>
         <nav aria-label="Мобильная навигация">
-          {navItems.map((item, index) => <Link key={item.href} href={item.href} onClick={() => setOpen(false)}><span>0{index + 1}</span>{item.label}</Link>)}
+          {navItems.map((item, index) => <Link key={item.href} href={item.href} onClick={closeMenu}><span>0{index + 1}</span>{item.label}</Link>)}
         </nav>
-        <a className={styles.mobileAddress} href={businessMapUrl} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}><MapPin />Краснодар, ул. Героя Владислава Посадского, 24</a>
+        <a className={styles.mobileAddress} href={businessMapUrl} target="_blank" rel="noreferrer" onClick={closeMenu}><MapPin />Краснодар, ул. Героя Владислава Посадского, 24</a>
         <a className={styles.mobilePhone} href={`tel:${displayPhone.replace(/\D/g, "")}`}>{formatPhone(displayPhone)}</a>
-        <Link className={styles.mobileRequest} href="/#contact" onClick={() => setOpen(false)}>Рассчитать проект</Link>
+        <Link className={styles.mobileRequest} href="/#contact" onClick={closeMenu}>Рассчитать проект</Link>
       </div>
     </header>
   );
