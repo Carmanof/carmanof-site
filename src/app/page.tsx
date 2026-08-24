@@ -25,11 +25,17 @@ const fallbackFaq: FAQItem[] = [
 
 export default async function HomePage() {
   const settings: SiteSettings = await getSiteSettings();
-  const prices = [
-    { title: settings?.pricesItem01Title || "Шкалы и накладки", value: settings?.pricesItem01Value || "7 000" },
-    { title: settings?.pricesItem02Title || "Пересвет приборной панели", value: settings?.pricesItem02Value || "3 500" },
-    { title: settings?.pricesItem03Title || "Ремонт приборной панели", value: settings?.pricesItem03Value || "2 500" },
+  const requestedPrices = [
+    { title: "Шкалы приборов на заказ", value: "3 500" },
+    { title: "Пересвет приборной панели", value: "5 000" },
+    { title: "Ремонт", value: "3 500" },
   ];
+  const prices = process.env.VERCEL_ENV === "production"
+    ? requestedPrices.map((fallback, index) => ({
+        title: [settings?.pricesItem01Title, settings?.pricesItem02Title, settings?.pricesItem03Title][index] || fallback.title,
+        value: [settings?.pricesItem01Value, settings?.pricesItem02Value, settings?.pricesItem03Value][index] || fallback.value,
+      }))
+    : requestedPrices;
   const faqItems = fallbackFaq.map((fallback, index) => ({
     question: settings?.faqItems?.[index]?.question || fallback.question,
     answer: settings?.faqItems?.[index]?.answer || fallback.answer,

@@ -12,16 +12,16 @@ type PricesProps = {
 
 const fallbackItems: PriceItem[] = [
   {
-    title: "Накладки",
-    value: "7 000",
-  },
-  {
-    title: "Пересвет",
+    title: "Шкалы приборов на заказ",
     value: "3 500",
   },
   {
+    title: "Пересвет приборной панели",
+    value: "5 000",
+  },
+  {
     title: "Ремонт",
-    value: "2 500",
+    value: "3 500",
   },
 ];
 
