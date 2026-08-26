@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeftIcon, ArrowUpRightIcon, CheckCircleIcon, PlayCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import Footer from "@/components/Footer/Footer";
 import { brandPages, getBrandPage, getCasesByBrand, getYoutubeThumbnail } from "@/data/realCases";
+import { getVideoAsset } from "@/data/videoAssets";
 import CasesCatalog, { type CatalogItem } from "../CasesCatalog";
 import styles from "./brand.module.scss";
 
@@ -29,7 +30,7 @@ export default async function BrandCasesPage({ params }: Props) {
   const related = brandPages.filter((item) => item.slug !== brand).slice(0, 5);
   const schema = [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Главная", item: "https://carmanof.ru" }, { "@type": "ListItem", position: 2, name: "Работы", item: "https://carmanof.ru/cases" }, { "@type": "ListItem", position: 3, name: page.brand, item: `https://carmanof.ru/cases/${brand}` }] },
-    { "@context": "https://schema.org", "@type": "Service", name: page.title, description: page.seoDescription, provider: { "@type": "AutomotiveBusiness", name: "Carmanof", url: "https://carmanof.ru" }, areaServed: { "@type": "Country", name: "Россия" }, subjectOf: cases.map((item) => ({ "@type": "VideoObject", name: item.title, description: item.description, thumbnailUrl: getYoutubeThumbnail(item.youtubeId), embedUrl: `https://www.youtube.com/embed/${item.youtubeId}` })) },
+    { "@context": "https://schema.org", "@type": "Service", name: page.title, description: page.seoDescription, provider: { "@type": "AutomotiveBusiness", name: "Carmanof", url: "https://carmanof.ru" }, areaServed: { "@type": "Country", name: "Россия" }, subjectOf: cases.map((item) => ({ "@type": "VideoObject", name: item.title, description: item.description, thumbnailUrl: getYoutubeThumbnail(item.youtubeId), contentUrl: getVideoAsset(item.youtubeId)?.video })) },
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: page.faq.map((item) => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) },
   ];
 

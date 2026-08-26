@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Check, Gauge, Layers3, PackageCheck, PenTool, PlayCircle, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import { getVideoAsset, getVideoPoster } from "@/data/videoAssets";
 import styles from "./HomeExperience.module.scss";
 
 type PriceItem = { title: string; value: string };
@@ -43,8 +45,8 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
         <div className={styles.shell}>
           <div className={styles.sectionHead}><p className={styles.kicker}>Выбранные работы / 2024—2026</p><h2 id="works-title">Приборные панели, которые обрели характер</h2><Link href="/cases">Все работы <ArrowUpRight size={18} /></Link></div>
           <div className={styles.gallery}>
-            <Reveal className={styles.workCard}><Link href="/cases/hyundai"><Image src="https://i.ytimg.com/vi/iq0fddIiLIM/hqdefault.jpg" alt="Обновление приборной панели Hyundai Solaris — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Hyundai Solaris — новые шкалы</b><small>реальный видеокейс · смотреть результат</small></span></Link></Reveal>
-            <Reveal className={styles.workCard}><Link href="/cases/chevrolet"><Image src="https://i.ytimg.com/vi/kzHdRZxFJH0/hqdefault.jpg" alt="Новые шкалы Chevrolet Aveo — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Chevrolet Aveo — тюнинг щитка</b><small>реальный видеокейс · индивидуальная графика</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><Link href="/cases/hyundai"><Image src={getVideoPoster("iq0fddIiLIM")} alt="Обновление приборной панели Hyundai Solaris — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Hyundai Solaris — новые шкалы</b><small>реальный видеокейс · смотреть результат</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><Link href="/cases/chevrolet"><Image src={getVideoPoster("kzHdRZxFJH0")} alt="Новые шкалы Chevrolet Aveo — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Chevrolet Aveo — тюнинг щитка</b><small>реальный видеокейс · индивидуальная графика</small></span></Link></Reveal>
             <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-04-v2.webp" alt="Кастомная приборная панель Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы в стиле OEM+</b><small>заводская логика · новый характер</small></span></Link></Reveal>
             <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-05-v2.webp" alt="Комплексная доработка приборной панели Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы и пересвет панели</b><small>единый дизайн · проверка после сборки</small></span></Link></Reveal>
           </div>
@@ -60,7 +62,7 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
           </header>
           <div className={styles.expertGrid}>
             <Reveal className={styles.expertMedia}>
-              <div className={styles.videoFrame}><iframe src="https://www.youtube-nocookie.com/embed/iq0fddIiLIM?rel=0" title="Обновление приборной панели Hyundai Solaris — реальная работа Carmanof" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div>
+              <div className={styles.videoFrame}>{getVideoAsset("iq0fddIiLIM") && <VideoPlayer src={getVideoAsset("iq0fddIiLIM")!.video} poster={getVideoAsset("iq0fddIiLIM")!.poster} title="Обновление приборной панели Hyundai Solaris — реальная работа Carmanof" />}</div>
               <div className={styles.videoCaption}><PlayCircle /><span><b>Живое видео из мастерской</b><small>Hyundai Solaris · Carmanof</small></span></div>
             </Reveal>
             <Reveal className={styles.expertStory}>

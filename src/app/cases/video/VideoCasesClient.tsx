@@ -7,6 +7,8 @@ import Link from "next/link";
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 import BackToFlow from "@/components/ui/BackToFlow/BackToFlow";
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import { getVideoAsset } from "@/data/videoAssets";
 import styles from "./video.module.scss";
 
 type VideoCaseItem = {
@@ -25,10 +27,6 @@ type VideoCasesClientProps = {
 
 const INITIAL_VISIBLE_COUNT = 6;
 const LOAD_MORE_STEP = 6;
-
-function getYoutubeThumbnail(youtubeId: string) {
-  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
-}
 
 export default function VideoCasesClient({
   videoCases,
@@ -79,16 +77,17 @@ export default function VideoCasesClient({
                     const itemId =
                       item._id || item.id || `${item.youtubeId}-${index}`;
                     const isActive = activeVideoId === itemId;
+                    const asset = getVideoAsset(item.youtubeId);
 
                     return (
                       <article key={itemId} className={styles.card}>
-                        {isActive ? (
-                          <iframe
+                        {isActive && asset ? (
+                          <VideoPlayer
                             className={styles.iframe}
-                            src={`https://www.youtube.com/embed/${item.youtubeId}?autoplay=1&rel=0`}
+                            src={asset.video}
+                            poster={asset.poster}
                             title={item.title}
-                            allow="autoplay; encrypted-media"
-                            allowFullScreen
+                            autoPlay
                           />
                         ) : (
                           <button
@@ -99,7 +98,7 @@ export default function VideoCasesClient({
                           >
                             <div className={styles.media}>
                               <Image
-                                src={getYoutubeThumbnail(item.youtubeId)}
+                                src={asset?.poster ?? "/images/more-examples/example-04-v2.webp"}
                                 alt={item.title}
                                 fill
                                 unoptimized

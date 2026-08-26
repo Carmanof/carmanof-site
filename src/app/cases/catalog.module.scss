@@ -27,7 +27,7 @@
 .close { position: absolute; z-index: 3; top: 14px; right: 14px; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; background: rgba(5,7,10,.78); color: #fff; cursor: pointer; }
 .close svg { width: 21px; height: 21px; }
 .modalMedia { position: relative; aspect-ratio: 16/9; background: #05070a; }
-.modalMedia iframe { width: 100%; height: 100%; border: 0; }.modalMedia img{object-fit:contain}
+.modalMedia > * { width: 100%; height: 100%; border: 0; }.modalMedia img{object-fit:contain}
 .modalCopy { padding: 25px 28px 30px; }.modalCopy>span{color:var(--accent);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}.modalCopy h2{margin:10px 0 8px;font-size:clamp(25px,3vw,40px);letter-spacing:-.045em}.modalCopy p{max-width:760px;margin:0;color:rgba(255,255,255,.56);font-size:14px;line-height:1.7}
 @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){.grid{grid-template-columns:1fr;gap:48px}.filters{margin-top:28px}.filters button{min-height:40px;padding:0 14px}.copy h2{font-size:25px}.modal{padding:10px}.modalInner{max-height:calc(100vh - 20px)}.modalCopy{padding:20px}.close{top:8px;right:8px}}

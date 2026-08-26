@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRightIcon, ImagesIcon, PlayCircleIcon, VideoCameraIcon, XIcon } from "@phosphor-icons/react";
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import { getVideoAsset } from "@/data/videoAssets";
 import styles from "./catalog.module.scss";
 
 export type CatalogItem = {
@@ -54,7 +56,7 @@ export default function CasesCatalog({ items, showFilters = true }: { items: Cat
     {active && <div className={styles.modal} role="dialog" aria-modal="true" aria-label={active.title} onClick={() => setActive(null)}>
       <div className={styles.modalInner} onClick={(event) => event.stopPropagation()}>
         <button type="button" className={styles.close} onClick={() => setActive(null)} aria-label="Закрыть"><XIcon /></button>
-        <div className={styles.modalMedia}>{active.type === "video" && active.youtubeId ? <iframe src={`https://www.youtube-nocookie.com/embed/${active.youtubeId}?autoplay=1&rel=0`} title={active.title} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen /> : <Image src={active.image} alt={active.title} fill sizes="90vw" />}</div>
+        <div className={styles.modalMedia}>{active.type === "video" && active.youtubeId && getVideoAsset(active.youtubeId) ? <VideoPlayer src={getVideoAsset(active.youtubeId)!.video} poster={getVideoAsset(active.youtubeId)!.poster} title={active.title} autoPlay /> : <Image src={active.image} alt={active.title} fill sizes="90vw" />}</div>
         <div className={styles.modalCopy}><span>{active.brand} · {active.model}</span><h2>{active.title}</h2><p>{active.description}</p></div>
       </div>
     </div>}

@@ -56,4 +56,4 @@ export const brandPages: BrandPage[] = [
 
 export const getBrandPage = (slug: string) => brandPages.find((page) => page.slug === slug);
 export const getCasesByBrand = (slug: string) => realVideoCases.filter((item) => item.brandSlug === slug);
-export const getYoutubeThumbnail = (youtubeId: string) => `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+export { getVideoPoster as getYoutubeThumbnail } from "./videoAssets";
