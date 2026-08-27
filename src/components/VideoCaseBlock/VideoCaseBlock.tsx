@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 import Section from "@/components/ui/Section/Section";
@@ -31,7 +29,6 @@ function truncateText(text: string, maxLength: number) {
 }
 
 export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const hasVideoCases = videoCases.length > 0;
 
   return (
@@ -55,29 +52,23 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
               ? videoCases.map((item, index) => {
                   const itemId =
                     item._id || item.id || `${item.youtubeId}-${index}`;
-                  const isActive = activeVideoId === itemId;
                   const asset = getVideoAsset(item.youtubeId);
 
                   return (
                     <article key={itemId} className={styles.card}>
-                      {isActive && asset ? (
+                      {asset ? (
                         <VideoPlayer
                           className={styles.iframe}
                           src={asset.video}
                           poster={asset.poster}
                           title={item.title}
-                          autoPlay
+                          caption={truncateText(item.title, PREVIEW_TEXT_LIMIT)}
                         />
                       ) : (
-                        <button
-                          type="button"
-                          className={styles.previewButton}
-                          onClick={() => setActiveVideoId(itemId)}
-                          aria-label={`Открыть видео: ${item.title}`}
-                        >
+                        <div className={styles.previewButton}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={asset?.poster ?? "/images/more-examples/example-04-v2.webp"}
+                            src="/images/more-examples/example-04-v2.webp"
                             alt={item.title}
                             loading="lazy"
                             decoding="async"
@@ -93,17 +84,7 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                             </span>
                           </span>
 
-                          <span className={styles.playButton}>
-                            {/* Static play asset is intentionally rendered inside a button. */}
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src="/icons/video-case-block/play.svg"
-                              alt=""
-                              className={styles.playIcon}
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </button>
+                        </div>
                       )}
                     </article>
                   );

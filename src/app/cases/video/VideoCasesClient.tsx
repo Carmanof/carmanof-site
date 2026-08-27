@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import Container from "@/components/ui/Container/Container";
@@ -31,7 +30,6 @@ const LOAD_MORE_STEP = 6;
 export default function VideoCasesClient({
   videoCases,
 }: VideoCasesClientProps) {
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
 
   const visibleVideos = useMemo(() => {
@@ -76,53 +74,20 @@ export default function VideoCasesClient({
                   {visibleVideos.map((item, index) => {
                     const itemId =
                       item._id || item.id || `${item.youtubeId}-${index}`;
-                    const isActive = activeVideoId === itemId;
                     const asset = getVideoAsset(item.youtubeId);
 
                     return (
                       <article key={itemId} className={styles.card}>
-                        {isActive && asset ? (
+                        {asset ? (
                           <VideoPlayer
                             className={styles.iframe}
                             src={asset.video}
                             poster={asset.poster}
                             title={item.title}
-                            autoPlay
+                            caption={item.title}
                           />
                         ) : (
-                          <button
-                            type="button"
-                            className={styles.previewButton}
-                            onClick={() => setActiveVideoId(itemId)}
-                            aria-label={`Открыть видео: ${item.title}`}
-                          >
-                            <div className={styles.media}>
-                              <Image
-                                src={asset?.poster ?? "/images/more-examples/example-04-v2.webp"}
-                                alt={item.title}
-                                fill
-                                unoptimized
-                                className={styles.image}
-                              />
-                            </div>
-
-                            <span className={styles.overlay} />
-                            <span className={styles.glow} />
-
-                            <span className={styles.playWrapper}>
-                              <Image
-                                src="/icons/video-case-block/play.svg"
-                                alt=""
-                                width={96}
-                                height={96}
-                                className={styles.playIcon}
-                              />
-                            </span>
-
-                            <span className={styles.cardTitle}>
-                              {item.title}
-                            </span>
-                          </button>
+                          <div className={styles.previewButton} aria-label={`Видео временно недоступно: ${item.title}`} />
                         )}
                       </article>
                     );

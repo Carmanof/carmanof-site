@@ -10,6 +10,7 @@ type VideoPlayerProps = {
   title: string;
   autoPlay?: boolean;
   className?: string;
+  caption?: string;
 };
 
 function formatTime(value: number) {
@@ -19,11 +20,11 @@ function formatTime(value: number) {
   return `${minutes}:${seconds}`;
 }
 
-export default function VideoPlayer({ src, poster, title, autoPlay = false, className = "" }: VideoPlayerProps) {
+export default function VideoPlayer({ src, poster, title, autoPlay = false, className = "", caption }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(autoPlay);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -55,7 +56,9 @@ export default function VideoPlayer({ src, poster, title, autoPlay = false, clas
 
   function openFullscreen() {
     const element = containerRef.current;
+    const video = videoRef.current as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
     if (element?.requestFullscreen) element.requestFullscreen().catch(() => undefined);
+    else video?.webkitEnterFullscreen?.();
   }
 
   return (
@@ -64,7 +67,8 @@ export default function VideoPlayer({ src, poster, title, autoPlay = false, clas
         ref={videoRef}
         src={src}
         poster={poster}
-        preload="metadata"
+        preload="none"
+        muted={muted}
         playsInline
         aria-label={title}
         onClick={togglePlayback}
@@ -74,6 +78,7 @@ export default function VideoPlayer({ src, poster, title, autoPlay = false, clas
         onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
         onEnded={() => setPlaying(false)}
       />
+      {caption && !playing && <span className={styles.caption}>{caption}</span>}
       <button type="button" className={`${styles.centerPlay} ${playing ? styles.hidden : ""}`} onClick={togglePlayback} aria-label="Воспроизвести видео">
         <Play fill="currentColor" />
       </button>

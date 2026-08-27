@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check, Gauge, Layers3, PackageCheck, PenTool, PlayCircle, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { ArrowUpRight, Check, Gauge, Layers3, PackageCheck, PenTool, PlayCircle, ShieldCheck, Sparkles, Truck, X } from "lucide-react";
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 import { getVideoAsset, getVideoPoster } from "@/data/videoAssets";
 import styles from "./HomeExperience.module.scss";
@@ -29,6 +30,9 @@ function Reveal({ children, className = "" }: { children: React.ReactNode; class
 }
 
 export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
+  const [homeVideoId, setHomeVideoId] = useState<string | null>(null);
+  const homeVideo = homeVideoId ? getVideoAsset(homeVideoId) : undefined;
+
   return (
     <main>
       <section className={styles.statement} aria-labelledby="statement-title">
@@ -45,8 +49,8 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
         <div className={styles.shell}>
           <div className={styles.sectionHead}><p className={styles.kicker}>Выбранные работы / 2024—2026</p><h2 id="works-title">Приборные панели, которые обрели характер</h2><Link href="/cases">Все работы <ArrowUpRight size={18} /></Link></div>
           <div className={styles.gallery}>
-            <Reveal className={styles.workCard}><Link href="/cases/hyundai"><Image src={getVideoPoster("iq0fddIiLIM")} alt="Обновление приборной панели Hyundai Solaris — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Hyundai Solaris — новые шкалы</b><small>реальный видеокейс · смотреть результат</small></span></Link></Reveal>
-            <Reveal className={styles.workCard}><Link href="/cases/chevrolet"><Image src={getVideoPoster("kzHdRZxFJH0")} alt="Новые шкалы Chevrolet Aveo — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Chevrolet Aveo — тюнинг щитка</b><small>реальный видеокейс · индивидуальная графика</small></span></Link></Reveal>
+            <Reveal className={styles.workCard}><button type="button" onClick={() => setHomeVideoId("iq0fddIiLIM")} aria-label="Смотреть видео: Hyundai Solaris — новые шкалы"><Image src={getVideoPoster("iq0fddIiLIM")} alt="Обновление приборной панели Hyundai Solaris — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Hyundai Solaris — новые шкалы</b><small>реальный видеокейс · смотреть результат</small></span></button></Reveal>
+            <Reveal className={styles.workCard}><button type="button" onClick={() => setHomeVideoId("kzHdRZxFJH0")} aria-label="Смотреть видео: Chevrolet Aveo — тюнинг щитка"><Image src={getVideoPoster("kzHdRZxFJH0")} alt="Новые шкалы Chevrolet Aveo — видео Carmanof" fill unoptimized sizes="(max-width: 760px) 100vw, 50vw" /><i><PlayCircle /></i><span><b>Chevrolet Aveo — тюнинг щитка</b><small>реальный видеокейс · индивидуальная графика</small></span></button></Reveal>
             <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-04-v2.webp" alt="Кастомная приборная панель Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы в стиле OEM+</b><small>заводская логика · новый характер</small></span></Link></Reveal>
             <Reveal className={styles.workCard}><Link href="/cases"><Image src="/images/more-examples/example-05-v2.webp" alt="Комплексная доработка приборной панели Carmanof" fill sizes="(max-width: 760px) 100vw, 50vw" /><span><b>Шкалы и пересвет панели</b><small>единый дизайн · проверка после сборки</small></span></Link></Reveal>
           </div>
@@ -108,6 +112,13 @@ export default function HomeExperience({ prices }: { prices: PriceItem[] }) {
           <Link className={styles.priceCta} href="#contact">Получить точный расчёт <ArrowUpRight /></Link>
         </div>
       </section>
+
+      {homeVideo && <div className={styles.videoModal} role="dialog" aria-modal="true" aria-label="Просмотр видеоработы" onClick={() => setHomeVideoId(null)}>
+        <div className={styles.videoModalInner} onClick={(event) => event.stopPropagation()}>
+          <button type="button" className={styles.videoModalClose} onClick={() => setHomeVideoId(null)} aria-label="Закрыть видео"><X /></button>
+          <VideoPlayer src={homeVideo.video} poster={homeVideo.poster} title="Видеоработа Carmanof" autoPlay />
+        </div>
+      </div>}
     </main>
   );
 }
