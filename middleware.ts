@@ -4,11 +4,11 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // не трогаем файлы
-  if (pathname.includes(".")) {
+  // ❗ КРИТИЧНО: не трогаем Next.js runtime assets
+  if (pathname.startsWith("/_next/")) {
     return NextResponse.next();
   }
 
-  // ничего не редиректим по домену!
+  // здесь уже можно делать свои правила (если нужны)
   return NextResponse.next();
 }

@@ -424,16 +424,20 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
               }}
             >
               {previewImageUrl ? (
-                <img
-                  src={previewImageUrl}
-                  alt={title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                  }}
-                />
+                <>
+                  {/* Sanity preview URLs are editor-only and intentionally unoptimized. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={previewImageUrl}
+                    alt={title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                </>
               ) : (
                 <div
                   style={{

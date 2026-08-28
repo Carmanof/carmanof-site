@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getBlogPostSlugs } from "@/sanity/lib/fetchers";
 import { SEO_CONFIG } from "@/config/seo";
+import { blogArticles } from "@/data/blog";
+import { brandPages } from "@/data/realCases";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -42,16 +44,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    ...["services", "delivery", "about", "contacts"].map((path) => ({
+      url: `${SEO_CONFIG.siteUrl}/${path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    {
+      url: `${SEO_CONFIG.siteUrl}/consent`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 
-  const blogSlugs = await getBlogPostSlugs();
+  const cmsSlugs = await getBlogPostSlugs();
+  const blogSlugs = [...new Set([...cmsSlugs.map((item) => item.slug), ...blogArticles.map((item) => item.slug)])];
 
-  const blogPages: MetadataRoute.Sitemap = blogSlugs.map((item) => ({
-    url: `${SEO_CONFIG.siteUrl}/blog/${item.slug}`,
+  const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
+    url: `${SEO_CONFIG.siteUrl}/blog/${slug}`,
     lastModified: now,
     changeFrequency: "monthly",
     priority: 0.6,
   }));
 
-  return [...staticPages, ...blogPages];
+  const brandCasePages: MetadataRoute.Sitemap = brandPages.map((brand) => ({
+    url: `${SEO_CONFIG.siteUrl}/cases/${brand.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
+  return [...staticPages, ...brandCasePages, ...blogPages];
 }

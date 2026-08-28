@@ -121,7 +121,7 @@ export const siteSettingsType = defineType({
       name: "pricesItem01Title",
       title: "Prices — услуга 1",
       type: "string",
-      description: "Название первой услуги. Например: Накладки.",
+      description: "Название первой услуги. Например: Шкалы приборов на заказ.",
       validation: (Rule) => Rule.max(60),
     }),
 
@@ -130,7 +130,7 @@ export const siteSettingsType = defineType({
       title: "Prices — цена 1",
       type: "string",
       description:
-        "Только цифры. Пример: 7 000. Символ ₽ и текст 'от' на сайте добавляются автоматически.",
+        "Только цифры. Пример: 3 500. Символ ₽ и текст 'от' на сайте добавляются автоматически.",
       validation: (Rule) => Rule.max(40),
     }),
 
@@ -138,7 +138,7 @@ export const siteSettingsType = defineType({
       name: "pricesItem02Title",
       title: "Prices — услуга 2",
       type: "string",
-      description: "Название второй услуги. Например: Пересвет.",
+      description: "Название второй услуги. Например: Пересвет приборной панели.",
       validation: (Rule) => Rule.max(60),
     }),
 
@@ -147,7 +147,7 @@ export const siteSettingsType = defineType({
       title: "Prices — цена 2",
       type: "string",
       description:
-        "Только цифры. Пример: 3 500. Символ ₽ и текст 'от' на сайте добавляются автоматически.",
+        "Только цифры. Пример: 5 000. Символ ₽ и текст 'от' на сайте добавляются автоматически.",
       validation: (Rule) => Rule.max(40),
     }),
 
@@ -164,7 +164,7 @@ export const siteSettingsType = defineType({
       title: "Prices — цена 3",
       type: "string",
       description:
-        "Только цифры. Пример: 2 500. Символ ₽ и текст 'от' на сайте добавляются автоматически.",
+        "Только цифры. Пример: 3 500. Символ ₽ и текст 'от' на сайте добавляются автоматически.",
       validation: (Rule) => Rule.max(40),
     }),
 

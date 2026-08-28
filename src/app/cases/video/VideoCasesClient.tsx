@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 import BackToFlow from "@/components/ui/BackToFlow/BackToFlow";
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import { getVideoAsset } from "@/data/videoAssets";
 import styles from "./video.module.scss";
 
 type VideoCaseItem = {
@@ -26,14 +27,9 @@ type VideoCasesClientProps = {
 const INITIAL_VISIBLE_COUNT = 6;
 const LOAD_MORE_STEP = 6;
 
-function getYoutubeThumbnail(youtubeId: string) {
-  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
-}
-
 export default function VideoCasesClient({
   videoCases,
 }: VideoCasesClientProps) {
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
 
   const visibleVideos = useMemo(() => {
@@ -78,52 +74,20 @@ export default function VideoCasesClient({
                   {visibleVideos.map((item, index) => {
                     const itemId =
                       item._id || item.id || `${item.youtubeId}-${index}`;
-                    const isActive = activeVideoId === itemId;
+                    const asset = getVideoAsset(item.youtubeId);
 
                     return (
                       <article key={itemId} className={styles.card}>
-                        {isActive ? (
-                          <iframe
+                        {asset ? (
+                          <VideoPlayer
                             className={styles.iframe}
-                            src={`https://www.youtube.com/embed/${item.youtubeId}?autoplay=1&rel=0`}
+                            src={asset.video}
+                            poster={asset.poster}
                             title={item.title}
-                            allow="autoplay; encrypted-media"
-                            allowFullScreen
+                            caption={item.title}
                           />
                         ) : (
-                          <button
-                            type="button"
-                            className={styles.previewButton}
-                            onClick={() => setActiveVideoId(itemId)}
-                            aria-label={`Открыть видео: ${item.title}`}
-                          >
-                            <div className={styles.media}>
-                              <Image
-                                src={getYoutubeThumbnail(item.youtubeId)}
-                                alt={item.title}
-                                fill
-                                unoptimized
-                                className={styles.image}
-                              />
-                            </div>
-
-                            <span className={styles.overlay} />
-                            <span className={styles.glow} />
-
-                            <span className={styles.playWrapper}>
-                              <Image
-                                src="/icons/video-case-block/play.svg"
-                                alt=""
-                                width={96}
-                                height={96}
-                                className={styles.playIcon}
-                              />
-                            </span>
-
-                            <span className={styles.cardTitle}>
-                              {item.title}
-                            </span>
-                          </button>
+                          <div className={styles.previewButton} aria-label={`Видео временно недоступно: ${item.title}`} />
                         )}
                       </article>
                     );

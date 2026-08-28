@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 
 import Header from "@/components/Header/Header";
-import Intro from "@/components/Intro/Intro";
 
 type LayoutChromeClientProps = {
   children: React.ReactNode;
@@ -17,7 +16,6 @@ export default function LayoutChromeClient({
   const pathname = usePathname() || "/";
 
   const isStudioPage = pathname.startsWith("/studio");
-  const isHomePage = pathname === "/";
 
   // ❗ критично: студию не трогаем
   if (isStudioPage) {
@@ -26,7 +24,6 @@ export default function LayoutChromeClient({
 
   return (
     <>
-      {isHomePage ? <Intro /> : null}
       <Header phone={phone} />
       {children}
     </>

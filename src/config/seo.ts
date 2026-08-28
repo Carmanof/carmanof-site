@@ -1,15 +1,15 @@
-const DEFAULT_SITE_URL = "https://carmanof.ru";
+// config/seo.ts
 
 export const SEO_CONFIG = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL,
+  siteUrl: "https://carmanof.ru",
 
   siteName: "Carmanof",
 
-  defaultTitle: "Carmanof",
+  defaultTitle: "Шкалы приборов на заказ | Carmanof",
   titleTemplate: "%s | Carmanof",
 
   description:
-    "Ремонт, восстановление и доработка приборных панелей. Примеры работ, подход и удобный способ связи.",
+    "Шкалы приборов на заказ, пересвет и ремонт приборных панелей. Краснодар, доставка по всей России.",
 
   locale: "ru_RU",
 
@@ -18,26 +18,13 @@ export const SEO_CONFIG = {
     disallow: ["/studio/", "/api/"],
   },
 
-  openGraphImage: "/og-image.jpg",
+  openGraphImage: "/og-carmanof-v2-1200x630.png",
 };
-
-// =========================
-// SINGLE SOURCE OF TRUTH HELPERS
-// =========================
 
 export function getSiteUrl() {
   return SEO_CONFIG.siteUrl;
 }
 
 export function getAbsoluteUrl(path: string = "") {
-  const base = SEO_CONFIG.siteUrl;
-
-  if (!path) return base;
-
-  // защита от двойных слэшей
-  if (path.startsWith("/")) {
-    return `${base}${path}`;
-  }
-
-  return `${base}/${path}`;
+  return `${SEO_CONFIG.siteUrl}${path}`;
 }

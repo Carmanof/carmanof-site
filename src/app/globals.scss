@@ -1,6 +1,14 @@
 @use "../styles/ui/links";
 @use "../styles/variables" as *;
 
+:root {
+  --accent: #1fb9ef;
+  --accent-rgb: 31, 185, 239;
+  --accent-hover: #56caf3;
+  --accent-dark: #0879a1;
+  --accent-soft: #a7e8fb;
+}
+
 *,
 *::before,
 *::after {
@@ -9,6 +17,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 92px;
 }
 
 html,
@@ -22,7 +31,12 @@ body {
   background: $color-bg;
   color: $color-text;
   font-family: var(--font-manrope), Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+::selection { background: rgba(var(--accent-rgb), .9); color: #08090b; }
 
 img {
   display: block;
@@ -40,4 +54,13 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+body.intro-lock { overflow: auto !important; }
+
+/* Vercel injects this control into preview deployments; it is not part of the site UI. */
+vercel-live-feedback {
+  display: none !important;
 }

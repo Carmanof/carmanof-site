@@ -1,212 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowDownRight, MapPin } from "lucide-react";
+import { brandSlogan } from "@/config/business";
 import styles from "./Hero.module.scss";
-import Container from "@/components/ui/Container/Container";
-import Button from "@/components/ui/Button/Button";
 
-type IntroPhase = "idle" | "animating" | "done";
-
-type HeroProps = {
-  defaultImageSrc?: string;
-  hoverImageSrc?: string;
-};
-
-const HERO_IMAGE_SIZES =
-  "(max-width: 640px) calc(100vw - 28px), (max-width: 1024px) calc(100vw - 64px), (max-width: 1240px) 480px, 520px";
-
-export default function Hero({
-  defaultImageSrc = "/images/hero/hero-default.webp",
-  hoverImageSrc = "/images/hero/hero-hover.webp",
-}: HeroProps) {
-  const [introPhase, setIntroPhase] = useState<IntroPhase>("done");
-  const [isHovered, setIsHovered] = useState(false);
-  const [isInteractive, setIsInteractive] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  const introTimerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const reducedMotionQuery = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
-
-    const mobile = window.innerWidth <= 1024;
-    setIsMobile(mobile);
-
-    const canInteract =
-      hoverQuery.matches && !reducedMotionQuery.matches && !mobile;
-
-    setIsInteractive(canInteract);
-
-    // MOBILE: сразу финальное состояние
-    if (mobile) {
-      setIntroPhase("done");
-      return;
-    }
-
-    // DESKTOP: запускаем интро
-    setIntroPhase("idle");
-
-    introTimerRef.current = window.setTimeout(() => {
-      setIntroPhase("animating");
-    }, 1200);
-
-    return () => {
-      if (introTimerRef.current) {
-        window.clearTimeout(introTimerRef.current);
-      }
-    };
-  }, []);
-
-  const handleContactClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-      event.preventDefault();
-
-      const target = document.querySelector("#contact");
-      if (!target) return;
-
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    },
-    [],
-  );
-
-  const handleMediaClick = useCallback(() => {
-    const target = document.querySelector("#other-works");
-    if (!target) return;
-
-    const top = target.getBoundingClientRect().top + window.pageYOffset - 172;
-
-    window.scrollTo({
-      top,
-      behavior: "smooth",
-    });
-  }, []);
-
-  function handleIntroTransitionEnd() {
-    if (introPhase === "animating") {
-      setIntroPhase("done");
-    }
-  }
-
-  function handleMouseEnter() {
-    if (!isInteractive || isMobile) return;
-    setIsHovered(true);
-  }
-
-  function handleMouseLeave() {
-    if (!isInteractive || isMobile) return;
-    setIsHovered(false);
-  }
-
-  /**
-   * MOBILE:
-   * - нет интро классов
-   * - нет hover логики
-   * - всегда финальное состояние
-   */
-  const mediaClassName = isMobile
-    ? styles.media
-    : [
-        styles.media,
-        introPhase === "idle" ? styles.stateDefault : "",
-        introPhase === "animating" ? styles.toHover : "",
-        introPhase === "done" && isHovered ? styles.showDefaultOnHover : "",
-        introPhase === "done" && !isHovered ? styles.showHoverIdle : "",
-      ]
-        .filter(Boolean)
-        .join(" ");
-
+export default function Hero() {
   return (
     <section className={styles.hero} id="home">
-      <Container>
-        <div className={styles.card}>
-          <div className={styles.content}>
-            <div className={styles.textBlock}>
-              <h1 className={styles.title}>
-                ПРОФЕССИОНАЛЬНЫЙ <br />
-                ТЮНИНГ ПРИБОРНЫХ <br />
-                ПАНЕЛЕЙ АВТО
-              </h1>
-
-              <p className={styles.description}>
-                Мы создаем индивидуальные шкалы <br />
-                для спидометров, тахометров и других <br />
-                приборов на автомобили любых марок - <br />
-                от отечественных до премиум-класса.
-              </p>
-
-              <p className={styles.caption}>
-                Работаем по всей России — отправка СДЭК
-              </p>
-            </div>
-
-            <div className={styles.actions}>
-              <Button
-                href="#contact"
-                variant="primary"
-                size="sm"
-                onClick={handleContactClick}
-              >
-                Оставить заявку
-              </Button>
-            </div>
+      <Image src="/images/hero/hero-premium-final.png" alt="Индивидуальная приборная панель Carmanof с яркой подсветкой" fill priority fetchPriority="high" sizes="100vw" className={styles.image} />
+      <div className={styles.shade} />
+      <div className={styles.inner}>
+        <motion.div className={styles.copy} initial={false}>
+          <p className={styles.eyebrow}><MapPin size={16} /><span><strong>{brandSlogan}</strong> · Краснодар · вся Россия</span></p>
+          <h1>Шкалы приборов <span>на заказ</span></h1>
+          <p className={styles.lead}>Создаём индивидуальные шкалы и приборные панели под конкретный автомобиль — от идеи и макета до проверки готового результата.</p>
+          <div className={styles.actions}>
+            <Link className={styles.primary} href="#contact">Рассчитать проект <ArrowDownRight size={20} /></Link>
+            <Link className={styles.secondary} href="#works">Смотреть работы</Link>
           </div>
-
-          <div
-            className={mediaClassName}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={handleMediaClick}
-            role="button"
-            tabIndex={0}
-          >
-            {/* MOBILE: только финальная картинка */}
-            {isMobile ? (
-              <div className={styles.imageBase}>
-                <Image
-                  src={hoverImageSrc}
-                  alt="Пример тюнинга приборной панели Carmanof"
-                  fill
-                  priority
-                  fetchPriority="high"
-                  sizes={HERO_IMAGE_SIZES}
-                  className={styles.imageElement}
-                />
-              </div>
-            ) : (
-              <>
-                <div className={styles.imageBase}>
-                  <Image
-                    src={defaultImageSrc}
-                    alt="Пример тюнинга приборной панели Carmanof"
-                    fill
-                    priority
-                    fetchPriority="high"
-                    sizes={HERO_IMAGE_SIZES}
-                    className={styles.imageElement}
-                  />
-                </div>
-
-                <div
-                  className={styles.imageHover}
-                  onTransitionEnd={handleIntroTransitionEnd}
-                >
-                  <Image
-                    src={hoverImageSrc}
-                    alt=""
-                    fill
-                    sizes={HERO_IMAGE_SIZES}
-                    className={styles.imageElement}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+        </motion.div>
+        <div className={styles.proof} aria-label="Преимущества мастерской">
+          <div><span>01</span><strong>Индивидуальный макет</strong><small>Не шаблон из каталога</small></div>
+          <div><span>02</span><strong>СДЭК по России</strong><small>Принимаем заказы из регионов</small></div>
+          <div><span>03</span><strong>Контроль результата</strong><small>Проверяем перед отправкой</small></div>
         </div>
-      </Container>
+      </div>
+      <span className={styles.scroll}>Листайте вниз <ArrowDownRight size={15} /></span>
     </section>
   );
 }

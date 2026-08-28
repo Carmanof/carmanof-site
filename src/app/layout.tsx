@@ -1,61 +1,35 @@
+// app/layout.tsx
+
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Suspense } from "react";
-
 import LayoutChrome from "@/components/LayoutChrome/LayoutChrome";
-import DeferredScripts from "@/components/DeferredScripts";
-import { SEO_CONFIG } from "@/config/seo";
 import "./globals.scss";
+import { SITE_URL } from "@/lib/site";
 
-// =========================
-// Fonts (изолированные, без runtime логики)
-// =========================
 const manrope = localFont({
   src: [
-    { path: "./fonts/Manrope-Light.ttf", weight: "300", style: "normal" },
     { path: "./fonts/Manrope-Regular.ttf", weight: "400", style: "normal" },
     { path: "./fonts/Manrope-Medium.ttf", weight: "500", style: "normal" },
     { path: "./fonts/Manrope-SemiBold.ttf", weight: "600", style: "normal" },
     { path: "./fonts/Manrope-Bold.ttf", weight: "700", style: "normal" },
     { path: "./fonts/Manrope-ExtraBold.ttf", weight: "800", style: "normal" },
   ],
-  display: "swap",
   variable: "--font-manrope",
+  display: "swap",
 });
 
-// =========================
-// SAFE SITE URL (единственный источник истины)
-// =========================
-const SITE_URL =
-  typeof SEO_CONFIG.siteUrl === "string" &&
-  SEO_CONFIG.siteUrl.startsWith("http")
-    ? SEO_CONFIG.siteUrl
-    : "http://localhost:3000";
-
-// =========================
-// SAFE URL builder (защита от broken OG)
-// =========================
-function toAbsoluteUrl(path?: string): string | undefined {
-  if (!path) return undefined;
-
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${SITE_URL}${cleanPath}`;
-}
-
-// =========================
-// METADATA (строго статический слой)
-// =========================
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
-  applicationName: SEO_CONFIG.siteName,
+  applicationName: "Carmanof",
 
   title: {
-    default: SEO_CONFIG.defaultTitle,
-    template: SEO_CONFIG.titleTemplate,
+    default: "Шкалы приборов на заказ | Carmanof",
+    template: "%s | Carmanof",
   },
 
-  description: SEO_CONFIG.description,
+  description:
+    "Изготовление шкал приборов на заказ для автомобилей любых марок. Индивидуальный макет, пересвет и ремонт приборных панелей в Краснодаре с доставкой по всей России.",
 
   alternates: {
     canonical: SITE_URL,
@@ -73,39 +47,29 @@ export const metadata: Metadata = {
 
   manifest: "/manifest.json",
 
-  // env-safe (не ломает билд при undefined)
-  verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
-    yandex: process.env.YANDEX_VERIFICATION || undefined,
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: process.env.VERCEL_ENV === "production" ? { index: true, follow: true } : { index: false, follow: false, noarchive: true },
 
   openGraph: {
-    title: SEO_CONFIG.defaultTitle,
-    description: SEO_CONFIG.description,
+    title: "Шкалы приборов на заказ | Carmanof",
+    description: "Индивидуальные шкалы и тюнинг приборных панелей для автомобилей по всей России.",
     url: SITE_URL,
-    siteName: SEO_CONFIG.siteName,
-    locale: SEO_CONFIG.locale,
+    siteName: "Carmanof",
     type: "website",
     images: [
       {
-        url: toAbsoluteUrl(SEO_CONFIG.openGraphImage) ?? "",
+        url: `${SITE_URL}/og-carmanof-v2-1200x630.png`,
         width: 1200,
         height: 630,
-        alt: SEO_CONFIG.siteName,
+        alt: "Carmanof",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: SEO_CONFIG.defaultTitle,
-    description: SEO_CONFIG.description,
-    images: [toAbsoluteUrl(SEO_CONFIG.openGraphImage) ?? ""],
+    title: "Шкалы приборов на заказ | Carmanof",
+    description: "Индивидуальные шкалы и тюнинг приборных панелей для автомобилей по всей России.",
+    images: [`${SITE_URL}/og-carmanof-v2-1200x630.png`],
   },
 
   formatDetection: {
@@ -113,31 +77,24 @@ export const metadata: Metadata = {
   },
 };
 
-// =========================
-// VIEWPORT (Next 16 requirement)
-// =========================
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#ffffff",
+  themeColor: "#0b0d10",
 };
 
-// =========================
-// ROOT LAYOUT
-// =========================
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const websiteSchema = { "@context": "https://schema.org", "@type": "WebSite", name: "Carmanof", alternateName: "Карманоф", url: SITE_URL, inLanguage: "ru-RU" };
+  const organizationSchema = { "@context": "https://schema.org", "@type": "Organization", name: "Carmanof", legalName: "ИП Карманов Алексей Олегович", url: SITE_URL, taxID: "590610034700", identifier: "ОГРНИП 323595800112271", sameAs: ["https://t.me/Carmanof_MANAGER", "https://vk.com/carmanof"] };
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={manrope.variable}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([websiteSchema, organizationSchema]) }} />
         <LayoutChrome>{children}</LayoutChrome>
-
-        <Suspense fallback={null}>
-          <DeferredScripts />
-        </Suspense>
       </body>
     </html>
   );

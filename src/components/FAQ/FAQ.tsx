@@ -1,109 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import Section from "@/components/ui/Section/Section";
+import * as Accordion from "@radix-ui/react-accordion";
+import { ChevronDown } from "lucide-react";
 import styles from "./FAQ.module.scss";
 
-type FAQItem = {
-  question: string;
-  answer: string;
-};
+type FAQItem = { question: string; answer: string };
 
-type FAQProps = {
-  items?: FAQItem[];
-};
-
-const fallbackItems: FAQItem[] = [
-  {
-    question: "Как отправить приборную панель и что нужно подготовить?",
-    answer:
-      "Перед отправкой свяжитесь с нами, уточните модель панели и аккуратно упакуйте её. После согласования подскажем, что приложить и куда отправлять.",
-  },
-  {
-    question: "Можно ли изготовить шкалы по фото без отправки оригинала?",
-    answer:
-      "В некоторых случаях макет можно подготовить по фото, если хорошо видны детали. Но для точного совпадения по размерам иногда нужен оригинал.",
-  },
-  {
-    question: "Сколько занимает работа и как согласовывается макет?",
-    answer:
-      "Срок зависит от задачи и состояния панели. Перед запуском мы согласовываем детали, чтобы вы понимали этапы работы и ожидаемый результат.",
-  },
-  {
-    question: "Работаете ли вы по всей России и как происходит отправка?",
-    answer:
-      "Да, работаем по всей России. Отправка и возврат выполняются через СДЭК после согласования деталей и подтверждения работ.",
-  },
-  {
-    question: "Можно ли сделать шкалы по индивидуальному дизайну?",
-    answer:
-      "Да, можем подготовить шкалы под конкретную модель, нужную графику и желаемый внешний вид. Перед запуском согласовываем макет, чтобы результат был ожидаемым.",
-  },
-];
-
-export default function FAQ({ items = fallbackItems }: FAQProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const normalizedItems = fallbackItems.map((fallbackItem, index) => ({
-    question: items[index]?.question || fallbackItem.question,
-    answer: items[index]?.answer || fallbackItem.answer,
-  }));
-
-  const handleToggle = (index: number) => {
-    if (index === activeIndex) return;
-    setActiveIndex(index);
-  };
-
+export default function FAQ({ items = [] }: { items?: FAQItem[] }) {
   return (
-    <Section aria-labelledby="faq-title">
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.badge}>Частые вопросы</div>
-
-          <h2 id="faq-title" className={styles.visuallyHidden}>
-            Частые вопросы и ответы
-          </h2>
-
-          <div className={styles.list}>
-            {normalizedItems.map((item, index) => {
-              const isActive = index === activeIndex;
-
-              return (
-                <article
-                  key={`${item.question}-${index}`}
-                  className={`${styles.item} ${isActive ? styles.itemActive : ""}`}
-                >
-                  <button
-                    type="button"
-                    className={styles.trigger}
-                    aria-expanded={isActive}
-                    aria-controls={`faq-panel-${index}`}
-                    id={`faq-trigger-${index}`}
-                    onClick={() => handleToggle(index)}
-                  >
-                    <span className={styles.question}>{item.question}</span>
-
-                    <span className={styles.icon} aria-hidden="true">
-                      {isActive ? "−" : "+"}
-                    </span>
-                  </button>
-
-                  <div
-                    id={`faq-panel-${index}`}
-                    role="region"
-                    aria-labelledby={`faq-trigger-${index}`}
-                    className={`${styles.panel} ${isActive ? styles.panelOpen : ""}`}
-                  >
-                    <div className={styles.panelInner}>
-                      <p className={styles.answer}>{item.answer}</p>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
+    <section className={styles.section} aria-labelledby="faq-title">
+      <div className={styles.shell}>
+        <div className={styles.heading}><p>Ответы на вопросы</p><h2 id="faq-title">Что важно знать до заказа</h2><span>Если нужного ответа нет — напишите нам. Посмотрим вашу панель и подскажем конкретно по ней.</span></div>
+        <Accordion.Root className={styles.list} type="single" defaultValue="item-0" collapsible>
+          {items.map((item, index) => <Accordion.Item className={styles.item} value={`item-${index}`} key={item.question}>
+            <Accordion.Header><Accordion.Trigger className={styles.trigger}><span className={styles.number}>0{index + 1}</span><span className={styles.question}>{item.question}</span><ChevronDown aria-hidden="true" /></Accordion.Trigger></Accordion.Header>
+            <Accordion.Content className={styles.content}><div>{item.answer}</div></Accordion.Content>
+          </Accordion.Item>)}
+        </Accordion.Root>
       </div>
-    </Section>
+    </section>
   );
 }

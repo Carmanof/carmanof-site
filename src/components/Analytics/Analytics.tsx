@@ -47,7 +47,7 @@ export default function Analytics() {
   }, [pathname, searchParams]);
 
   useEffect(() => {
-    setConsent(readConsent());
+    const frameId = window.requestAnimationFrame(() => setConsent(readConsent()));
 
     function handleConsentChange(event: Event) {
       const customEvent = event as CustomEvent<ConsentState>;
@@ -57,6 +57,7 @@ export default function Analytics() {
     window.addEventListener("cookie-consent-change", handleConsentChange);
 
     return () => {
+      window.cancelAnimationFrame(frameId);
       window.removeEventListener("cookie-consent-change", handleConsentChange);
     };
   }, []);
@@ -121,6 +122,8 @@ export default function Analytics() {
 
           <noscript>
             <div>
+              {/* Analytics fallback must remain a plain tracking pixel. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://mc.yandex.ru/watch/${metricaId}`}
                 style={{ position: "absolute", left: "-9999px" }}

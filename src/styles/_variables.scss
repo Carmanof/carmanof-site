@@ -4,14 +4,14 @@
 // BASE COLORS (8 COLORS)
 // Меняешь только этот блок
 // =========================
-$color-bg: #fcfcfd;
-$color-surface: #e6ebf6ac;
-$color-surface-strong: #ffffff;
-$color-text: #26333a;
-$color-text-strong: #1b252b;
-$color-muted: #6e7b84;
-$color-accent: #27aae1;
-$color-border: #e9edf3;
+$color-bg: #0b0d10;
+$color-surface: #15191f;
+$color-surface-strong: #1b2027;
+$color-text: #d7dde5;
+$color-text-strong: #f5f7fa;
+$color-muted: #9ba5b3;
+$color-accent: #1fb9ef;
+$color-border: #2a3039;
 
 // =========================
 // DERIVED COLORS
@@ -51,17 +51,17 @@ $color-border-soft: color.change($color-text, $alpha: 0.06);
 $color-border-medium: color.change($color-text, $alpha: 0.1);
 $color-border-strong: color.change($color-text, $alpha: 0.16);
 
-$color-border-white-soft: rgba(255, 255, 255, 0.24);
-$color-border-white-medium: rgba(255, 255, 255, 0.36);
+$color-border-white-soft: rgba(255, 255, 255, 0.12);
+$color-border-white-medium: rgba(255, 255, 255, 0.22);
 
 // =========================
 // SHADOWS
 // =========================
-$shadow-xs: 0 2px 8px rgba(27, 37, 43, 0.02);
-$shadow-sm: 0 4px 12px rgba(27, 37, 43, 0.035);
-$shadow-md: 0 10px 28px rgba(27, 37, 43, 0.055);
-$shadow-lg: 0 18px 44px rgba(27, 37, 43, 0.09);
-$shadow-xl: 0 24px 80px rgba(27, 37, 43, 0.14);
+$shadow-xs: 0 2px 8px rgba(0, 0, 0, 0.18);
+$shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.24);
+$shadow-md: 0 16px 36px rgba(0, 0, 0, 0.32);
+$shadow-lg: 0 24px 54px rgba(0, 0, 0, 0.42);
+$shadow-xl: 0 32px 92px rgba(0, 0, 0, 0.52);
 
 // =========================
 // HIGHLIGHTS
@@ -77,8 +77,8 @@ $overlay-dark-soft: rgba(27, 37, 43, 0.14);
 $overlay-dark-medium: rgba(27, 37, 43, 0.24);
 $overlay-dark-strong: rgba(27, 37, 43, 0.42);
 
-$glass-light: rgba(255, 255, 255, 0.56);
-$glass-light-strong: rgba(255, 255, 255, 0.78);
+$glass-light: rgba(21, 25, 31, 0.72);
+$glass-light-strong: rgba(15, 18, 23, 0.88);
 
 // =========================
 // STATES

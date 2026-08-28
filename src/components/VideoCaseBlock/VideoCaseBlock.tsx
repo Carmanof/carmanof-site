@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
 import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 import Section from "@/components/ui/Section/Section";
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import { getVideoAsset } from "@/data/videoAssets";
 import styles from "./VideoCaseBlock.module.scss";
 
 type VideoCaseItem = {
@@ -28,23 +28,7 @@ function truncateText(text: string, maxLength: number) {
   return `${text.slice(0, maxLength).trimEnd()}…`;
 }
 
-function getYoutubeThumbnail(youtubeId: string) {
-  return `https://i.ytimg.com/vi/${youtubeId}/mqdefault.jpg`;
-}
-
-function getYoutubeEmbedUrl(youtubeId: string) {
-  const params = new URLSearchParams({
-    autoplay: "1",
-    rel: "0",
-    modestbranding: "1",
-    playsinline: "1",
-  });
-
-  return `https://www.youtube-nocookie.com/embed/${youtubeId}?${params.toString()}`;
-}
-
 export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const hasVideoCases = videoCases.length > 0;
 
   return (
@@ -68,29 +52,23 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
               ? videoCases.map((item, index) => {
                   const itemId =
                     item._id || item.id || `${item.youtubeId}-${index}`;
-                  const isActive = activeVideoId === itemId;
+                  const asset = getVideoAsset(item.youtubeId);
 
                   return (
                     <article key={itemId} className={styles.card}>
-                      {isActive ? (
-                        <iframe
+                      {asset ? (
+                        <VideoPlayer
                           className={styles.iframe}
-                          src={getYoutubeEmbedUrl(item.youtubeId)}
+                          src={asset.video}
+                          poster={asset.poster}
                           title={item.title}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                          referrerPolicy="strict-origin-when-cross-origin"
+                          caption={truncateText(item.title, PREVIEW_TEXT_LIMIT)}
                         />
                       ) : (
-                        <button
-                          type="button"
-                          className={styles.previewButton}
-                          onClick={() => setActiveVideoId(itemId)}
-                          aria-label={`Открыть видео: ${item.title}`}
-                        >
-                          {/* 🔴 FIX: replaced next/image with native img */}
+                        <div className={styles.previewButton}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={getYoutubeThumbnail(item.youtubeId)}
+                            src="/images/more-examples/example-04-v2.webp"
                             alt={item.title}
                             loading="lazy"
                             decoding="async"
@@ -106,15 +84,7 @@ export default function VideoCaseBlock({ videoCases }: VideoCaseBlockProps) {
                             </span>
                           </span>
 
-                          <span className={styles.playButton}>
-                            <img
-                              src="/icons/video-case-block/play.svg"
-                              alt=""
-                              className={styles.playIcon}
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </button>
+                        </div>
                       )}
                     </article>
                   );

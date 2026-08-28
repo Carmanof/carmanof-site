@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -64,26 +64,26 @@ export default function PhotoCasesClient({
     setActivePhotoIndex(null);
   }
 
-  function handlePrevPhoto() {
+  const handlePrevPhoto = useCallback(() => {
     setActivePhotoIndex((prev) => {
       if (prev === null || validVisiblePhotos.length === 0) return null;
       return prev === 0 ? validVisiblePhotos.length - 1 : prev - 1;
     });
-  }
+  }, [validVisiblePhotos.length]);
 
-  function handleNextPhoto() {
+  const handleNextPhoto = useCallback(() => {
     setActivePhotoIndex((prev) => {
       if (prev === null || validVisiblePhotos.length === 0) return null;
       return prev === validVisiblePhotos.length - 1 ? 0 : prev + 1;
     });
-  }
+  }, [validVisiblePhotos.length]);
 
   useEffect(() => {
     if (activePhotoIndex === null) return;
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        handleCloseLightbox();
+        setActivePhotoIndex(null);
       }
 
       if (event.key === "ArrowLeft") {
@@ -103,7 +103,7 @@ export default function PhotoCasesClient({
       document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activePhotoIndex, validVisiblePhotos.length]);
+  }, [activePhotoIndex, handleNextPhoto, handlePrevPhoto]);
 
   return (
     <main className={styles.page}>
