@@ -30,7 +30,7 @@ export default function CasesPage() {
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} /><main className={styles.page}>
     <header className={styles.hero}>
       <div><p>Реальные проекты / фото и видео</p><h1>Работы Carmanof</h1></div>
-      <div className={styles.heroAside}><VideoCameraIcon weight="duotone" /><strong>17 видеокейсов</strong><p>Не рендеры и не каталожные картинки — настоящие приборные панели, которые уже прошли через мастерскую.</p></div>
+      <div className={styles.heroAside}><VideoCameraIcon weight="duotone" /><strong>Работы мастерской</strong><p>Здесь собраны приборные панели наших клиентов — показываем процесс и готовый результат.</p></div>
     </header>
 
     <section className={styles.brands} aria-labelledby="brands-title">
