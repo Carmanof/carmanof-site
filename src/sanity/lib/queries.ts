@@ -87,11 +87,30 @@ export const videoCasesQuery = groq`
     (!defined(isPublished) || isPublished == true) &&
     defined(order)
   ]
-  | order(order asc)[0...18]{
+  | order(order asc){
     _id,
     title,
     description,
     youtubeId,
+    "videoUrl": coalesce(videoFile.asset->url, videoUrl),
+    "posterUrl": coalesce(posterImage.asset->url, posterUrl),
+    "posterAlt": coalesce(posterImage.alt, title),
+    videoFile{
+      asset->{
+        _id,
+        url,
+        mimeType,
+        size,
+        originalFilename
+      }
+    },
+    posterImage{
+      alt,
+      asset->{
+        _id,
+        url
+      }
+    },
     order,
     isFeatured
   }

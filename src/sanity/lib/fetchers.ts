@@ -78,7 +78,10 @@ export type VideoCase = {
   _id: string;
   title: string;
   description: string;
-  youtubeId: string;
+  youtubeId?: string;
+  videoUrl?: string;
+  posterUrl?: string;
+  posterAlt?: string;
   order: number;
   isFeatured?: boolean;
 };

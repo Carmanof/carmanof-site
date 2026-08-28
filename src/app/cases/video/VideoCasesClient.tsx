@@ -7,7 +7,7 @@ import Container from "@/components/ui/Container/Container";
 import Button from "@/components/ui/Button/Button";
 import BackToFlow from "@/components/ui/BackToFlow/BackToFlow";
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
-import { getVideoAsset } from "@/data/videoAssets";
+import { resolveVideoAsset } from "@/data/videoAssets";
 import styles from "./video.module.scss";
 
 type VideoCaseItem = {
@@ -15,7 +15,10 @@ type VideoCaseItem = {
   id?: string;
   title: string;
   description?: string;
-  youtubeId: string;
+  youtubeId?: string;
+  videoUrl?: string;
+  posterUrl?: string;
+  posterAlt?: string;
   order?: number;
   isFeatured?: boolean;
 };
@@ -73,8 +76,11 @@ export default function VideoCasesClient({
                 <div className={styles.grid}>
                   {visibleVideos.map((item, index) => {
                     const itemId =
-                      item._id || item.id || `${item.youtubeId}-${index}`;
-                    const asset = getVideoAsset(item.youtubeId);
+                      item._id ||
+                      item.id ||
+                      item.youtubeId ||
+                      `video-${index}`;
+                    const asset = resolveVideoAsset(item);
 
                     return (
                       <article key={itemId} className={styles.card}>

@@ -32,7 +32,15 @@ export default async function VideoCasesPage() {
    * и при ошибке уже возвращает fallback-массив.
    */
   const cmsCases = await getVideoCases();
-  const videoCases = cmsCases.length ? cmsCases : realVideoCases.map((item, index) => ({ _id: item.id, title: item.title, description: item.description, youtubeId: item.youtubeId, order: index + 1 }));
+  const videoCases = cmsCases.length
+    ? cmsCases
+    : realVideoCases.map((item, index) => ({
+        _id: item.id,
+        title: item.title,
+        description: item.description,
+        youtubeId: item.youtubeId,
+        order: index + 1,
+      }));
 
   return <VideoCasesClient videoCases={videoCases} />;
 }

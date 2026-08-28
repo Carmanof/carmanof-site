@@ -2,11 +2,20 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useClient } from "sanity";
+import { getVideoAsset } from "@/data/videoAssets";
 
 const SANITY_API_VERSION = "2026-03-25";
 
 type CaseImageValue = {
   alt?: string;
+  asset?: {
+    _ref?: string;
+    _id?: string;
+    url?: string;
+  };
+};
+
+type CaseFileValue = {
   asset?: {
     _ref?: string;
     _id?: string;
@@ -20,6 +29,10 @@ type VideoCaseDocument = {
   title?: string;
   description?: string;
   youtubeId?: string;
+  videoFile?: CaseFileValue;
+  posterImage?: CaseImageValue;
+  videoUrl?: string;
+  posterUrl?: string;
   order?: number;
   isFeatured?: boolean;
   isPublished?: boolean;
@@ -56,16 +69,8 @@ function isPhotoCaseDocument(
   return document?._type === "photoCase";
 }
 
-function getYoutubeThumbnail(youtubeId?: string) {
-  if (!youtubeId) {
-    return null;
-  }
-
-  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
-}
-
-function getAssetIdFromImage(image?: CaseImageValue) {
-  if (!image?.asset) {
+function getAssetId(value?: CaseImageValue | CaseFileValue) {
+  if (!value?.asset) {
     return null;
   }
 
@@ -73,7 +78,7 @@ function getAssetIdFromImage(image?: CaseImageValue) {
    * Иногда URL уже доступен прямо в значении image.asset,
    * тогда отдельный запрос за URL не нужен.
    */
-  if (image.asset.url) {
+  if (value.asset.url) {
     return null;
   }
 
@@ -81,7 +86,7 @@ function getAssetIdFromImage(image?: CaseImageValue) {
    * В Sanity asset обычно приходит как reference вида:
    * image-<hash>-<dimensions>-<format>
    */
-  return image.asset._ref || image.asset._id || null;
+  return value.asset._ref || value.asset._id || null;
 }
 
 function getDocumentStatus(document: SupportedCaseDocument | null) {
@@ -205,6 +210,7 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
   const hasPublished = Boolean(props.document?.published);
 
   const [resolvedImageUrl, setResolvedImageUrl] = useState<string | null>(null);
+  const [resolvedVideoUrl, setResolvedVideoUrl] = useState<string | null>(null);
   const [isResolvingImage, setIsResolvingImage] = useState(false);
 
   const status = useMemo(() => {
@@ -228,7 +234,16 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
     }
 
     if (isVideoCaseDocument(displayedDocument)) {
-      return getYoutubeThumbnail(displayedDocument.youtubeId);
+      const legacyAsset = displayedDocument.youtubeId
+        ? getVideoAsset(displayedDocument.youtubeId)
+        : undefined;
+
+      return (
+        displayedDocument.posterImage?.asset?.url ||
+        displayedDocument.posterUrl ||
+        resolvedImageUrl ||
+        legacyAsset?.poster
+      );
     }
 
     if (isPhotoCaseDocument(displayedDocument)) {
@@ -238,64 +253,76 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
     return null;
   }, [displayedDocument, resolvedImageUrl]);
 
+  const previewVideoUrl = useMemo(() => {
+    if (!isVideoCaseDocument(displayedDocument)) {
+      return null;
+    }
+
+    const legacyAsset = displayedDocument.youtubeId
+      ? getVideoAsset(displayedDocument.youtubeId)
+      : undefined;
+
+    return (
+      displayedDocument.videoFile?.asset?.url ||
+      displayedDocument.videoUrl ||
+      resolvedVideoUrl ||
+      legacyAsset?.video
+    );
+  }, [displayedDocument, resolvedVideoUrl]);
+
   useEffect(() => {
     let isMounted = true;
 
-    async function resolvePhotoAssetUrl() {
-      /**
-       * Для видео отдельный запрос не нужен.
-       */
-      if (!isPhotoCaseDocument(displayedDocument)) {
-        if (isMounted) {
-          setResolvedImageUrl(null);
-          setIsResolvingImage(false);
-        }
-        return;
+    async function resolveAssetUrls() {
+      const imageValue = isVideoCaseDocument(displayedDocument)
+        ? displayedDocument.posterImage
+        : isPhotoCaseDocument(displayedDocument)
+          ? displayedDocument.image
+          : undefined;
+      const videoValue = isVideoCaseDocument(displayedDocument)
+        ? displayedDocument.videoFile
+        : undefined;
+      const imageAssetId = getAssetId(imageValue);
+      const videoAssetId = getAssetId(videoValue);
+
+      if (isMounted) {
+        setResolvedImageUrl(null);
+        setResolvedVideoUrl(null);
       }
 
-      /**
-       * Если URL уже есть в документе, повторно ничего не запрашиваем.
-       */
-      if (displayedDocument.image?.asset?.url) {
-        if (isMounted) {
-          setResolvedImageUrl(displayedDocument.image.asset.url);
-          setIsResolvingImage(false);
-        }
-        return;
-      }
-
-      const assetId = getAssetIdFromImage(displayedDocument.image);
-
-      if (!assetId) {
-        if (isMounted) {
-          setResolvedImageUrl(null);
-          setIsResolvingImage(false);
-        }
+      if (!imageAssetId && !videoAssetId) {
+        setIsResolvingImage(false);
         return;
       }
 
       setIsResolvingImage(true);
 
       try {
-        /**
-         * Подтягиваем URL asset, если в документе есть только reference.
-         */
-        const assetUrl = await baseClient.fetch<string | null>(
-          `*[_id == $assetId][0].url`,
-          { assetId },
+        const assetUrls = await baseClient.fetch<{
+          imageUrl?: string | null;
+          videoUrl?: string | null;
+        }>(
+          `{
+            "imageUrl": *[_id == $imageAssetId][0].url,
+            "videoUrl": *[_id == $videoAssetId][0].url
+          }`,
+          { imageAssetId, videoAssetId },
         );
 
         if (isMounted) {
-          setResolvedImageUrl(assetUrl || null);
+          setResolvedImageUrl(assetUrls.imageUrl || null);
+          setResolvedVideoUrl(assetUrls.videoUrl || null);
         }
       } catch (error) {
-        console.error("[CasePreviewPane] image resolve failed", {
-          assetId,
+        console.error("[CasePreviewPane] asset resolve failed", {
+          imageAssetId,
+          videoAssetId,
           error,
         });
 
         if (isMounted) {
           setResolvedImageUrl(null);
+          setResolvedVideoUrl(null);
         }
       } finally {
         if (isMounted) {
@@ -304,7 +331,7 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
       }
     }
 
-    void resolvePhotoAssetUrl();
+    void resolveAssetUrls();
 
     return () => {
       isMounted = false;
@@ -423,7 +450,20 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
                 border: "1px solid rgba(255, 255, 255, 0.08)",
               }}
             >
-              {previewImageUrl ? (
+              {isVideoCase && previewVideoUrl ? (
+                <video
+                  src={previewVideoUrl}
+                  poster={previewImageUrl || undefined}
+                  controls
+                  preload="metadata"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              ) : previewImageUrl ? (
                 <>
                   {/* Sanity preview URLs are editor-only and intentionally unoptimized. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -471,7 +511,9 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
                       }}
                     >
                       {isVideoCase
-                        ? "Добавь корректный YouTube ID, чтобы увидеть обложку видео."
+                        ? isResolvingImage
+                          ? "Загружаем видео и обложку…"
+                          : "Загрузите MP4-файл и обложку видео."
                         : isPhotoCase
                           ? isResolvingImage
                             ? "Загружаем изображение кейса…"
@@ -487,7 +529,7 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
                   style={{
                     position: "absolute",
                     right: 14,
-                    bottom: 14,
+                    top: 14,
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 8,
@@ -500,7 +542,7 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
                     backdropFilter: "blur(6px)",
                   }}
                 >
-                  YouTube превью
+                  Собственный плеер
                 </div>
               ) : null}
 
@@ -651,7 +693,7 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
                   color: "#6b7280",
                 }}
               >
-                YouTube ID
+                Источник видео
               </div>
 
               <div
@@ -664,11 +706,15 @@ export default function CasePreviewPane(props: CasePreviewPaneProps) {
                   wordBreak: "break-word",
                 }}
               >
-                {renderMetaValue(
-                  isVideoCaseDocument(displayedDocument)
-                    ? displayedDocument.youtubeId
-                    : null,
-                )}
+                {isVideoCaseDocument(displayedDocument)
+                  ? displayedDocument.videoFile
+                    ? "MP4 загружено через Studio"
+                    : displayedDocument.videoUrl
+                      ? "Существующий файл Vercel Blob"
+                      : displayedDocument.youtubeId
+                        ? "Существующий файл Vercel Blob"
+                        : "Видео не загружено"
+                  : "—"}
               </div>
             </div>
           ) : null}

@@ -4,7 +4,7 @@ import HomeExperience from "@/components/HomeExperience/HomeExperience";
 import FAQ from "@/components/FAQ/FAQ";
 import Contact from "@/components/Contact/Contact";
 import Footer from "@/components/Footer/Footer";
-import { getSiteSettings, type FAQItem, type SiteSettings } from "@/sanity/lib/fetchers";
+import { getHomeVideoCases, getSiteSettings, type FAQItem, type SiteSettings } from "@/sanity/lib/fetchers";
 import { businessAddress, businessMapUrl } from "@/config/business";
 
 export const revalidate = 120;
@@ -24,7 +24,10 @@ const fallbackFaq: FAQItem[] = [
 ];
 
 export default async function HomePage() {
-  const settings: SiteSettings = await getSiteSettings();
+  const [settings, videoCases]: [SiteSettings, Awaited<ReturnType<typeof getHomeVideoCases>>] = await Promise.all([
+    getSiteSettings(),
+    getHomeVideoCases(),
+  ]);
   const requestedPrices = [
     { title: "Шкалы приборов на заказ", value: "3 500" },
     { title: "Пересвет приборной панели", value: "5 000" },
@@ -65,7 +68,7 @@ export default async function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([businessSchema, faqSchema]) }} />
       <Hero />
-      <HomeExperience prices={prices} />
+      <HomeExperience prices={prices} videoCases={videoCases} />
       <FAQ items={faqItems} />
       <Contact settings={settings} />
       <Footer />

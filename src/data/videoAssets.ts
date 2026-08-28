@@ -5,6 +5,12 @@ type VideoAsset = {
   poster: string;
 };
 
+type ManagedVideoAsset = {
+  videoUrl?: string;
+  posterUrl?: string;
+  youtubeId?: string;
+};
+
 const files: Record<string, [string, string]> = {
   "-FqhKQWDWmY": ["-FqhKQWDWmY-1q41oaUCSUObwyuupGZ3UlwWOVPLeu.mp4", "-FqhKQWDWmY-WMQX4PlmQ8dadWZWNZIaqnUoBxC98U.webp"],
   "-qyv3CoX--w": ["-qyv3CoX--w-uEeWhwwLjjj6eAzjtc4Auqz9Pd492y.mp4", "-qyv3CoX--w-E3q01oLFmSXKoEhpa8XQyecdfVV8KT.webp"],
@@ -37,5 +43,23 @@ export function getVideoAsset(youtubeId: string): VideoAsset | undefined {
 
 export function getVideoPoster(youtubeId: string) {
   return getVideoAsset(youtubeId)?.poster ?? "/images/more-examples/example-04-v2.webp";
+}
+
+export function resolveVideoAsset({
+  videoUrl,
+  posterUrl,
+  youtubeId,
+}: ManagedVideoAsset): VideoAsset | undefined {
+  if (videoUrl) {
+    return {
+      video: videoUrl,
+      poster:
+        posterUrl ??
+        (youtubeId ? getVideoPoster(youtubeId) : undefined) ??
+        "/images/more-examples/example-04-v2.webp",
+    };
+  }
+
+  return youtubeId ? getVideoAsset(youtubeId) : undefined;
 }
 
